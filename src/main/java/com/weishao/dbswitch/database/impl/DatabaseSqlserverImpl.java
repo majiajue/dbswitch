@@ -10,6 +10,7 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.weishao.dbswitch.constant.Const;
 import com.weishao.dbswitch.constant.DatabaseType;
 import com.weishao.dbswitch.database.AbstractDatabase;
+import com.weishao.dbswitch.database.IDatabaseInterface;
 import com.weishao.dbswitch.model.ColumnDescription;
 import com.weishao.dbswitch.model.ColumnMetaData;
 import com.weishao.dbswitch.model.TableDescription;
@@ -20,10 +21,14 @@ import com.weishao.dbswitch.model.TableDescription;
  * @author tang
  *
  */
-public class DatabaseSqlserverImpl extends AbstractDatabase {
+public class DatabaseSqlserverImpl extends AbstractDatabase implements IDatabaseInterface {
 
 	public DatabaseSqlserverImpl() {
 		super("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+	}
+	
+	public DatabaseSqlserverImpl(String driverName) {
+		super(driverName);
 	}
 
 	@Override

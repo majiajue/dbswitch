@@ -2,6 +2,7 @@ package com.weishao.dbswitch.util;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import com.weishao.dbswitch.model.DatabaseDescription;
@@ -12,6 +13,20 @@ import com.weishao.dbswitch.model.DatabaseDescription;
  *
  */
 public class JdbcUrlUtil {
+	
+	protected enum OracleJdbcConnectionMode {
+		SID(1), SERVICENAME(2), TNSNAME(3);
+
+		private int index;
+
+		OracleJdbcConnectionMode(int idx) {
+			this.index = idx;
+		}
+
+		public int getIndex() {
+			return index;
+		}
+	}
 	
 	/**
 	 * 根据数据库种类拼接jdbc的url信息
@@ -29,21 +44,47 @@ public class JdbcUrlUtil {
 	 *  
 	 * @param db          数据库连接描述信息
 	 * @param connectTimeout  连接超时时间(单位：秒）
+	 * @param mode   对于Oracle数据库的模式，可取范围为：sid,servicename,tnsname三种
 	 * @return   对应数据库的JDBC的URL字符串
 	 * 
 	 */
-	public static String getJdbcUrl(DatabaseDescription db,int connectTimeout) {
+	public static String getJdbcUrl(DatabaseDescription db, int connectTimeout) {
 		switch (db.getType()) {
 		case MYSQL:
 			String charset=db.getCharset();
-			if(null==charset || charset.isEmpty()) {
+			if(Objects.isNull(charset) || charset.isEmpty()) {
 				charset="utf-8";
 			}
 			return String.format("jdbc:mysql://%s:%d/%s?useSSL=false&serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=%s&nullCatalogMeansCurrent=true&connectTimeout=%d", db.getHost(),db.getPort(),db.getDbname(),charset,connectTimeout*1000);
 		case ORACLE:
-			//Oracle设置连接超时时间
-			System.setProperty("oracle.net.CONNECT_TIMEOUT",Integer.toString(1000*connectTimeout));
-			return String.format("jdbc:oracle:thin:@%s:%d:%s",db.getHost(),db.getPort(),db.getDbname());
+			OracleJdbcConnectionMode type;
+			String mode=db.getMode();
+			if (Objects.isNull(mode)) {
+				type = OracleJdbcConnectionMode.SID;
+			} else {
+				try {
+					type = OracleJdbcConnectionMode.valueOf(mode.trim().toUpperCase());
+				} catch (IllegalArgumentException e) {
+					throw new RuntimeException(String.format("Invalid Oracle mode type: %s", mode));
+				}
+			}
+			
+			// Oracle设置连接超时时间
+			System.setProperty("oracle.net.CONNECT_TIMEOUT", Integer.toString(1000 * connectTimeout));
+			if (OracleJdbcConnectionMode.SID == type) {
+				return String.format("jdbc:oracle:thin:@%s:%d:%s", db.getHost(), db.getPort(), db.getDbname());
+			} else if (OracleJdbcConnectionMode.SERVICENAME == type) {
+				return String.format("jdbc:oracle:thin:@//%s:%d/%s", db.getHost(), db.getPort(), db.getDbname());
+			} else if (OracleJdbcConnectionMode.TNSNAME == type) {
+				return String.format(
+						"jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=%s)(PORT=%d))) "
+						+ "(CONNECT_DATA=(SERVICE_NAME=%s)))",
+						db.getHost(), db.getPort(), db.getDbname());
+			}else {
+				return String.format("jdbc:oracle:thin:@%s:%d:%s", db.getHost(), db.getPort(), db.getDbname());
+			}
+		case SQLSERVER2000:
+			return String.format("jdbc:microsoft:sqlserver://%s:%d;DatabaseName=%s",db.getHost(),db.getPort(),db.getDbname());
 		case SQLSERVER:
 			return String.format("jdbc:sqlserver://%s:%d;DatabaseName=%s",db.getHost(),db.getPort(),db.getDbname());
 		case POSTGRESQL:

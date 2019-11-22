@@ -5,7 +5,6 @@ import java.util.Map;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.Strings;
-
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.http.MediaType;
@@ -43,7 +42,6 @@ public class ConvertController extends BaseController {
 	}
 
 	@RequestMapping(value = "/standard/dml", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-	@ResponseBody
 	@ApiOperation(value = "标准DML类SQL语句转换", notes = "将标准DML类型的SQL语句分别转换为三种数据库对应语法的SQL格式，请求的示例包体格式为：\n "
 			+ "{\r\n" + 
 			"    \"sql\":\"select * from test_table\"\r\n" + 
@@ -68,14 +66,14 @@ public class ConvertController extends BaseController {
 
 	@RequestMapping(value = "/standard/ddl", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	@ApiOperation(value = "标准DDL类SQL语句转换", notes = "将标准DDL类型的SQL语句分别转换为三种数据库对应语法的SQL格式，请求的示例包体格式为：\n"
+	@ApiOperation(value = "标准DDL类SQL语句转换", notes = "将标准DDL(不含有Create/Alter/Tuncate table三个)类型的SQL语句分别转换为三种数据库对应语法的SQL格式，请求的示例包体格式为：\n"
 			+ "{\r\n" + 
-			"    \"sql\":\"create table test_table (i int not null, j varchar(5) null)\"\r\n" + 
+			"    \"sql\":\"create or replace view v_xxxx as (select xgh,name,sex from test_table where \"identity\"='student')\"\r\n" + 
 			"}")
 	/*
 	 * 参数的JSON格式：
 		{
-		    "sql":" create table test_table (i int not null, j varchar(5) null)"
+		    "sql":" create or replace view v_xxxx as (select xgh,name,sex from test_table where \"identity\"='student')"
 		}
 	 */
 	public Map<String, Object> StandardDataDefinitionLanguage(@RequestBody String body) {
@@ -90,9 +88,7 @@ public class ConvertController extends BaseController {
 		return success(ret);
 	}
 
-
 	@RequestMapping(value = "/special/dml", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-	@ResponseBody
 	@ApiOperation(value = "指定数据库的DML类SQL语句转换", notes = "将标准DML类型的SQL语句分别转换为三种数据库对应语法的SQL格式，请求的示例包体格式为：\n "
 			+ "{\r\n" + 
 			"    \"source\":\"mysql\",\r\n" + 
@@ -122,7 +118,6 @@ public class ConvertController extends BaseController {
 	}
 
 	@RequestMapping(value = "/special/ddl", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-	@ResponseBody
 	@ApiOperation(value = "指定数据库的DDL类SQL语句转换", notes = "将标准DDL类型的SQL语句分别转换为三种数据库对应语法的SQL格式，请求的示例包体格式为：\n  "
 			+ "{\r\n" + 
 			"    \"source\":\"mysql\",\r\n" + 

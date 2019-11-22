@@ -10,7 +10,7 @@ import org.apache.calcite.sql.SqlNode;
 import org.apache.calcite.sql.parser.SqlParseException;
 import org.apache.calcite.sql.parser.SqlParser;
 import org.apache.calcite.sql.parser.ddl.SqlDdlParserImpl;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import com.weishao.dbswitch.calcite.TheMssqlSqlDialect;
 import com.weishao.dbswitch.calcite.TheMysqlSqlDialect;
 import com.weishao.dbswitch.calcite.TheOracleSqlDialect;
@@ -28,7 +28,7 @@ import com.weishao.dbswitch.service.ISqlConvertService;
  * DCL—数据控制语言(GRANT，REVOKE，COMMIT，ROLLBACK)
  * 
  */
-@Component("CalciteConvertService")
+@Service("CalciteConvertService")
 public class CalciteSqlConvertServiceImpl implements ISqlConvertService {
 	
 	private static final Logger logger = LoggerFactory.getLogger(CalciteSqlConvertServiceImpl.class);

@@ -9,6 +9,7 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.weishao.dbswitch.constant.Const;
 import com.weishao.dbswitch.constant.DatabaseType;
 import com.weishao.dbswitch.database.AbstractDatabase;
+import com.weishao.dbswitch.database.IDatabaseInterface;
 import com.weishao.dbswitch.model.ColumnDescription;
 import com.weishao.dbswitch.model.ColumnMetaData;
 import com.weishao.dbswitch.model.TableDescription;
@@ -23,7 +24,7 @@ import com.weishao.dbswitch.model.TableDescription;
  * @author tang
  *
  */
-public class DatabaseOracleImpl extends AbstractDatabase {
+public class DatabaseOracleImpl extends AbstractDatabase implements IDatabaseInterface {
 	
 	public DatabaseOracleImpl() {
 		super("oracle.jdbc.driver.OracleDriver");
@@ -119,6 +120,10 @@ public class DatabaseOracleImpl extends AbstractDatabase {
 	      case ColumnMetaData.TYPE_BIGNUMBER:
 	        retval.append( "NUMBER" );
 	        if ( length > 0 ) {
+	        	if(length>38) {
+	        		length=38;
+	        	}
+	        	
 	          retval.append( '(' ).append( length );
 	          if ( precision > 0 ) {
 	            retval.append( ", " ).append( precision );

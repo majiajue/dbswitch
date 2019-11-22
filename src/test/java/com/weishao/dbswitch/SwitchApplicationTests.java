@@ -33,7 +33,7 @@ import org.springframework.web.context.WebApplicationContext;
  * （3）create table的自增字段问题
  *    各个数据库的实现参考：https://www.w3school.com.cn/sql/sql_autoincrement.asp
  * （4）各个数据库间的字段类型定义差异
- * （5）SELECT ProductName, UnitPrice, Now() as PerDate FROM Products
+ * （5）各个数据库的特殊函数问题：SELECT ProductName, UnitPrice, Now() as PerDate FROM Products
  * 
  * @author tang
  *
@@ -50,7 +50,7 @@ class SwitchApplicationTests{
 	 * JSON path的使用测试
 	 */
 	@Test
-	void testJsonPath() {
+	void test_json_path_usage_01() {
 		logger.info("#### Run test json path ");
 		String json1 = "{\"author\":\"tangyibo\"}";
 		String result = JsonPath.read(json1, "$.author");
@@ -876,6 +876,7 @@ class SwitchApplicationTests{
 	
 	/**
 	 * 【单表查询】用例二十九：
+	 *  问题：首先于字段类型，有许多字段类型无法解析，无法兼容底层数据库
 		CREATE TABLE Persons
 		(
 				P_Id int NOT NULL,
@@ -924,7 +925,7 @@ class SwitchApplicationTests{
 	void standard_dml_select_table_30() throws Exception {
 		String sql = "select s.s_id , s.s_name , avg(score) from t_student s join t_grade g on s.s_id = g.s_id group by s.s_id , s.s_name "
 				+ "having avg(score) > (select avg(score) from t_student s join t_grade g on s.s_id = g.s_id where s.s_name = 'zhang' group by s.s_id)";
-		logger.info("#### Run test 29 : {}", sql);
+		logger.info("#### Run test 30 : {}", sql);
 		JSONObject json = new JSONObject();
 		json.put("sql", sql);
 
@@ -953,7 +954,7 @@ class SwitchApplicationTests{
 	@Test
 	void standard_dml_select_table_31() throws Exception {
 		String sql = "select * from test_table where name = '王五'";
-		logger.info("#### Run test 29 : {}", sql);
+		logger.info("#### Run test 31 : {}", sql);
 		JSONObject json = new JSONObject();
 		json.put("sql", sql);
 
@@ -973,5 +974,113 @@ class SwitchApplicationTests{
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.sqlserver").value("SELECT * FROM [TEST_TABLE] WHERE [NAME] = '王五'"));
 	}
 	
+	/**
+	 * 【创建视图】用例三十二：create or replace view public.v_xxxx as select xgh,name,sex from test_table where shenfen='student'
+	 * 说明：创建或修改该视图
+	 * @throws Exception
+	 */
+	@Test
+	void standard_ddl_create_or_replace_view_32() throws Exception {
+		String sql = "create or replace view public.v_xxxx as select xgh,name,sex from test_table where shenfen='student'";
+		logger.info("#### Run test 32 : {}", sql);
+		JSONObject json = new JSONObject();
+		json.put("sql", sql);
+
+		MockHttpSession session = new MockHttpSession();
+		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
+		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/standard/ddl")
+				.accept(MediaType.APPLICATION_JSON_VALUE)
+				.content(json.toJSONString().getBytes())
+				.session(session));
+
+		action.andExpect(MockMvcResultMatchers.status().isOk());
+		action.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
+		action.andExpect(MockMvcResultMatchers.jsonPath("$.errmsg").value("success"));
+		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.oracle").value("CREATE OR REPLACE VIEW \"PUBLIC\".\"V_XXXX\" AS SELECT \"XGH\", \"NAME\", \"SEX\" FROM \"TEST_TABLE\" WHERE \"SHENFEN\" = 'student'"));
+		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.postgresql").value("CREATE OR REPLACE VIEW \"PUBLIC\".\"V_XXXX\" AS SELECT \"XGH\", \"NAME\", \"SEX\" FROM \"TEST_TABLE\" WHERE \"SHENFEN\" = 'student'"));
+		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.mysql").value("CREATE OR REPLACE VIEW `PUBLIC`.`V_XXXX` AS SELECT `XGH`, `NAME`, `SEX` FROM `TEST_TABLE` WHERE `SHENFEN` = 'student'"));
+		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.sqlserver").value("CREATE OR REPLACE VIEW [PUBLIC].[V_XXXX] AS SELECT [XGH], [NAME], [SEX] FROM [TEST_TABLE] WHERE [SHENFEN] = 'student'"));
+	}
 	
+	/**
+	 * 【删除表】用例三十三：drop table public.t_test
+	 * @throws Exception
+	 */
+	@Test
+	void standard_dml_drop_table_33() throws Exception {
+		String sql = "drop table public.t_test";
+		logger.info("#### Run test 33 : {}", sql);
+		JSONObject json = new JSONObject();
+		json.put("sql", sql);
+
+		MockHttpSession session = new MockHttpSession();
+		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
+		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/standard/ddl")
+				.accept(MediaType.APPLICATION_JSON_VALUE)
+				.content(json.toJSONString().getBytes())
+				.session(session));
+
+		action.andExpect(MockMvcResultMatchers.status().isOk());
+		action.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
+		action.andExpect(MockMvcResultMatchers.jsonPath("$.errmsg").value("success"));
+		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.oracle").value("DROP TABLE \"PUBLIC\".\"T_TEST\""));
+		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.postgresql").value("DROP TABLE \"PUBLIC\".\"T_TEST\""));
+		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.mysql").value("DROP TABLE `PUBLIC`.`T_TEST`"));
+		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.sqlserver").value("DROP TABLE [PUBLIC].[T_TEST]"));
+	}
+	
+	/**
+	 * 【删除视图】用例三十四：drop view public.v_test
+	 * @throws Exception
+	 */
+	@Test
+	void standard_ddl_drop_view_34() throws Exception {
+		String sql = "drop view public.v_test";
+		logger.info("#### Run test 34 : {}", sql);
+		JSONObject json = new JSONObject();
+		json.put("sql", sql);
+
+		MockHttpSession session = new MockHttpSession();
+		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
+		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/standard/ddl")
+				.accept(MediaType.APPLICATION_JSON_VALUE)
+				.content(json.toJSONString().getBytes())
+				.session(session));
+
+		action.andExpect(MockMvcResultMatchers.status().isOk());
+		action.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
+		action.andExpect(MockMvcResultMatchers.jsonPath("$.errmsg").value("success"));
+		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.oracle").value("DROP VIEW \"PUBLIC\".\"V_TEST\""));
+		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.postgresql").value("DROP VIEW \"PUBLIC\".\"V_TEST\""));
+		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.mysql").value("DROP VIEW `PUBLIC`.`V_TEST`"));
+		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.sqlserver").value("DROP VIEW [PUBLIC].[V_TEST]"));
+	}
+	
+
+	/**
+	 * 【删除视图】用例三十五：create table private.t_table_test as select * from public.t_other_table
+	 * @throws Exception
+	 */
+	@Test
+	void standard_ddl_create_table_as_select_35() throws Exception {
+		String sql = "create table private.t_table_test as select * from public.t_other_table";
+		logger.info("#### Run test 35 : {}", sql);
+		JSONObject json = new JSONObject();
+		json.put("sql", sql);
+
+		MockHttpSession session = new MockHttpSession();
+		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
+		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/standard/ddl")
+				.accept(MediaType.APPLICATION_JSON_VALUE)
+				.content(json.toJSONString().getBytes())
+				.session(session));
+
+		action.andExpect(MockMvcResultMatchers.status().isOk());
+		action.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
+		action.andExpect(MockMvcResultMatchers.jsonPath("$.errmsg").value("success"));
+		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.oracle").value("CREATE TABLE \"PRIVATE\".\"T_TABLE_TEST\" AS SELECT * FROM \"PUBLIC\".\"T_OTHER_TABLE\""));
+		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.postgresql").value("CREATE TABLE \"PRIVATE\".\"T_TABLE_TEST\" AS SELECT * FROM \"PUBLIC\".\"T_OTHER_TABLE\""));
+		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.mysql").value("CREATE TABLE `PRIVATE`.`T_TABLE_TEST` AS SELECT * FROM `PUBLIC`.`T_OTHER_TABLE`"));
+		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.sqlserver").value("CREATE TABLE [PRIVATE].[T_TABLE_TEST] AS SELECT * FROM [PUBLIC].[T_OTHER_TABLE]"));
+	}
 }

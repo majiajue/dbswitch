@@ -99,6 +99,30 @@
 		</dependency>
 
 		<dependency>
+			<groupId>com.microsoft.sqlserver</groupId>
+			<artifactId>msbase</artifactId>
+			<version>3.0</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/lib/msbase.jar</systemPath>
+		</dependency>
+
+		<dependency>
+			<groupId>com.microsoft.sqlserver</groupId>
+			<artifactId>msutil</artifactId>
+			<version>3.0</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/lib/msutil.jar</systemPath>
+		</dependency>
+
+		<dependency>
+			<groupId>com.microsoft.sqlserver</groupId>
+			<artifactId>mssqlserver</artifactId>
+			<version>3.0</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/lib/mssqlserver.jar</systemPath>
+		</dependency>
+
+		<dependency>
 			<groupId>com.pivotal</groupId>
 			<artifactId>greenplum-jdbc</artifactId>
 			<version>5.1.4</version>

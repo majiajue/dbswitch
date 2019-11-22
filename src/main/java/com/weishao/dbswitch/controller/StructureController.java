@@ -1,6 +1,7 @@
 package com.weishao.dbswitch.controller;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,7 +21,6 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @Api(tags = { "表结构抽取转换接口" })
@@ -33,14 +33,14 @@ public class StructureController extends BaseController {
 	private IMigrationService migrationService;
 	
 	@RequestMapping(value = "/models_list", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-	@ResponseBody
 	@ApiOperation(value = "查询所有的模式(model/schema)", notes = "获取数据库中所有的模式(model/schema),，请求的示例包体格式为：\n"
 			+ "{\r\n" + 
 			"\"type\":\"oracle\",\r\n" + 
 			"\"host\":\"172.16.90.252\",\r\n" + 
 			"\"port\":1521,\r\n" + 
+			"\"mode\":\"sid\",\r\n" + 
 			"\"user\":\"yi_bo\",\r\n" + 
-			"\"passwd\":\"yi_bo\",\r\n" + 
+			"\"passwd\":\"tangyibo\",\r\n" + 
 			"\"dbname\":\"orcl\",\r\n" + 
 			"\"charset\":\"utf-8\"\r\n" + 
 			"}")
@@ -50,8 +50,9 @@ public class StructureController extends BaseController {
 		"type":"oracle",
 		"host":"172.16.90.252",
 		"port":1521,
+		"mode":"sid",
 		"user":"yi_bo",
-		"passwd":"yi_bo",
+		"passwd":"tangyibo",
 		"dbname":"orcl",
 		"charset":"utf-8"
 		}
@@ -61,6 +62,7 @@ public class StructureController extends BaseController {
 		String type=object.getString("type");
 		String host=object.getString("host");
 		Integer port=object.getInteger("port");
+		String mode=object.getString("mode");
 		String user=object.getString("user");
 		String passwd=object.getString("passwd");
 		String dbname=object.getString("dbname");
@@ -68,24 +70,24 @@ public class StructureController extends BaseController {
 		
 		if (Strings.isNullOrEmpty(type) || Strings.isNullOrEmpty(host) || Strings.isNullOrEmpty(user)
 				|| Strings.isNullOrEmpty(passwd) || Strings.isNullOrEmpty(dbname) || Strings.isNullOrEmpty(charset)
-				|| 0 == port) {
+				|| Objects.isNull(port)) {
 			throw new RuntimeException("Invalid input parameter");
 		}
-		
-		DatabaseDescription databaseDesc=new DatabaseDescription(type, host, port, dbname, charset, user, passwd);
+
+		DatabaseDescription databaseDesc = new DatabaseDescription(type, host, port, mode, dbname, charset, user,passwd);
 		migrationService.setDatabaseConnection(databaseDesc);
 		return success(migrationService.querySchemaList());
 	}
 	
 	@RequestMapping(value = "/tables_list", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-	@ResponseBody
 	@ApiOperation(value = "查询指定模式下的所有表(table/view)", notes = "获取数据库中所有的表(物理表及视图)，请求的示例包体格式为：\n"
 			+ "{\r\n" + 
 			"\"type\":\"oracle\",\r\n" + 
 			"\"host\":\"172.16.90.158\",\r\n" + 
 			"\"port\":1521,\r\n" + 
-			"\"user\":\"tangyibo\",\r\n" + 
-			"\"passwd\":\"tangyibo\",\r\n" + 
+			"\"mode\":\"sid\",\r\n" + 
+			"\"user\":\"hqtest\",\r\n" + 
+			"\"passwd\":\"123456\",\r\n" + 
 			"\"dbname\":\"orcl\",\r\n" + 
 			"\"model\":\"ODI\",\r\n" + 
 			"\"charset\":\"utf-8\"\r\n" + 
@@ -93,21 +95,23 @@ public class StructureController extends BaseController {
 	/*
 	 * 参数的JSON格式：
 		{
-		"type":"oracle",
-		"host":"172.16.90.158",
-		"port":1521,
-		"user":"tangyibo",
-		"passwd":"tangyibo",
-		"dbname":"orcl",
-		"model":"ODI",
-		"charset":"utf-8"
+			"type":"oracle",
+			"host":"172.16.90.158",
+			"port":1521,
+			"mode":"sid",
+			"user":"hqtest",
+			"passwd":"123456",
+			"dbname":"orcl",
+			"model":"ODI",
+			"charset":"utf-8"
 		}
 	 */
-	public Map<String, Object> queryDatabaseTables(@RequestBody String body) {
+	public Map<String, Object> queryDatabaseTableList(@RequestBody String body) {
 		JSONObject object = JSON.parseObject(body);
 		String type=object.getString("type");
 		String host=object.getString("host");
 		Integer port=object.getInteger("port");
+		String mode=object.getString("mode");
 		String user=object.getString("user");
 		String passwd=object.getString("passwd");
 		String dbname=object.getString("dbname");
@@ -116,11 +120,11 @@ public class StructureController extends BaseController {
 		
 		if (Strings.isNullOrEmpty(type) || Strings.isNullOrEmpty(host) || Strings.isNullOrEmpty(user)
 				|| Strings.isNullOrEmpty(passwd) || Strings.isNullOrEmpty(dbname) || Strings.isNullOrEmpty(charset)
-				|| Strings.isNullOrEmpty(model) || 0 == port) {
+				|| Strings.isNullOrEmpty(model) || Objects.isNull(port)) {
 			throw new RuntimeException("Invalid input parameter");
 		}
 		
-		DatabaseDescription databaseDesc=new DatabaseDescription(type, host, port, dbname, charset, user, passwd);
+		DatabaseDescription databaseDesc=new DatabaseDescription(type, host, port, mode, dbname, charset, user, passwd);
 		migrationService.setDatabaseConnection(databaseDesc);
 		List<TableDescription> tables=migrationService.queryTableList(model);
 		List<Map<String,String>> ret=new ArrayList<Map<String,String>>();
@@ -136,14 +140,14 @@ public class StructureController extends BaseController {
 	}
 	
 	@RequestMapping(value = "/table_info", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-	@ResponseBody
 	@ApiOperation(value = "查询指定表的元信息", notes = "查询指定表的详细元信息，请求的示例包体格式为：\n"
 			+ "		{\r\n" + 
 			"		    \"type\":\"oracle\",  \r\n" + 
 			"		    \"host\":\"172.16.90.252\",\r\n" + 
 			"		    \"port\":1521,\r\n" + 
+			"          \"mode\":\"sid\",\r\n" + 
 			"		    \"user\":\"yi_bo\",\r\n" + 
-			"		    \"passwd\":\"yi_bo\",\r\n" + 
+			"		    \"passwd\":\"tangyibo\",\r\n" + 
 			"		    \"dbname\":\"orcl\",\r\n" + 
 			"		    \"model\":\"YI_BO\",\r\n" + 
 			"		    \"charset\":\"utf-8\",\r\n" + 
@@ -155,6 +159,7 @@ public class StructureController extends BaseController {
 		    "type":"oracle",  
 		    "host":"172.16.90.252",
 		    "port":1521,
+			"mode":"sid",
 		    "user":"yi_bo",
 		    "passwd":"yi_bo",
 		    "dbname":"orcl",
@@ -165,29 +170,32 @@ public class StructureController extends BaseController {
 	 */
 	public Map<String, Object> queryDatabaseTableInfo(@RequestBody String body) {
 		JSONObject object = JSON.parseObject(body);
-		String type=object.getString("type");
-		String host=object.getString("host");
-		Integer port=object.getInteger("port");
-		String user=object.getString("user");
-		String passwd=object.getString("passwd");
-		String dbname=object.getString("dbname");
-		String charset=object.getString("charset");
-		String model=object.getString("model");
-		String src_table=object.getString("src_table");
-		
+		String type = object.getString("type");
+		String host = object.getString("host");
+		Integer port = object.getInteger("port");
+		String mode = object.getString("mode");
+		String user = object.getString("user");
+		String passwd = object.getString("passwd");
+		String dbname = object.getString("dbname");
+		String charset = object.getString("charset");
+		String model = object.getString("model");
+		String src_table = object.getString("src_table");
+
 		if (Strings.isNullOrEmpty(type) || Strings.isNullOrEmpty(host) || Strings.isNullOrEmpty(user)
 				|| Strings.isNullOrEmpty(passwd) || Strings.isNullOrEmpty(dbname) || Strings.isNullOrEmpty(charset)
-				|| Strings.isNullOrEmpty(model) || Strings.isNullOrEmpty(src_table) || 0 == port) {
+				|| Strings.isNullOrEmpty(model) || Strings.isNullOrEmpty(src_table) || Objects.isNull(port)) {
 			throw new RuntimeException("Invalid input parameter");
 		}
-		
-		DatabaseDescription databaseDesc=new DatabaseDescription(type, host, port, dbname, charset, user, passwd);
+
+		Map<String, Object> ret = new HashMap<String, Object>();
+
+		DatabaseDescription databaseDesc = new DatabaseDescription(type, host, port, mode, dbname, charset, user, passwd);
 		migrationService.setDatabaseConnection(databaseDesc);
-		List<ColumnDescription> columnDescs=migrationService.queryTableColumnMeta(model, src_table);
-		List<String> primaryKeys=migrationService.queryTablePrimaryKeys(model, src_table);
-		List<Map<String,Object>> columns=new ArrayList<Map<String,Object>>();
-		for(ColumnDescription col : columnDescs) {
-			Map<String,Object> one=new HashMap<String,Object>();
+		List<ColumnDescription> columnDescs = migrationService.queryTableColumnMeta(model, src_table);
+		List<String> primaryKeys = migrationService.queryTablePrimaryKeys(model, src_table);
+		List<Map<String, Object>> columns = new ArrayList<Map<String, Object>>();
+		for (ColumnDescription col : columnDescs) {
+			Map<String, Object> one = new HashMap<String, Object>();
 			one.put("name", col.getFieldName());
 			one.put("type", col.getFieldTypeName());
 			one.put("class_type", col.getFiledTypeClassName());
@@ -196,28 +204,37 @@ public class StructureController extends BaseController {
 			one.put("scale", col.getScaleSize());
 			one.put("nullable", col.isNullable());
 			one.put("remarks", col.getRemarks());
-			
+
 			columns.add(one);
 		}
-		
-		Map<String, Object> ret = new HashMap<String, Object>();
+
 		ret.put("primary_key", primaryKeys);
 		ret.put("columns", columns);
+
+		List<TableDescription> tables = migrationService.queryTableList(model);
+		for (TableDescription td : tables) {
+			if (src_table.equals(td.getTableName())) {
+				Map<String, String> item = new HashMap<String, String>();
+				item.put("table_name", td.getTableName());
+				item.put("table_type", td.getTableType());
+				item.put("remarks", td.getRemarks());
+				ret.put("metadata", item);
+			}
+		}
+
 		return success(ret);
 	}
 
-
 	@RequestMapping(value = "/sql_info", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-	@ResponseBody
 	@ApiOperation(value = "查询指定SQL的元信息", notes = "查询指定SQL的详细元信息，请求的示例包体格式为：\n"
 			+ "		{\r\n" + 
 			"		    \"type\":\"oracle\",  \r\n" + 
 			"		    \"host\":\"172.16.90.252\",\r\n" + 
 			"		    \"port\":1521,\r\n" + 
+			"          \"mode\":\"sid\",\r\n" + 
 			"		    \"user\":\"yi_bo\",\r\n" + 
-			"		    \"passwd\":\"yi_bo\",\r\n" + 
+			"		    \"passwd\":\"tangyibo\",\r\n" + 
 			"		    \"dbname\":\"orcl\",\r\n" + 
-			"		    \"model\":\"YI_BO\",\r\n" + 
 			"		    \"charset\":\"utf-8\",\r\n" + 
 			"		    \"querysql\":\"SELECT * FROM YI_BO.C_SEX\"\r\n" + 
 			"		}")
@@ -227,10 +244,10 @@ public class StructureController extends BaseController {
 		    "type":"oracle",  
 		    "host":"172.16.90.252",
 		    "port":1521,
+			"mode":"sid",
 		    "user":"yi_bo",
 		    "passwd":"yi_bo",
 		    "dbname":"orcl",
-		    "model":"YI_BO",
 		    "charset":"utf-8",
 		    "querysql":"SELECT * FROM YI_BO.C_SEX",
 		}
@@ -241,6 +258,7 @@ public class StructureController extends BaseController {
 		String host=object.getString("host");
 		Integer port=object.getInteger("port");
 		String user=object.getString("user");
+		String mode=object.getString("mode");
 		String passwd=object.getString("passwd");
 		String dbname=object.getString("dbname");
 		String charset=object.getString("charset");
@@ -248,11 +266,11 @@ public class StructureController extends BaseController {
 		
 		if (Strings.isNullOrEmpty(type) || Strings.isNullOrEmpty(host) || Strings.isNullOrEmpty(user)
 				|| Strings.isNullOrEmpty(passwd) || Strings.isNullOrEmpty(dbname) || Strings.isNullOrEmpty(charset)
-				||  Strings.isNullOrEmpty(querysql) || 0 == port) {
+				||  Strings.isNullOrEmpty(querysql) || Objects.isNull(port)) {
 			throw new RuntimeException("Invalid input parameter");
 		}
 		
-		DatabaseDescription databaseDesc=new DatabaseDescription(type, host, port, dbname, charset, user, passwd);
+		DatabaseDescription databaseDesc=new DatabaseDescription(type, host, port, mode, dbname, charset, user, passwd);
 		migrationService.setDatabaseConnection(databaseDesc);
 		List<ColumnDescription> columnDescs=migrationService.querySqlColumnMeta(querysql);
 		List<Map<String,Object>> columns=new ArrayList<Map<String,Object>>();
@@ -276,14 +294,14 @@ public class StructureController extends BaseController {
 	}
 	
 	@RequestMapping(value = "/table_sql", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-	@ResponseBody
 	@ApiOperation(value = "查询指定表结构转换的建表SQL语句", notes = "查询指定表结构转换的建表SQL语句，请求的示例包体格式为：\n"
 			+ "		{\r\n" + 
 			"		    \"type\":\"oracle\",  \r\n" + 
 			"		    \"host\":\"172.16.90.252\",\r\n" + 
 			"		    \"port\":1521,\r\n" + 
+			"          \"mode\":\"sid\",\r\n" + 
 			"		    \"user\":\"yi_bo\",\r\n" + 
-			"		    \"passwd\":\"yi_bo\",\r\n" + 
+			"		    \"passwd\":\"tangyibo\",\r\n" + 
 			"		    \"dbname\":\"orcl\",\r\n" + 
 			"		    \"charset\":\"utf-8\",\r\n" + 
 			"		    \"src_model\":\"YI_BO\",\r\n" + 
@@ -298,6 +316,7 @@ public class StructureController extends BaseController {
 		    "type":"oracle",  
 		    "host":"172.16.90.252",
 		    "port":1521,
+			"mode":"sid",
 		    "user":"yi_bo",
 		    "passwd":"yi_bo",
 		    "dbname":"orcl",
@@ -315,6 +334,7 @@ public class StructureController extends BaseController {
 		String host=object.getString("host");
 		Integer port=object.getInteger("port");
 		String user=object.getString("user");
+		String mode=object.getString("mode");
 		String passwd=object.getString("passwd");
 		String dbname=object.getString("dbname");
 		String charset=object.getString("charset");
@@ -326,34 +346,63 @@ public class StructureController extends BaseController {
 		
 		if (Strings.isNullOrEmpty(type) || Strings.isNullOrEmpty(host) || Strings.isNullOrEmpty(user)
 				|| Strings.isNullOrEmpty(passwd) || Strings.isNullOrEmpty(dbname) || Strings.isNullOrEmpty(charset)
-				|| Strings.isNullOrEmpty(src_model) || Strings.isNullOrEmpty(src_table) || 0 == port
-				|| Strings.isNullOrEmpty(dest_model) || Strings.isNullOrEmpty(dest_table)) {
+				|| Strings.isNullOrEmpty(src_model) || Strings.isNullOrEmpty(src_table) || Objects.isNull(port)
+				|| Strings.isNullOrEmpty(dest_model) || Strings.isNullOrEmpty(dest_table) ||Strings.isNullOrEmpty(target)) {
 			throw new RuntimeException("Invalid input parameter");
 		}
 		
-		DatabaseDescription databaseDesc=new DatabaseDescription(type, host, port, dbname, charset, user, passwd);
+		DatabaseDescription databaseDesc=new DatabaseDescription(type, host, port, mode, dbname, charset, user, passwd);
+		DatabaseType taregetDabaseType=DatabaseType.valueOf(target.toUpperCase());
 		migrationService.setDatabaseConnection(databaseDesc);
+		
 		List<ColumnDescription> columnDescs=migrationService.queryTableColumnMeta(src_model, src_table);
 		List<String> primaryKeys=migrationService.queryTablePrimaryKeys(src_model, src_table);
+		String sql=migrationService.getDDLCreateTableSQL(taregetDabaseType, columnDescs, primaryKeys, dest_model, dest_table, false);
 		
-		DatabaseType taregetDabaseType=DatabaseType.valueOf(target.toUpperCase());
-		String sql=migrationService.getDDLCreateTableSQL(taregetDabaseType, columnDescs, primaryKeys, dest_model, dest_table, true);
 		Map<String, Object> ret = new HashMap<String, Object>();
+		
+		List<Map<String, Object>> columns = new ArrayList<Map<String, Object>>();
+		for (ColumnDescription col : columnDescs) {
+			Map<String, Object> one = new HashMap<String, Object>();
+			one.put("name", col.getFieldName());
+			one.put("type", col.getFieldTypeName());
+			one.put("class_type", col.getFiledTypeClassName());
+			one.put("display_size", col.getDisplaySize());
+			one.put("precision", col.getPrecisionSize());
+			one.put("scale", col.getScaleSize());
+			one.put("nullable", col.isNullable());
+			one.put("remarks", col.getRemarks());
+
+			columns.add(one);
+		}
+
 		ret.put("create_sql", sql);
+		ret.put("primary_key", primaryKeys);
+		ret.put("columns", columns);
+
+		List<TableDescription> tables = migrationService.queryTableList(src_model);
+		for (TableDescription td : tables) {
+			if (src_table.equals(td.getTableName())) {
+				Map<String, String> item = new HashMap<String, String>();
+				item.put("table_name", td.getTableName());
+				item.put("table_type", td.getTableType());
+				item.put("remarks", td.getRemarks());
+				ret.put("metadata", item);
+			}
+		}
+
 		return success(ret);
 	}
 	
-	
-	
 	@RequestMapping(value = "/sql_test", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-	@ResponseBody
 	@ApiOperation(value = "测试指定数据库中sql有效性", notes = "测试指定数据库中sql有效性，请求的示例包体格式为：\n"
 			+ " {\r\n" + 
 			"    \"type\":\"oracle\",\r\n" + 
 			"    \"host\":\"172.16.90.252\",\r\n" + 
 			"    \"port\":1521,\r\n" + 
+			"    \"mode\":\"sid\",\r\n" + 
 			"    \"user\":\"yi_bo\",\r\n" + 
-			"    \"passwd\":\"yi_bo\",\r\n" + 
+			"    \"passwd\":\"tangyibo\",\r\n" + 
 			"    \"dbname\":\"orcl\",\r\n" + 
 			"    \"querysql\":\"select * from CJB\",\r\n" + 
 			"    \"charset\":\"utf-8\"\r\n" + 
@@ -365,6 +414,7 @@ public class StructureController extends BaseController {
 		    "type":"oracle",
 		    "host":"172.16.90.252",
 		    "port":1521,
+			"mode":"sid",
 		    "user":"yi_bo",
 		    "passwd":"yi_bo",
 		    "dbname":"orcl",
@@ -377,6 +427,7 @@ public class StructureController extends BaseController {
 		String type=object.getString("type");
 		String host=object.getString("host");
 		Integer port=object.getInteger("port");
+		String mode=object.getString("mode");
 		String user=object.getString("user");
 		String passwd=object.getString("passwd");
 		String dbname=object.getString("dbname");
@@ -385,11 +436,11 @@ public class StructureController extends BaseController {
 		
 		if (Strings.isNullOrEmpty(type) || Strings.isNullOrEmpty(host) || Strings.isNullOrEmpty(user)
 				|| Strings.isNullOrEmpty(passwd) || Strings.isNullOrEmpty(dbname) || Strings.isNullOrEmpty(charset)
-				|| Strings.isNullOrEmpty(querysql) || 0 == port) {
+				|| Strings.isNullOrEmpty(querysql) || Objects.isNull(port)) {
 			throw new RuntimeException("Invalid input parameter");
 		}
 		
-		DatabaseDescription databaseDesc=new DatabaseDescription(type, host, port, dbname, charset, user, passwd);
+		DatabaseDescription databaseDesc=new DatabaseDescription(type, host, port, mode, dbname, charset, user, passwd);
 		migrationService.setDatabaseConnection(databaseDesc);
 		migrationService.testQuerySQL(querysql);
 		return success(null);

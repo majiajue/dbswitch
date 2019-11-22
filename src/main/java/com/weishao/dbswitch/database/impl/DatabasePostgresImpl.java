@@ -5,6 +5,7 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.weishao.dbswitch.constant.Const;
 import com.weishao.dbswitch.constant.DatabaseType;
 import com.weishao.dbswitch.database.AbstractDatabase;
+import com.weishao.dbswitch.database.IDatabaseInterface;
 import com.weishao.dbswitch.model.ColumnDescription;
 import com.weishao.dbswitch.model.ColumnMetaData;
 
@@ -14,7 +15,7 @@ import com.weishao.dbswitch.model.ColumnMetaData;
  * @author tang
  *
  */
-public class DatabasePostgresImpl extends AbstractDatabase {
+public class DatabasePostgresImpl extends AbstractDatabase implements IDatabaseInterface {
 
 	public DatabasePostgresImpl() {
 		super("org.postgresql.Driver");

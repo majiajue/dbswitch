@@ -2,7 +2,7 @@ package com.weishao.dbswitch.service.impl;
 
 import java.util.List;
 import com.weishao.dbswitch.constant.Const;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import com.weishao.dbswitch.constant.DatabaseType;
 import com.weishao.dbswitch.database.AbstractDatabase;
 import com.weishao.dbswitch.database.DatabaseFactory;
@@ -20,7 +20,7 @@ import com.weishao.dbswitch.util.JdbcUrlUtil;
  * @author tang
  *
  */
-@Component("MigrationConvertService")
+@Service("MigrationConvertService")
 public class MigrationConvertServiceImpl implements IMigrationService {
 
 	private static int connectTimeOut=6;
