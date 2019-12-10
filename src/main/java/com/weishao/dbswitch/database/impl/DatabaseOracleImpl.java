@@ -104,11 +104,7 @@ public class DatabaseOracleImpl extends AbstractDatabase implements IDatabaseInt
 	    int type = v.getType();
 	    switch ( type ) {
 	      case ColumnMetaData.TYPE_TIMESTAMP:
-	        //if ( supportsTimestampDataType() ) {
 	          retval.append( "TIMESTAMP" );
-	        //} else {
-	        //  retval.append( "DATE" );
-	        //}
 	        break;
 	      case ColumnMetaData.TYPE_DATE:
 	        retval.append( "DATE" );
@@ -155,7 +151,7 @@ public class DatabaseOracleImpl extends AbstractDatabase implements IDatabaseInt
 	        retval.append( "BLOB" );
 	        break;
 	      default:
-	        retval.append( " UNKNOWN" );
+	        retval.append( " CLOB" );
 	        break;
 	    }
 

@@ -188,7 +188,7 @@ public class DatabaseSqlserverImpl extends AbstractDatabase implements IDatabase
 			retval += "VARBINARY(MAX)";
 			break;
 		default:
-			retval += " UNKNOWN";
+			retval += " TEXT";
 			break;
 		}
 

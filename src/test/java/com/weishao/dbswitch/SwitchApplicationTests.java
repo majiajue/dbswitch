@@ -72,7 +72,7 @@ class SwitchApplicationTests{
 
 		MockHttpSession session = new MockHttpSession();
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
-		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/standard/dml")
+		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/debug/standard/dml")
 				.accept(MediaType.APPLICATION_JSON_VALUE)
 				.content(json.toJSONString().getBytes())
 				.session(session));
@@ -103,7 +103,7 @@ class SwitchApplicationTests{
 
 		MockHttpSession session = new MockHttpSession();
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
-		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/standard/dml")
+		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/debug/standard/dml")
 				.accept(MediaType.APPLICATION_JSON_VALUE)
 				.content(json.toJSONString().getBytes())
 				.session(session));
@@ -132,7 +132,7 @@ class SwitchApplicationTests{
 
 		MockHttpSession session = new MockHttpSession();
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
-		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/standard/dml")
+		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/debug/standard/dml")
 				.accept(MediaType.APPLICATION_JSON_VALUE)
 				.content(json.toJSONString().getBytes())
 				.session(session));
@@ -161,7 +161,7 @@ class SwitchApplicationTests{
 
 		MockHttpSession session = new MockHttpSession();
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
-		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/standard/dml")
+		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/debug/standard/dml")
 				.accept(MediaType.APPLICATION_JSON_VALUE)
 				.content(json.toJSONString().getBytes())
 				.session(session));
@@ -190,7 +190,7 @@ class SwitchApplicationTests{
 
 		MockHttpSession session = new MockHttpSession();
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
-		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/standard/dml")
+		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/debug/standard/dml")
 				.accept(MediaType.APPLICATION_JSON_VALUE)
 				.content(json.toJSONString().getBytes())
 				.session(session));
@@ -219,7 +219,7 @@ class SwitchApplicationTests{
 
 		MockHttpSession session = new MockHttpSession();
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
-		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/standard/dml")
+		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/debug/standard/dml")
 				.accept(MediaType.APPLICATION_JSON_VALUE)
 				.content(json.toJSONString().getBytes())
 				.session(session));
@@ -248,7 +248,7 @@ class SwitchApplicationTests{
 
 		MockHttpSession session = new MockHttpSession();
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
-		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/standard/dml")
+		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/debug/standard/dml")
 				.accept(MediaType.APPLICATION_JSON_VALUE)
 				.content(json.toJSONString().getBytes())
 				.session(session));
@@ -277,7 +277,7 @@ class SwitchApplicationTests{
 
 		MockHttpSession session = new MockHttpSession();
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
-		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/standard/dml")
+		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/debug/standard/dml")
 				.accept(MediaType.APPLICATION_JSON_VALUE)
 				.content(json.toJSONString().getBytes())
 				.session(session));
@@ -306,7 +306,7 @@ class SwitchApplicationTests{
 
 		MockHttpSession session = new MockHttpSession();
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
-		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/standard/dml")
+		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/debug/standard/dml")
 				.accept(MediaType.APPLICATION_JSON_VALUE)
 				.content(json.toJSONString().getBytes())
 				.session(session));
@@ -335,7 +335,7 @@ class SwitchApplicationTests{
 
 		MockHttpSession session = new MockHttpSession();
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
-		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/standard/dml")
+		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/debug/standard/dml")
 				.accept(MediaType.APPLICATION_JSON_VALUE)
 				.content(json.toJSONString().getBytes())
 				.session(session));
@@ -364,7 +364,7 @@ class SwitchApplicationTests{
 
 		MockHttpSession session = new MockHttpSession();
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
-		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/standard/dml")
+		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/debug/standard/dml")
 				.accept(MediaType.APPLICATION_JSON_VALUE)
 				.content(json.toJSONString().getBytes())
 				.session(session));
@@ -393,7 +393,7 @@ class SwitchApplicationTests{
 
 		MockHttpSession session = new MockHttpSession();
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
-		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/standard/dml")
+		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/debug/standard/dml")
 				.accept(MediaType.APPLICATION_JSON_VALUE)
 				.content(json.toJSONString().getBytes())
 				.session(session));
@@ -422,7 +422,7 @@ class SwitchApplicationTests{
 
 		MockHttpSession session = new MockHttpSession();
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
-		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/standard/dml")
+		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/debug/standard/dml")
 				.accept(MediaType.APPLICATION_JSON_VALUE)
 				.content(json.toJSONString().getBytes())
 				.session(session));
@@ -451,7 +451,7 @@ class SwitchApplicationTests{
 
 		MockHttpSession session = new MockHttpSession();
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
-		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/standard/dml")
+		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/debug/standard/dml")
 				.accept(MediaType.APPLICATION_JSON_VALUE)
 				.content(json.toJSONString().getBytes())
 				.session(session));
@@ -480,7 +480,7 @@ class SwitchApplicationTests{
 
 		MockHttpSession session = new MockHttpSession();
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
-		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/standard/dml")
+		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/debug/standard/dml")
 				.accept(MediaType.APPLICATION_JSON_VALUE)
 				.content(json.toJSONString().getBytes())
 				.session(session));
@@ -509,7 +509,7 @@ class SwitchApplicationTests{
 
 		MockHttpSession session = new MockHttpSession();
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
-		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/standard/dml")
+		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/debug/standard/dml")
 				.accept(MediaType.APPLICATION_JSON_VALUE)
 				.content(json.toJSONString().getBytes())
 				.session(session));
@@ -538,7 +538,7 @@ class SwitchApplicationTests{
 
 		MockHttpSession session = new MockHttpSession();
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
-		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/standard/dml")
+		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/debug/standard/dml")
 				.accept(MediaType.APPLICATION_JSON_VALUE)
 				.content(json.toJSONString().getBytes())
 				.session(session));
@@ -567,7 +567,7 @@ class SwitchApplicationTests{
 
 		MockHttpSession session = new MockHttpSession();
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
-		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/standard/dml")
+		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/debug/standard/dml")
 				.accept(MediaType.APPLICATION_JSON_VALUE)
 				.content(json.toJSONString().getBytes())
 				.session(session));
@@ -596,7 +596,7 @@ class SwitchApplicationTests{
 
 		MockHttpSession session = new MockHttpSession();
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
-		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/standard/dml")
+		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/debug/standard/dml")
 				.accept(MediaType.APPLICATION_JSON_VALUE)
 				.content(json.toJSONString().getBytes())
 				.session(session));
@@ -625,7 +625,7 @@ class SwitchApplicationTests{
 
 		MockHttpSession session = new MockHttpSession();
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
-		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/standard/dml")
+		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/debug/standard/dml")
 				.accept(MediaType.APPLICATION_JSON_VALUE)
 				.content(json.toJSONString().getBytes())
 				.session(session));
@@ -654,7 +654,7 @@ class SwitchApplicationTests{
 
 		MockHttpSession session = new MockHttpSession();
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
-		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/standard/dml")
+		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/debug/standard/dml")
 				.accept(MediaType.APPLICATION_JSON_VALUE)
 				.content(json.toJSONString().getBytes())
 				.session(session));
@@ -683,7 +683,7 @@ class SwitchApplicationTests{
 
 		MockHttpSession session = new MockHttpSession();
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
-		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/standard/dml")
+		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/debug/standard/dml")
 				.accept(MediaType.APPLICATION_JSON_VALUE)
 				.content(json.toJSONString().getBytes())
 				.session(session));
@@ -713,7 +713,7 @@ class SwitchApplicationTests{
 
 		MockHttpSession session = new MockHttpSession();
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
-		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/standard/dml")
+		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/debug/standard/dml")
 				.accept(MediaType.APPLICATION_JSON_VALUE)
 				.content(json.toJSONString().getBytes())
 				.session(session));
@@ -742,7 +742,7 @@ class SwitchApplicationTests{
 
 		MockHttpSession session = new MockHttpSession();
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
-		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/standard/dml")
+		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/debug/standard/dml")
 				.accept(MediaType.APPLICATION_JSON_VALUE)
 				.content(json.toJSONString().getBytes())
 				.session(session));
@@ -771,7 +771,7 @@ class SwitchApplicationTests{
 
 		MockHttpSession session = new MockHttpSession();
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
-		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/standard/dml")
+		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/debug/standard/dml")
 				.accept(MediaType.APPLICATION_JSON_VALUE)
 				.content(json.toJSONString().getBytes())
 				.session(session));
@@ -800,7 +800,7 @@ class SwitchApplicationTests{
 
 		MockHttpSession session = new MockHttpSession();
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
-		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/standard/dml")
+		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/debug/standard/dml")
 				.accept(MediaType.APPLICATION_JSON_VALUE)
 				.content(json.toJSONString().getBytes())
 				.session(session));
@@ -829,7 +829,7 @@ class SwitchApplicationTests{
 
 		MockHttpSession session = new MockHttpSession();
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
-		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/standard/dml")
+		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/debug/standard/dml")
 				.accept(MediaType.APPLICATION_JSON_VALUE)
 				.content(json.toJSONString().getBytes())
 				.session(session));
@@ -859,7 +859,7 @@ class SwitchApplicationTests{
 
 		MockHttpSession session = new MockHttpSession();
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
-		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/standard/dml")
+		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/debug/standard/dml")
 				.accept(MediaType.APPLICATION_JSON_VALUE)
 				.content(json.toJSONString().getBytes())
 				.session(session));
@@ -898,7 +898,7 @@ class SwitchApplicationTests{
 
 		MockHttpSession session = new MockHttpSession();
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
-		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/standard/ddl")
+		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/debug/standard/ddl")
 				.accept(MediaType.APPLICATION_JSON_VALUE)
 				.content(json.toJSONString().getBytes())
 				.session(session));
@@ -931,7 +931,7 @@ class SwitchApplicationTests{
 
 		MockHttpSession session = new MockHttpSession();
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
-		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/standard/ddl")
+		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/debug/standard/ddl")
 				.accept(MediaType.APPLICATION_JSON_VALUE)
 				.content(json.toJSONString().getBytes())
 				.session(session));
@@ -960,7 +960,7 @@ class SwitchApplicationTests{
 
 		MockHttpSession session = new MockHttpSession();
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
-		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/standard/dml")
+		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/debug/standard/dml")
 				.accept(MediaType.APPLICATION_JSON_VALUE)
 				.content(json.toJSONString().getBytes())
 				.session(session));
@@ -988,7 +988,7 @@ class SwitchApplicationTests{
 
 		MockHttpSession session = new MockHttpSession();
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
-		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/standard/ddl")
+		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/debug/standard/ddl")
 				.accept(MediaType.APPLICATION_JSON_VALUE)
 				.content(json.toJSONString().getBytes())
 				.session(session));
@@ -1015,7 +1015,7 @@ class SwitchApplicationTests{
 
 		MockHttpSession session = new MockHttpSession();
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
-		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/standard/ddl")
+		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/debug/standard/ddl")
 				.accept(MediaType.APPLICATION_JSON_VALUE)
 				.content(json.toJSONString().getBytes())
 				.session(session));
@@ -1042,7 +1042,7 @@ class SwitchApplicationTests{
 
 		MockHttpSession session = new MockHttpSession();
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
-		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/standard/ddl")
+		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/debug/standard/ddl")
 				.accept(MediaType.APPLICATION_JSON_VALUE)
 				.content(json.toJSONString().getBytes())
 				.session(session));
@@ -1070,7 +1070,7 @@ class SwitchApplicationTests{
 
 		MockHttpSession session = new MockHttpSession();
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
-		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/standard/ddl")
+		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/debug/standard/ddl")
 				.accept(MediaType.APPLICATION_JSON_VALUE)
 				.content(json.toJSONString().getBytes())
 				.session(session));

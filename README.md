@@ -122,12 +122,14 @@
  
 | 字段名称 | 类型 | 描述 | 备注说明 |
 | :------:| :------: | :------: | :------ |
+| target | string | 目的库类型 | 标准SQL语句,支持mysql/oralce/sqlserver/posgresql/greenplum |
 | sql | string | SQL语句 | 标准DML类SQL语句 |
 
 **Request Example:**
 
 ```
 {
+    "target":"oracle",
     "sql":"select * from TEST_TABLE limit 10 offset 20"
 }
 ```
@@ -138,10 +140,8 @@
 | :------:| :------: | :------: | :------ |
 | errcode | integer | 错误码 | 0为成功，其他为失败 |
 | errmsg | string | 错误信息 | 当errcode=0时，为"ok",否则为错误的详细信息 |
-| data | list | 数据列表 | 返回的数据列表 |
-| oracle | string | Oracle语法的SQL | Oracle语法的SQL |
-| postgresql | string | postgresql语法的SQL | postgresql语法的SQL |
-| mysql | string | mysql语法的SQL | mysql语法的SQL |
+| data | Object | 数据对象 | 返回的数据对象 |
+| sql | string | 指定数据库语法的SQL | 指定数据库语法的SQL |
 
 **Response Example:**
 
@@ -149,11 +149,7 @@
 {
   "errcode": 0,
   "data": {
-    "sql": {
-      "oracle": "SELECT * FROM \"TEST_TABLE\" OFFSET 20 ROWS FETCH NEXT 10 ROWS ONLY",
-      "postgresql": "SELECT * FROM \"TEST_TABLE\" OFFSET 20 ROWS FETCH NEXT 10 ROWS ONLY",
-      "mysql": "SELECT * FROM `TEST_TABLE` LIMIT 10 OFFSET 20"
-    }
+    "sql": "SELECT * FROM \"TEST_TABLE\" OFFSET 20 ROWS FETCH NEXT 10 ROWS ONLY"
   },
   "errmsg": "success"
 }
@@ -189,6 +185,146 @@
  
 | 字段名称 | 类型 | 描述 | 备注说明 |
 | :------:| :------: | :------: | :------ |
+| target | string | 目的库类型 | 标准SQL语句,支持mysql/oralce/sqlserver/posgresql/greenplum |
+| sql | string | SQL语句 | 标准SQL语句 |
+
+**Request Example:**
+
+```
+{
+    "target":"oracle",
+    "sql":"create or replace view v_xxxx as (select xgh,name,sex from test_table where shenfen='student')"
+}
+```
+
+ **Response Format:** JOSN格式
+ 
+| 字段名称 | 类型 | 描述 | 取值范围 |
+| :------:| :------: | :------: | :------ |
+| errcode | integer | 错误码 | 0为成功，其他为失败 |
+| errmsg | string | 错误信息 | 当errcode=0时，为"ok",否则为错误的详细信息 |
+| data | Object | 数据对象 | 返回的数据对象 |
+| sql | string | 指定数据库语法的SQL | 指定数据库语法的SQL |
+
+**Response Example:**
+
+```
+{
+  "errcode": 0,
+  "data": {
+    "sql": "CREATE OR REPLACE VIEW \"V_XXXX\" AS\nSELECT \"XGH\", \"NAME\", \"SEX\"\nFROM \"TEST_TABLE\"\nWHERE \"SHENFEN\" = 'student'",
+  },
+  "errmsg": "success"
+}
+```
+
+**Supported Notice:**
+
+- 用于与数据库的数据类型无关的DDL类SQL转换，如：create view、 create table as select * from table、drop view、drop table等等，但不支持truncate table、alter table等；
+- 因受限于不同数据库的数据类型的差异，这里并不支持特定的建表、改表、清表的SQL语句转换，此部分需要使用**第7部分的接口**来弥补；
+
+### 3、[**调试使用**]标准DML类SQL语句转换
+
+ **URI:** http://host:port/sql/debug/standard/dml
+ 
+ **Request Method:** POST
+ 
+ **Request Format:** JOSN格式
+ 
+| 字段名称 | 类型 | 描述 | 备注说明 |
+| :------:| :------: | :------: | :------ |
+| sql | string | SQL语句 | 标准DML类SQL语句 |
+
+**Request Example:**
+
+```
+{
+    "sql":"select * from TEST_TABLE limit 10 offset 20"
+}
+```
+
+ **Response Format:** JOSN格式
+ 
+| 字段名称 | 类型 | 描述 | 取值范围 |
+| :------:| :------: | :------: | :------ |
+| errcode | integer | 错误码 | 0为成功，其他为失败 |
+| errmsg | string | 错误信息 | 当errcode=0时，为"ok",否则为错误的详细信息 |
+| data | Object | 数据对象 | 返回的数据对象 |
+| oracle | string | Oracle语法的SQL | Oracle语法的SQL |
+| postgresql | string | postgresql语法的SQL | postgresql语法的SQL |
+| mysql | string | mysql语法的SQL | mysql语法的SQL |
+
+**Response Example:**
+
+```
+{
+  "errcode": 0,
+  "data": {
+    "sql": {
+      "oracle": "SELECT * FROM \"TEST_TABLE\" OFFSET 20 ROWS FETCH NEXT 10 ROWS ONLY",
+      "postgresql": "SELECT * FROM \"TEST_TABLE\" OFFSET 20 ROWS FETCH NEXT 10 ROWS ONLY",
+      "mysql": "SELECT * FROM `TEST_TABLE` LIMIT 10 OFFSET 20"
+    }
+  },
+  "errmsg": "success"
+}
+```
+
+### 4、[**调试使用**]指定数据库的DML类SQL语句转换
+
+ **URI:** http://host:port/sql/debug/special/dml
+ 
+ **Request Method:** POST
+ 
+ **Request Format:** JOSN格式
+ 
+| 字段名称 | 类型 | 描述 | 备注说明 |
+| :------:| :------: | :------: | :------ |
+| source | string | 源库类型 | 源库类型,支持mysql/oralce/sqlserver |
+| target | string | 目的库类型 | 标准SQL语句,支持mysql/oralce/sqlserver/posgresql/greenplum |
+| sql | string | SQL语句 | 源库语法的SQL语句 |
+
+**Request Example:**
+
+```
+{
+    "source":"mysql",
+    "target":"oracle",
+    "sql":"select * from `test_table`"
+}
+```
+
+ **Response Format:** JOSN格式
+ 
+| 字段名称 | 类型 | 描述 | 取值范围 |
+| :------:| :------: | :------: | :------ |
+| errcode | integer | 错误码 | 0为成功，其他为失败 |
+| errmsg | string | 错误信息 | 当errcode=0时，为"ok",否则为错误的详细信息 |
+| data | Object | 数据对象 | 返回的数据对象 |
+| sql | string | 对应数据库语法的SQL | 对应数据库语法的SQL |
+
+**Response Example:**
+
+```
+{
+  "errcode": 0,
+  "data": {
+    "sql": "SELECT * FROM \"test_table\""
+  },
+  "errmsg": "success"
+}
+```
+
+### 5、[**调试使用**]标准DDL类SQL语句转换
+
+ **URI:** http://host:port/sql/standard/ddl
+ 
+ **Request Method:** POST
+ 
+ **Request Format:** JOSN格式
+ 
+| 字段名称 | 类型 | 描述 | 备注说明 |
+| :------:| :------: | :------: | :------ |
 | sql | string | SQL语句 | 标准SQL语句 |
 
 **Request Example:**
@@ -205,7 +341,7 @@
 | :------:| :------: | :------: | :------ |
 | errcode | integer | 错误码 | 0为成功，其他为失败 |
 | errmsg | string | 错误信息 | 当errcode=0时，为"ok",否则为错误的详细信息 |
-| data | list | 数据列表 | 返回的数据列表 |
+| data | Object | 数据对象 | 返回的数据对象 |
 | oracle | string | Oracle语法的SQL | Oracle语法的SQL |
 | postgresql | string | postgresql语法的SQL | postgresql语法的SQL |
 | mysql | string | mysql语法的SQL | mysql语法的SQL |
@@ -227,59 +363,9 @@
 }
 ```
 
-**Supported Notice:**
+### 6、[**调试使用**]指定数据库的DDL类SQL语句转换
 
-- 用于与数据库的数据类型无关的DDL类SQL转换，如：create view、 create table as select * from table、drop view、drop table等等，但不支持truncate table、alter table等；
-- 因受限于不同数据库的数据类型的差异，这里并不支持特定的建表、改表、清表的SQL语句转换，此部分需要使用**第7部分的接口**来弥补；
-
-### 3、[**调试使用**]指定数据库的DML类SQL语句转换
-
- **URI:** http://host:port/sql/special/dml
- 
- **Request Method:** POST
- 
- **Request Format:** JOSN格式
- 
-| 字段名称 | 类型 | 描述 | 备注说明 |
-| :------:| :------: | :------: | :------ |
-| source | string | 源库类型 | 源库类型,支持mysql/oralce/sqlserver |
-| target | string | 目的库类型 | 标准SQL语句,支持mysql/oralce/sqlserver/posgresql |
-| sql | string | SQL语句 | 源库语法的SQL语句 |
-
-**Request Example:**
-
-```
-{
-    "source":"mysql",
-    "target":"oracle",
-    "sql":"select * from `test_table`"
-}
-```
-
- **Response Format:** JOSN格式
- 
-| 字段名称 | 类型 | 描述 | 取值范围 |
-| :------:| :------: | :------: | :------ |
-| errcode | integer | 错误码 | 0为成功，其他为失败 |
-| errmsg | string | 错误信息 | 当errcode=0时，为"ok",否则为错误的详细信息 |
-| data | list | 数据列表 | 返回的数据列表 |
-| sql | string | 对应数据库语法的SQL | 对应数据库语法的SQL |
-
-**Response Example:**
-
-```
-{
-  "errcode": 0,
-  "data": {
-    "sql": "SELECT * FROM \"test_table\""
-  },
-  "errmsg": "success"
-}
-```
-
-### 4、[**调试使用**]指定数据库的DDL类SQL语句转换
-
- **URI:** http://host:port/sql/special/ddl
+ **URI:** http://host:port/sql/debug/special/ddl
  
  **Request Method:** POST
  
@@ -307,7 +393,7 @@
 | :------:| :------: | :------: | :------ |
 | errcode | integer | 错误码 | 0为成功，其他为失败 |
 | errmsg | string | 错误信息 | 当errcode=0时，为"ok",否则为错误的详细信息 |
-| data | list | 数据列表 | 返回的数据列表 |
+| data | Object | 数据对象 | 返回的数据对象 |
 | sql | string | 对应数据库语法的SQL | 对应数据库语法的SQL |
 
 **Response Example:**
@@ -348,7 +434,7 @@
 ```
 {
     "type":"oracle",
-    "host":"172.16.90.252",
+    "host":"172.17.207.252",
     "port":1521,
     "mode":"sid",
     "user":"yi_bo",
@@ -404,13 +490,13 @@
 ```
 {
     "type":"oracle",
-    "host":"172.16.90.252",
+    "host":"172.17.207.252",
     "port":1521,
     "mode":"sid",
     "user":"yi_bo",
     "passwd":"tangyibo",
     "dbname":"orcl",
-    "model":"ODI",
+    "model":"YI_BO",
     "charset":"utf-8"
 }
 ```
@@ -421,7 +507,7 @@
 | :------:| :------: | :------: | :------ |
 | errcode | integer | 错误码 | 0为成功，其他为失败 |
 | errmsg | string | 错误信息 | 当errcode=0时，为"ok",否则为错误的详细信息 |
-| data | list | 数据列表 | 返回的列表 |
+| data | list | 数据列表 | 返回的数据列表 |
 | table_name | string | 表名称 | 表或视图的英文名称 |
 | table_type | string | 表类型 | 当表为物理表时标记为table;当表为视图表时标记为view |
 | remarks    | string | 中文描述 | 源库里的表注释描述,可能为null |
@@ -473,7 +559,7 @@
 ```
 {
     "type":"oracle",
-    "host":"172.16.90.252",
+    "host":"172.17.207.252",
     "port":1521,
     "mode":"sid",
     "user":"yi_bo",
@@ -491,7 +577,7 @@
 | :------:| :------: | :------: | :------ |
 | errcode | integer | 错误码 | 0为成功，其他为失败 |
 | errmsg | string | 错误信息 | 当errcode=0时，为"ok",否则为错误的详细信息 |
-| data | Object | 数据列表 | 返回的列表 |
+| data | Object | 数据对象 | 返回的数据对象 |
 | primary_key | list | 表的主键列 | 表的主键字段列表 |
 | columns | list | 表的字段列 | 表的字段列表 |
 | name | string | 字段列名称 | 表的字段列表 |
@@ -584,7 +670,7 @@
 ```
 {
     "type":"oracle",
-    "host":"172.16.90.252",
+    "host":"172.17.207.252",
     "port":1521,
     "mode":"sid",
     "user":"yi_bo",
@@ -601,7 +687,7 @@
 | :------:| :------: | :------: | :------ |
 | errcode | integer | 错误码 | 0为成功，其他为失败 |
 | errmsg | string | 错误信息 | 当errcode=0时，为"ok",否则为错误的详细信息 |
-| data | Object | 数据列表 | 返回的列表 |
+| data | Object | 数据对象 | 返回的数据对象 |
 | columns | list | 表的字段列 | 表的字段列表 |
 | name | string | 字段列名称 | 表的字段列表 |
 | type | string | 字段列类型 | 表的字段列表 |
@@ -684,7 +770,7 @@
 ```
 {
     "type":"oracle",
-    "host":"172.16.90.252",
+    "host":"172.17.207.252",
     "port":1521,
     "mode":"sid",
     "user":"yi_bo",
@@ -705,7 +791,7 @@
 | :------:| :------: | :------: | :------ |
 | errcode | integer | 错误码 | 0为成功，其他为失败 |
 | errmsg | string | 错误信息 | 当errcode=0时，为"ok",否则为错误的详细信息 |
-| data | Object | 数据列表 | 返回的列表 |
+| data | Object | 数据对象 | 返回的数据对象 |
 | create_sql | string | 建表的SQL语句 | 指定数据库语法的建表SQL语句 |
 | primary_key | list | 表的主键列 | 表的主键字段列表 |
 | columns | list | 表的字段列 | 表的字段列表 |
@@ -798,13 +884,13 @@
 ```
 {
     "type":"oracle",
-    "host":"172.16.90.252",
+    "host":"172.17.207.252",
     "port":1521,
     "mode":"sid",
     "user":"yi_bo",
     "passwd":"tangyibo",
     "dbname":"orcl",
-    "querysql":"select * from YI_BO.test",
+    "querysql":"select * from YI_BO.CJB",
     "charset":"utf-8"
 }
 ```
@@ -888,7 +974,7 @@
 | :------:| :------: | :------: | :------ |
 | errcode | integer | 错误码 | 0为成功，其他为失败 |
 | errmsg | string | 错误信息 | 当errcode=0时，为"ok",否则为错误的详细信息 |
-| data | list | 数据列表 | 返回的模式列表 |
+| data | Object | 数据对象 | 返回的数据对象 |
 | sql | string | 返回的SQL语句 | 返回的SQL语句 |
 
 **Response Example:**
@@ -922,8 +1008,8 @@
 | table_name | string | 表名称 | 表名称 |
 | operator | string | 操作类型 | 取值范围请见下表《operator字段的取值说明》 |
 | column_list | list | 列信息 | 数组类型 |
-| field_name | string | 字段英文名称 | 登录的帐号名 |
-| comment | string | 字段注释 | 登录的密码 |
+| field_name | string | 字段英文名称 | 字段英文名称 |
+| comment | string | 字段注释 | 字段注释 |
 | field_type | string | 数据类型 | 不同数据库的数据类型存在差异,,支持的数据类型请见后面的附录一 |
 | length_or_precision | integer | 显示长度 | 显示长度 |
 | scale | integer | 存储精度 | 对于浮点型数据与length_or_precision联合确定存储精度|
@@ -966,7 +1052,7 @@
 | :------:| :------: | :------: | :------ |
 | errcode | integer | 错误码 | 0为成功，其他为失败 |
 | errmsg | string | 错误信息 | 当errcode=0时，为"ok",否则为错误的详细信息 |
-| data | list | 数据列表 | 返回的模式列表 |
+| data | Object | 数据对象 | 返回的数据对象 |
 | sql | string | 返回的SQL语句 | 返回的SQL语句 |
 
 **Response Example:**
@@ -1016,7 +1102,7 @@
 | :------:| :------: | :------: | :------ |
 | errcode | integer | 错误码 | 0为成功，其他为失败 |
 | errmsg | string | 错误信息 | 当errcode=0时，为"ok",否则为错误的详细信息 |
-| data | list | 数据列表 | 返回的模式列表 |
+| data | Object | 数据对象 | 返回的数据对象 |
 | sql | string | 返回的SQL语句 | 返回的SQL语句 |
 
 **Response Example:**
@@ -1061,7 +1147,7 @@
 | :------:| :------: | :------: | :------ |
 | errcode | integer | 错误码 | 0为成功，其他为失败 |
 | errmsg | string | 错误信息 | 当errcode=0时，为"ok",否则为错误的详细信息 |
-| data | list | 数据列表 | 返回的模式列表 |
+| data | Object | 数据对象 | 返回的数据对象 |
 | sql | string | 返回的SQL语句 | 返回的SQL语句 |
 
 **Response Example:**

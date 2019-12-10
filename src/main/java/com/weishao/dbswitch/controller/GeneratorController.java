@@ -176,14 +176,14 @@ public class GeneratorController extends BaseController {
 			cd.setColumnType(item.getString("field_type"));
 			cd.setLengthOrPrecision(item.getInteger("length_or_precision"));
 			cd.setScale(item.getInteger("scale"));
-			if(item.getInteger("primary_key")>0) {
-				//主键须非空
-				cd.setNullable(false);
-				cd.setPrimaryKey(true);
-			}else {
-				cd.setNullable(item.getInteger("nullable")>0);
-				cd.setPrimaryKey(false);
-			}
+			//if(item.getInteger("primary_key")>0) {
+			//	//主键须非空
+			//	cd.setNullable(false);
+			//	cd.setPrimaryKey(true);
+			//}else {
+			cd.setNullable(item.getInteger("nullable")>0);
+			cd.setPrimaryKey(false);
+			//}
 			cd.setDefaultValue(item.getString("default_value"));
 			
 			t.addColumns(cd);

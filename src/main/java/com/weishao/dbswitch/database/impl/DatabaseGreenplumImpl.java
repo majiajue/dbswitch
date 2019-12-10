@@ -63,7 +63,8 @@ public class DatabaseGreenplumImpl extends AbstractDatabase implements IDatabase
 		case ColumnMetaData.TYPE_INTEGER:
 		case ColumnMetaData.TYPE_BIGNUMBER:
 			if (null!=pks && pks.contains(fieldname)) {
-				retval += "BIGSERIAL";
+				//retval += "BIGSERIAL";
+				retval += "BIGINT";
 			} else {
 				if (length > 0) {
 					if (precision > 0 || length > 18) {
@@ -94,7 +95,7 @@ public class DatabaseGreenplumImpl extends AbstractDatabase implements IDatabase
 			}
 			break;
 		default:
-			retval += " UNKNOWN";
+			retval += " TEXT";
 			break;
 		}
 

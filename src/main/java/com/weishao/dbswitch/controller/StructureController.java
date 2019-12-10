@@ -36,7 +36,7 @@ public class StructureController extends BaseController {
 	@ApiOperation(value = "查询所有的模式(model/schema)", notes = "获取数据库中所有的模式(model/schema),，请求的示例包体格式为：\n"
 			+ "{\r\n" + 
 			"\"type\":\"oracle\",\r\n" + 
-			"\"host\":\"172.16.90.252\",\r\n" + 
+			"\"host\":\"172.17.207.252\",\r\n" + 
 			"\"port\":1521,\r\n" + 
 			"\"mode\":\"sid\",\r\n" + 
 			"\"user\":\"yi_bo\",\r\n" + 
@@ -48,7 +48,7 @@ public class StructureController extends BaseController {
 	 * 参数的JSON格式：
 		{
 		"type":"oracle",
-		"host":"172.16.90.252",
+		"host":"172.17.207.252",
 		"port":1521,
 		"mode":"sid",
 		"user":"yi_bo",
@@ -83,7 +83,7 @@ public class StructureController extends BaseController {
 	@ApiOperation(value = "查询指定模式下的所有表(table/view)", notes = "获取数据库中所有的表(物理表及视图)，请求的示例包体格式为：\n"
 			+ "{\r\n" + 
 			"\"type\":\"oracle\",\r\n" + 
-			"\"host\":\"172.16.90.158\",\r\n" + 
+			"\"host\":\"172.17.207.158\",\r\n" + 
 			"\"port\":1521,\r\n" + 
 			"\"mode\":\"sid\",\r\n" + 
 			"\"user\":\"hqtest\",\r\n" + 
@@ -96,7 +96,7 @@ public class StructureController extends BaseController {
 	 * 参数的JSON格式：
 		{
 			"type":"oracle",
-			"host":"172.16.90.158",
+			"host":"172.17.207.158",
 			"port":1521,
 			"mode":"sid",
 			"user":"hqtest",
@@ -143,7 +143,7 @@ public class StructureController extends BaseController {
 	@ApiOperation(value = "查询指定表的元信息", notes = "查询指定表的详细元信息，请求的示例包体格式为：\n"
 			+ "		{\r\n" + 
 			"		    \"type\":\"oracle\",  \r\n" + 
-			"		    \"host\":\"172.16.90.252\",\r\n" + 
+			"		    \"host\":\"172.17.207.252\",\r\n" + 
 			"		    \"port\":1521,\r\n" + 
 			"          \"mode\":\"sid\",\r\n" + 
 			"		    \"user\":\"yi_bo\",\r\n" + 
@@ -157,7 +157,7 @@ public class StructureController extends BaseController {
 	 * 参数的JSON格式：
 		{
 		    "type":"oracle",  
-		    "host":"172.16.90.252",
+		    "host":"172.17.207.252",
 		    "port":1521,
 			"mode":"sid",
 		    "user":"yi_bo",
@@ -229,7 +229,7 @@ public class StructureController extends BaseController {
 	@ApiOperation(value = "查询指定SQL的元信息", notes = "查询指定SQL的详细元信息，请求的示例包体格式为：\n"
 			+ "		{\r\n" + 
 			"		    \"type\":\"oracle\",  \r\n" + 
-			"		    \"host\":\"172.16.90.252\",\r\n" + 
+			"		    \"host\":\"172.17.207.252\",\r\n" + 
 			"		    \"port\":1521,\r\n" + 
 			"          \"mode\":\"sid\",\r\n" + 
 			"		    \"user\":\"yi_bo\",\r\n" + 
@@ -242,7 +242,7 @@ public class StructureController extends BaseController {
 	 * 参数的JSON格式：
 		{
 		    "type":"oracle",  
-		    "host":"172.16.90.252",
+		    "host":"172.17.207.252",
 		    "port":1521,
 			"mode":"sid",
 		    "user":"yi_bo",
@@ -297,7 +297,7 @@ public class StructureController extends BaseController {
 	@ApiOperation(value = "查询指定表结构转换的建表SQL语句", notes = "查询指定表结构转换的建表SQL语句，请求的示例包体格式为：\n"
 			+ "		{\r\n" + 
 			"		    \"type\":\"oracle\",  \r\n" + 
-			"		    \"host\":\"172.16.90.252\",\r\n" + 
+			"		    \"host\":\"172.17.207.252\",\r\n" + 
 			"		    \"port\":1521,\r\n" + 
 			"          \"mode\":\"sid\",\r\n" + 
 			"		    \"user\":\"yi_bo\",\r\n" + 
@@ -314,7 +314,7 @@ public class StructureController extends BaseController {
 	 * 参数的JSON格式：
 		{
 		    "type":"oracle",  
-		    "host":"172.16.90.252",
+		    "host":"172.17.207.252",
 		    "port":1521,
 			"mode":"sid",
 		    "user":"yi_bo",
@@ -398,7 +398,7 @@ public class StructureController extends BaseController {
 	@ApiOperation(value = "测试指定数据库中sql有效性", notes = "测试指定数据库中sql有效性，请求的示例包体格式为：\n"
 			+ " {\r\n" + 
 			"    \"type\":\"oracle\",\r\n" + 
-			"    \"host\":\"172.16.90.252\",\r\n" + 
+			"    \"host\":\"172.17.207.252\",\r\n" + 
 			"    \"port\":1521,\r\n" + 
 			"    \"mode\":\"sid\",\r\n" + 
 			"    \"user\":\"yi_bo\",\r\n" + 
@@ -412,7 +412,7 @@ public class StructureController extends BaseController {
 	 * 参数的JSON格式：
 		 {
 		    "type":"oracle",
-		    "host":"172.16.90.252",
+		    "host":"172.17.207.252",
 		    "port":1521,
 			"mode":"sid",
 		    "user":"yi_bo",

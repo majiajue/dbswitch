@@ -28,21 +28,49 @@ public class ConvertController extends BaseController {
 	ISqlConvertService convertService;
 	
 	private DatabaseType getDatabaseTypeByName(String name) {
-		if(name.equalsIgnoreCase(DatabaseType.MYSQL.name())) {
+		if (name.equalsIgnoreCase(DatabaseType.MYSQL.name())) {
 			return DatabaseType.MYSQL;
-		}else if (name.equalsIgnoreCase(DatabaseType.ORACLE.name())) {
+		} else if (name.equalsIgnoreCase(DatabaseType.ORACLE.name())) {
 			return DatabaseType.ORACLE;
-		}else if (name.equalsIgnoreCase(DatabaseType.SQLSERVER.name())) {
+		} else if (name.equalsIgnoreCase(DatabaseType.SQLSERVER.name())) {
 			return DatabaseType.SQLSERVER;
-	}else if (name.equalsIgnoreCase(DatabaseType.POSTGRESQL.name())) {
+		} else if (name.equalsIgnoreCase(DatabaseType.POSTGRESQL.name())) {
 			return DatabaseType.POSTGRESQL;
-		}else {
+		} else if (name.equalsIgnoreCase(DatabaseType.GREENPLUM.name())) {
+			return DatabaseType.GREENPLUM;
+		} else {
 			throw new RuntimeException(String.format("Unkown database name (%s)", name));
 		}
 	}
 
 	@RequestMapping(value = "/standard/dml", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "标准DML类SQL语句转换", notes = "将标准DML类型的SQL语句分别转换为三种数据库对应语法的SQL格式，请求的示例包体格式为：\n "
+			+ "{\r\n" + 
+			"    \"target\":\"oracle\",\r\n" + 
+			"    \"sql\":\"select * from TANG.TEST_TABLE\"\r\n" + 
+			"} ")
+	/*
+	 * 参数的JSON格式： 
+		{
+			"target":"oracle",
+		    "sql":"select * from test_table"
+		}
+	 */
+	public Map<String, Object> StandardDataManipulationLanguage(@RequestBody String body) {
+		JSONObject object = JSON.parseObject(body);
+		String target = object.getString("target");
+		String sql = object.getString("sql");
+		if (Strings.isNullOrEmpty(sql) || Strings.isNullOrEmpty(target)) {
+			throw new RuntimeException("Invalid input parameter");
+		}
+
+		Map<String, Object> ret = new HashMap<String, Object>();
+		ret.put("sql", convertService.dmlSentence(sql, getDatabaseTypeByName(target)));
+		return success(ret);
+	}
+
+	@RequestMapping(value = "/debug/standard/dml", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ApiOperation(value = "[调试]标准DML类SQL语句转换", notes = "将标准DML类型的SQL语句分别转换为三种数据库对应语法的SQL格式，请求的示例包体格式为：\n "
 			+ "{\r\n" + 
 			"    \"sql\":\"select * from test_table\"\r\n" + 
 			"} ")
@@ -52,23 +80,50 @@ public class ConvertController extends BaseController {
 		    "sql":"select * from test_table"
 		}
 	 */
-	public Map<String, Object> StandardDataManipulationLanguage(@RequestBody String body) {
+	public Map<String, Object> DebugStandardDataManipulationLanguage(@RequestBody String body) {
 		JSONObject object = JSON.parseObject(body);
 		String sql = object.getString("sql");
 		if (Strings.isNullOrEmpty(sql)) {
 			throw new RuntimeException("Invalid input parameter");
 		}
-		
+
 		Map<String, Object> ret = new HashMap<String, Object>();
 		ret.put("sql", convertService.dmlSentence(sql));
 		return success(ret);
 	}
-
+	
 	@RequestMapping(value = "/standard/ddl", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	@ApiOperation(value = "标准DDL类SQL语句转换", notes = "将标准DDL(不含有Create/Alter/Tuncate table三个)类型的SQL语句分别转换为三种数据库对应语法的SQL格式，请求的示例包体格式为：\n"
 			+ "{\r\n" + 
-			"    \"sql\":\"create or replace view v_xxxx as (select xgh,name,sex from test_table where \"identity\"='student')\"\r\n" + 
+			"    \"target\":\"oracle\",\r\n" + 
+			"    \"sql\":\"create or replace view V_TEST_VIEW as (select xgh,name,sex from test_table where \"identity\"='student')\"\r\n" + 
+			"}")
+	/*
+	 * 参数的JSON格式：
+		{
+			"target":"oracle",
+		    "sql":" create or replace view v_xxxx as (select xgh,name,sex from test_table where \"identity\"='student')"
+		}
+	 */
+	public Map<String, Object> StandardDataDefinitionLanguage(@RequestBody String body) {
+		JSONObject object = JSON.parseObject(body);
+		String target = object.getString("target");
+		String sql = object.getString("sql");
+		if (Strings.isNullOrEmpty(sql)) {
+			throw new RuntimeException("Invalid input parameter");
+		}
+
+		Map<String, Object> ret = new HashMap<String, Object>();
+		ret.put("sql", convertService.ddlSentence(sql, getDatabaseTypeByName(target)));
+		return success(ret);
+	}
+
+	@RequestMapping(value = "/debug/standard/ddl", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	@ApiOperation(value = "[调试]标准DDL类SQL语句转换", notes = "将标准DDL(不含有Create/Alter/Tuncate table三个)类型的SQL语句分别转换为三种数据库对应语法的SQL格式，请求的示例包体格式为：\n"
+			+ "{\r\n" + 
+			"    \"sql\":\"create or replace view v_xxxx as (select xgh,name,sex from test_table where \\\"identity\\\"='student')\"\r\n" + 
 			"}")
 	/*
 	 * 参数的JSON格式：
@@ -76,20 +131,20 @@ public class ConvertController extends BaseController {
 		    "sql":" create or replace view v_xxxx as (select xgh,name,sex from test_table where \"identity\"='student')"
 		}
 	 */
-	public Map<String, Object> StandardDataDefinitionLanguage(@RequestBody String body) {
+	public Map<String, Object> DebugStandardDataDefinitionLanguage(@RequestBody String body) {
 		JSONObject object = JSON.parseObject(body);
 		String sql = object.getString("sql");
 		if (Strings.isNullOrEmpty(sql)) {
 			throw new RuntimeException("Invalid input parameter");
 		}
-		
+
 		Map<String, Object> ret = new HashMap<String, Object>();
 		ret.put("sql", convertService.ddlSentence(sql));
 		return success(ret);
 	}
-
-	@RequestMapping(value = "/special/dml", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-	@ApiOperation(value = "指定数据库的DML类SQL语句转换", notes = "将标准DML类型的SQL语句分别转换为三种数据库对应语法的SQL格式，请求的示例包体格式为：\n "
+	
+	@RequestMapping(value = "/debug/special/dml", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ApiOperation(value = "[调试]指定数据库的DML类SQL语句转换", notes = "将标准DML类型的SQL语句分别转换为三种数据库对应语法的SQL格式，请求的示例包体格式为：\n "
 			+ "{\r\n" + 
 			"    \"source\":\"mysql\",\r\n" + 
 			"    \"target\":\"oracle\",\r\n" + 
@@ -111,14 +166,14 @@ public class ConvertController extends BaseController {
 		if (Strings.isNullOrEmpty(sql) || Strings.isNullOrEmpty(source) || Strings.isNullOrEmpty(target)) {
 			throw new RuntimeException("Invalid input parameter");
 		}
-		
+
 		Map<String, Object> ret = new HashMap<String, Object>();
-		ret.put("sql", convertService.dmlSentence(getDatabaseTypeByName(source),getDatabaseTypeByName(target),sql));
+		ret.put("sql", convertService.dmlSentence(getDatabaseTypeByName(source), getDatabaseTypeByName(target), sql));
 		return success(ret);
 	}
 
-	@RequestMapping(value = "/special/ddl", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-	@ApiOperation(value = "指定数据库的DDL类SQL语句转换", notes = "将标准DDL类型的SQL语句分别转换为三种数据库对应语法的SQL格式，请求的示例包体格式为：\n  "
+	@RequestMapping(value = "/debug/special/ddl", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ApiOperation(value = "[调试]指定数据库的DDL类SQL语句转换", notes = "将标准DDL类型的SQL语句分别转换为三种数据库对应语法的SQL格式，请求的示例包体格式为：\n  "
 			+ "{\r\n" + 
 			"    \"source\":\"mysql\",\r\n" + 
 			"    \"target\":\"oracle\",\r\n" + 
