@@ -25,6 +25,8 @@
 
 - 参考地址：[SQL99参考地址](https://crate.io/docs/sql-99/en/latest/)
 
+- SQL书写建议：表名及字段名用双引号"进行包裹
+
 ## 二、不支持的功能描述
 
 ### 1、不支持的功能总述
@@ -1220,3 +1222,31 @@
 | Greenplum | 文本 | TEXT | TEXT |
 | Greenplum | 文本 | BYTEA | BYTEA |
 
+## 附录二、编译打包方法
+
+- 编译打包命令
+
+```
+git clone http://gitlab.whistle.ruijie.com.cn/nwhistle_code/bd_dm/server/dbswitch.git
+cd dbswitch/
+sh ./build.sh
+```
+
+- 安装部署
+
+当编译打包命令执行完成后，会在dbswitch/target/目录下生成dbswitch-relase-x.x.x.tar.gz的打包文件，将文件拷贝到部署机器上解压即可。
+
+启动程序：
+
+```
+tar zxvf dbswitch-release-0.0.1.tar.gz
+cd dbswitch-release-0.0.1/
+bin/startup.sh
+```
+
+停止程序：
+
+```
+cd dbswitch-release-0.0.1/
+bin/shutdown.sh
+```

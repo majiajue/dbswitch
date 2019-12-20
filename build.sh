@@ -1,4 +1,4 @@
 #!/bin/sh
 
-mvn clean
-mvn package -f pom_deploy.xml -Dmaven.test.skip=true
+mvn clean -f pom.xml
+mvn package -f pom.xml -Dmaven.test.skip=true

@@ -1,0 +1,95 @@
+<assembly>
+
+	<id>${project.version}</id>
+
+	<formats>
+		<format>tar.gz</format>
+	</formats>
+
+	<includeBaseDirectory>true</includeBaseDirectory>
+
+	<fileSets>
+
+		<!-- 打包assembly中的bin目录到 打包目录/sbin 下 -->
+		<fileSet>
+			<directory>src/main/assembly/bin</directory>
+			<outputDirectory>bin</outputDirectory>
+			<fileMode>0755</fileMode>
+		</fileSet>
+
+		<!-- 创建logs目录文件夹 -->
+		<fileSet>
+			<directory>${project.basedir}</directory>
+			<outputDirectory>logs</outputDirectory>
+			<excludes>
+				<exclude>**/*</exclude>
+			</excludes>
+		</fileSet>
+
+		<!-- 打包dbswitch-webapi中的配置文件到打包目录/conf 下 -->
+		<fileSet>
+			<directory>${project.parent.basedir}/dbswitch-webapi/src/main/resources/
+			</directory>
+			<outputDirectory>conf</outputDirectory>
+			<includes>
+				<include>*.properties</include>
+				<include>*.yml</include>
+				<include>*.xml</include>
+			</includes>
+		</fileSet>
+
+		<!-- 打包dbswitch-data中的配置文件到打包目录/conf 下 -->
+		<fileSet>
+			<directory>${project.parent.basedir}/dbswitch-data/src/main/resources
+			</directory>
+			<outputDirectory>conf</outputDirectory>
+			<includes>
+				<include>*.properties</include>
+				<include>*.yml</include>
+				<include>*.xml</include>
+			</includes>
+		</fileSet>
+
+		<!-- 不写就是不打包 dbswitch-core和dbswitch-common 中的配置文件到打包目录/conf 下 -->
+
+		<!-- 将模块dbswitch-common的jar文件放到打包目录/lib 下 -->
+		<fileSet>
+			<directory>${project.parent.basedir}/dbswitch-common/target
+			</directory>
+			<outputDirectory>lib</outputDirectory>
+			<includes>
+				<include>*.jar</include>
+			</includes>
+		</fileSet>
+
+		<!-- 将模块dbswitch-core的jar文件放到打包目录/lib 下 -->
+		<fileSet>
+			<directory>${project.parent.basedir}/dbswitch-core/target</directory>
+			<outputDirectory>lib</outputDirectory>
+			<includes>
+				<include>*.jar</include>
+			</includes>
+		</fileSet>
+
+		<!-- 将模块dbswitch-core的jar文件放到打包目录/lib 下 -->
+		<fileSet>
+			<directory>${project.parent.basedir}/dbswitch-data/target</directory>
+			<outputDirectory>lib</outputDirectory>
+			<includes>
+				<include>*.jar</include>
+			</includes>
+		</fileSet>
+
+		<!-- 将模块dbswitch-webapi的jar文件放到打包目录/lib 下 -->
+		<fileSet>
+			<directory>${project.parent.basedir}/dbswitch-webapi/target
+			</directory>
+			<outputDirectory>lib</outputDirectory>
+			<includes>
+				<include>*.jar</include>
+			</includes>
+		</fileSet>
+
+	</fileSets>
+
+</assembly>
