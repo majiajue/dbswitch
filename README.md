@@ -1227,7 +1227,7 @@
 - 编译打包命令
 
 ```
-git clone http://gitlab.whistle.ruijie.com.cn/nwhistle_code/bd_dm/server/dbswitch.git
+git clone https://gitee.com/inrgihc/dbswitch.git
 cd dbswitch/
 sh ./build.sh
 ```
