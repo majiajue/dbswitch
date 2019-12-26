@@ -141,7 +141,10 @@ public abstract class AbstractDatabase implements IDatabaseInterface {
 		try {
 			ResultSet primarykeys = this.metaData.getPrimaryKeys(this.catalogName, schemaName, tableName);
 			while (primarykeys.next()) {
-				ret.add(primarykeys.getString("COLUMN_NAME"));
+				String name = primarykeys.getString("COLUMN_NAME");
+				if (!ret.contains(name)) {
+					ret.add(name);
+				}
 			}
 			return ret;
 		} catch (SQLException e) {

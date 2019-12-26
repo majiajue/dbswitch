@@ -11,7 +11,7 @@ import com.weishao.dbswitch.core.database.impl.DatabaseSqlserver2000Impl;
 import com.weishao.dbswitch.core.database.impl.DatabaseSqlserverImpl;
 
 /**
- * 数据库示例构建工厂类
+ * 数据库实例构建工厂类
  * @author tang
  *
  */
