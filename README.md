@@ -2,8 +2,9 @@
 
 ## 一、支持功能
 
-  oracle/SqlServer/mysql/PostgreSQL表结构及数据向Greenplum数据库的同步功能。
-
+  oracle/SqlServer/mysql/PostgreSQL表结构及数据向Greenplum数据库的同步功能。示例如如下：
+  
+  ![structure](images/function.PNG)
 
 ## 二、编译配置
 
