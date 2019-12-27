@@ -68,8 +68,12 @@ public class DatabasePostgresImpl extends AbstractDatabase implements IDatabaseI
 			} else {
 				if (length > 0) {
 					if (precision > 0 || length > 18) {
-						// Numeric(Precision, Scale): Precision = total length; Scale = decimal places
-						retval += "NUMERIC(" + (length + precision) + ", " + precision + ")";
+						if ((length + precision) > 0 && precision > 0) {
+							// Numeric(Precision, Scale): Precision = total length; Scale = decimal places
+							retval += "NUMERIC(" + (length + precision) + ", " + precision + ")";
+						} else {
+							retval += "DOUBLE PRECISION";
+						}
 					} else {
 						if (length > 9) {
 							retval += "BIGINT";

@@ -80,7 +80,7 @@ public class DatabaseSqlserverImpl extends AbstractDatabase implements IDatabase
 		String qsql = String.format(
 				"SELECT a.name AS COLUMN_NAME,CONVERT(nvarchar(50),ISNULL(g.[value], '')) AS REMARKS FROM sys.columns a\r\n" + 
 				"LEFT JOIN sys.extended_properties g ON ( a.object_id = g.major_id AND g.minor_id = a.column_id )\r\n" + 
-				"WHERE object_id = (SELECT object_id FROM sys.tables st INNER JOIN INFORMATION_SCHEMA.TABLES t on st.name=t.TABLE_NAME\r\n" + 
+				"WHERE object_id = (SELECT top 1 object_id FROM sys.tables st INNER JOIN INFORMATION_SCHEMA.TABLES t on st.name=t.TABLE_NAME\r\n" + 
 				"WHERE	st.name = '%s' and t.TABLE_SCHEMA='%s')",
 				tableName,schemaName);
 		PreparedStatement pstmt = null;

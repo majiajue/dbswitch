@@ -283,8 +283,13 @@ public class ColumnMetaData {
 
 			if (type == java.sql.Types.DOUBLE || type == java.sql.Types.FLOAT || type == java.sql.Types.REAL) {
 				if (precision == 0) {
-					precision = -1; // precision is obviously incorrect if the type if
-					// Double/Float/Real
+					if (!signed) {
+						precision = -1; // precision is obviously incorrect if the type if
+						// Double/Float/Real
+					} else {
+						length = 18;
+						precision = 4;
+					}
 				}
 
 				// If we're dealing with PostgreSQL and double precision types
@@ -304,9 +309,9 @@ public class ColumnMetaData {
 				}
 
 				// if the length or precision needs a BIGNUMBER
-				if (length > 15 || precision > 15) {
-					valtype = ColumnMetaData.TYPE_BIGNUMBER;
-				}
+				//if (length > 15 || precision > 15) {
+				//	valtype = ColumnMetaData.TYPE_BIGNUMBER;
+				//}
 			} else {
 				if (precision == 0) {
 					if (length <= 18 && length > 0) { // Among others Oracle is affected
