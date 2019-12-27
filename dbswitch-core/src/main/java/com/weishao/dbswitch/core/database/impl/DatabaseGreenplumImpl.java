@@ -94,6 +94,9 @@ public class DatabaseGreenplumImpl extends AbstractDatabase implements IDatabase
 				retval += "VARCHAR(" + length + ")";
 			}
 			break;
+		case ColumnMetaData.TYPE_BINARY:
+			retval += "BYTEA";
+			break;
 		default:
 			retval += " TEXT";
 			break;

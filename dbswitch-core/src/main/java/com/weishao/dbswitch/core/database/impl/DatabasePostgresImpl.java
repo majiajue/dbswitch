@@ -94,6 +94,9 @@ public class DatabasePostgresImpl extends AbstractDatabase implements IDatabaseI
 				retval += "VARCHAR(" + length + ")";
 			}
 			break;
+		case ColumnMetaData.TYPE_BINARY:
+			retval += "BYTEA";
+			break;
 		default:
 			retval += " TEXT";
 			break;
