@@ -368,22 +368,6 @@ public class ColumnMetaData {
 		case java.sql.Types.VARBINARY:
 		case java.sql.Types.LONGVARBINARY:
 			valtype = ColumnMetaData.TYPE_BINARY;
-
-			if ((desc.getDbType() == DatabaseType.ORACLE)
-					&& (type == java.sql.Types.VARBINARY || type == java.sql.Types.LONGVARBINARY)) {
-				// set the length for Oracle "RAW" or "LONGRAW" data types
-				valtype = ColumnMetaData.TYPE_STRING;
-				length = desc.getDisplaySize();
-			} else if (desc.getDbType() == DatabaseType.MYSQL
-					&& (type == java.sql.Types.VARBINARY || type == java.sql.Types.LONGVARBINARY)) {
-				// set the data type to String, see PDI-4812
-				valtype = ColumnMetaData.TYPE_STRING;
-				// PDI-6677 - don't call 'length = desc.getDisplaySize();'
-				length = -1; // keep the length to -1, e.g. for string functions (e.g.
-				// CONCAT see PDI-4812)
-			} else {
-				length = -1;
-			}
 			precision = -1;
 			break;
 
