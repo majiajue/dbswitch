@@ -1,12 +1,13 @@
 package com.weishao.dbswitch.sql.ddl.sql;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.ArrayList;
 import com.weishao.dbswitch.sql.constant.Const;
 import com.weishao.dbswitch.sql.ddl.DatabaseDialect;
 import com.weishao.dbswitch.sql.ddl.SqlDdlOperator;
 import com.weishao.dbswitch.sql.ddl.pojo.ColumnDefinition;
 import com.weishao.dbswitch.sql.ddl.pojo.TableDefinition;
+import com.weishao.dbswitch.sql.ddl.sql.impl.MySqlDialectImpl;
 
 public class DdlSqlCreateTable extends SqlDdlOperator {
 
@@ -44,13 +45,18 @@ public class DdlSqlCreateTable extends SqlDdlOperator {
 			sb.append(definition);
 			sb.append(Const.CR);
 		}
-		
+
 		if (pks.size() > 0) {
 			String pk = dialect.getPrimaryKeyAsString(pks);
 			sb.append(", PRIMARY KEY (").append(pk).append(")").append(Const.CR);
 		}
 
-		sb.append(" )").append(Const.CR);
+		sb.append(" )");
+		if (dialect instanceof MySqlDialectImpl) {
+			sb.append(" ENGINE=InnoDB DEFAULT CHARSET=utf8 ");
+		}
+
+		sb.append(Const.CR);
 		return sb.toString();
 	}
 	

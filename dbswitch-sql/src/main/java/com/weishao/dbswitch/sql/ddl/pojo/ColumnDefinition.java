@@ -9,6 +9,7 @@ public class ColumnDefinition {
 	private Integer lengthOrPrecision;
 	private Integer scale;
 	private boolean primaryKey;
+	private boolean autoIncrement;
 	private boolean nullable;
 	private String defaultValue;
 	
@@ -58,6 +59,14 @@ public class ColumnDefinition {
 	
 	public void setPrimaryKey(boolean primaryKey) {
 		this.primaryKey = primaryKey;
+	}
+	
+	public boolean isAutoIncrement() {
+		return this.autoIncrement;
+	}
+	
+	public void setAutoIncrement(boolean autoIncrement) {
+		this.autoIncrement=autoIncrement;
 	}
 	
 	public boolean isNullable() {
