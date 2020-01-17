@@ -100,6 +100,8 @@ public class OracleDialectImpl  extends DatabaseDialect {
 			} else if (Objects.nonNull(defaultValue) && !defaultValue.isEmpty()) {
 				if (defaultValue.toUpperCase().equals("NULL")) {
 					sb.append(" DEFAULT NULL");
+				} else if (defaultValue.toUpperCase().equals("SYSDATE")) {
+					sb.append(" DEFAULT SYSDATE");
 				} else {
 					sb.append(String.format(" DEFAULT '%s'", defaultValue));
 				}
