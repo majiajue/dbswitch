@@ -2,7 +2,9 @@ package com.weishao.dbswitch.core.database;
 
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
@@ -77,14 +79,14 @@ public abstract class AbstractDatabase implements IDatabaseInterface {
 
 	@Override
 	public List<String> querySchemaList() {
-		List<String> ret=new ArrayList<String>();
+		Set<String> ret=new HashSet<String>();
 		ResultSet schemas;
 		try {
 			schemas = this.metaData.getSchemas();
 			while (schemas.next()) {
 				ret.add(schemas.getString("TABLE_SCHEM"));
 			}
-			return ret;
+			return new ArrayList<String>(ret);
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
@@ -94,13 +96,21 @@ public abstract class AbstractDatabase implements IDatabaseInterface {
 	@Override
 	public List<TableDescription> queryTableList(String schemaName) {
 		List<TableDescription> ret=new ArrayList<TableDescription>();
+		Set<String> uniqueSet=new HashSet<String>();
 		ResultSet tables;
 		try {
 			tables = this.metaData.getTables(this.catalogName, schemaName,"%",new String[]{"TABLE","VIEW"});
 			while (tables.next()) {
+				String tableName = tables.getString("TABLE_NAME");
+				if (uniqueSet.contains(tableName)) {
+					continue;
+				} else {
+					uniqueSet.add(tableName);
+				}
+				
 				TableDescription td=new TableDescription();
 				td.setSchemaName(schemaName);
-				td.setTableName(tables.getString("TABLE_NAME"));
+				td.setTableName(tableName);
 				td.setRemarks(tables.getString("REMARKS"));
 				td.setTableType(tables.getString("TABLE_TYPE").trim().toUpperCase());
 				ret.add(td);
@@ -115,7 +125,6 @@ public abstract class AbstractDatabase implements IDatabaseInterface {
 	public List<ColumnDescription> queryTableColumnMeta(String schemaName, String tableName) {
 		String sql=this.getTableFieldsQuerySQL(schemaName, tableName);
 		List<ColumnDescription> ret= this.querySelectSqlColumnMeta(sql);
-		
 		try {
 			ResultSet columns = this.metaData.getColumns( this.catalogName, schemaName,tableName, null );
 			while (columns.next()) {
@@ -131,13 +140,12 @@ public abstract class AbstractDatabase implements IDatabaseInterface {
 			throw new RuntimeException(e);
 		}
 		
-		
 		return ret;
 	}
 	
 	@Override
 	public List<String> queryTablePrimaryKeys(String schemaName, String tableName) {
-		List<String> ret = new ArrayList<String>();
+		Set<String> ret = new HashSet<String>();
 		try {
 			ResultSet primarykeys = this.metaData.getPrimaryKeys(this.catalogName, schemaName, tableName);
 			while (primarykeys.next()) {
@@ -146,7 +154,7 @@ public abstract class AbstractDatabase implements IDatabaseInterface {
 					ret.add(name);
 				}
 			}
-			return ret;
+			return new ArrayList<String>(ret);
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}

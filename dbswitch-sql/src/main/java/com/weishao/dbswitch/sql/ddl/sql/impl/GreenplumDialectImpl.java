@@ -1,10 +1,20 @@
 package com.weishao.dbswitch.sql.ddl.sql.impl;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import com.weishao.dbswitch.sql.ddl.pojo.ColumnDefinition;
 import com.weishao.dbswitch.sql.ddl.type.GreenplumDataType;
 
 public class GreenplumDialectImpl extends PostgresDialectImpl {
+	
+protected static List<GreenplumDataType> integerTypes;
+	
+	static{
+		integerTypes= new ArrayList<GreenplumDataType>();
+		integerTypes.add(GreenplumDataType.SERIAL);
+		integerTypes.add(GreenplumDataType.BIGSERIAL);
+	}
 
 	@Override
 	public String getFieldTypeName(ColumnDefinition column) {
@@ -17,6 +27,12 @@ public class GreenplumDialectImpl extends PostgresDialectImpl {
 			type = GreenplumDataType.valueOf(column.getColumnType().toUpperCase());
 		} catch (IllegalArgumentException e) {
 			throw new RuntimeException(String.format("Invalid Greenplum data type: %s", column.getColumnType()));
+		}
+		
+		if(column.isAutoIncrement()) {
+			if(!GreenplumDialectImpl.integerTypes.contains(type)) {
+				throw new RuntimeException(String.format("Invalid Greenplum auto increment data type: %s", column.getColumnType()));
+			}
 		}
 
 		sb.append(type.name());

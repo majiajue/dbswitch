@@ -1,5 +1,7 @@
 package com.weishao.dbswitch.sql.ddl.sql.impl;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import com.weishao.dbswitch.sql.ddl.DatabaseDialect;
 import com.weishao.dbswitch.sql.ddl.pojo.ColumnDefinition;
@@ -7,6 +9,14 @@ import com.weishao.dbswitch.sql.ddl.type.PostgresDataType;
 
 public class PostgresDialectImpl  extends DatabaseDialect {
 
+	private static List<PostgresDataType> integerTypes;
+	
+	static{
+		integerTypes= new ArrayList<PostgresDataType>();
+		integerTypes.add(PostgresDataType.SERIAL);
+		integerTypes.add(PostgresDataType.BIGSERIAL);
+	}
+	
 	@Override
 	public String getFieldTypeName(ColumnDefinition column) {
 		int length = column.getLengthOrPrecision();
@@ -18,6 +28,12 @@ public class PostgresDialectImpl  extends DatabaseDialect {
 			type = PostgresDataType.valueOf(column.getColumnType().toUpperCase());
 		} catch (IllegalArgumentException e) {
 			throw new RuntimeException(String.format("Invalid PostgreSQL data type: %s", column.getColumnType()));
+		}
+		
+		if(column.isAutoIncrement()) {
+			if(!PostgresDialectImpl.integerTypes.contains(type)) {
+				throw new RuntimeException(String.format("Invalid PostgreSQL auto increment data type: %s", column.getColumnType()));
+			}
 		}
 
 		sb.append(type.name());
@@ -60,16 +76,21 @@ public class PostgresDialectImpl  extends DatabaseDialect {
 		sb.append(String.format("\"%s\" ",fieldname.trim()));
 		sb.append(this.getFieldTypeName(column));
 
-		if (nullable) {
-			sb.append(" DEFAULT NULL");
-		} else if (Objects.nonNull(defaultValue) &&!defaultValue.isEmpty()) {
-			if (defaultValue.toUpperCase().equals("NULL")) {
+		if (column.isAutoIncrement()) {
+			//PostgreSQL/Greenplum数据库里可以有多个自增列
+			sb.append(" ");
+		} else {
+			if (nullable) {
 				sb.append(" DEFAULT NULL");
+			} else if (Objects.nonNull(defaultValue) && !defaultValue.isEmpty()) {
+				if (defaultValue.toUpperCase().equals("NULL")) {
+					sb.append(" DEFAULT NULL");
+				} else {
+					sb.append(String.format(" DEFAULT '%s'", defaultValue));
+				}
 			} else {
-				sb.append(String.format(" DEFAULT '%s'", defaultValue));
+				sb.append(" NOT NULL");
 			}
-		}else {
-			sb.append(" NOT NULL");
 		}
 		
 		return sb.toString();

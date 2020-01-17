@@ -43,6 +43,7 @@ public class GeneratorController {
 			"            \"scale\":0,\n" + 
 			"            \"nullable\":0,\n" + 
 			"            \"primary_key\":1,\n" + 
+			"            \"auto_increment\":1,\n" + 
 			"            \"default_value\":null\n" + 
 			"        },\n" + 
 			"        {\n" + 
@@ -53,6 +54,7 @@ public class GeneratorController {
 			"            \"scale\":0,\n" + 
 			"            \"nullable\":0,\n" + 
 			"            \"primary_key\":0,\n" + 
+			"            \"auto_increment\":0,\n" + 
 			"            \"default_value\":\"test\"\n" + 
 			"        }\n" + 
 			"    ]\n" + 
@@ -72,6 +74,7 @@ public class GeneratorController {
 		            "scale":0,
 		            "nullable":0,
 		            "primary_key":1,
+		            "auto_increment":1,
 		            "default_value":null
 		        },
 		        {
@@ -82,6 +85,7 @@ public class GeneratorController {
 		            "scale":0,
 		            "nullable":0,
 		            "primary_key":0,
+		            "auto_increment":0,
 		            "default_value":"test"
 		        }
 		    ]
@@ -110,6 +114,7 @@ public class GeneratorController {
 				cd.setNullable(item.getInteger("nullable")>0);
 				cd.setPrimaryKey(false);
 			}
+			cd.setAutoIncrement(null!=item.getInteger("auto_increment") && item.getInteger("auto_increment")>0);
 			cd.setDefaultValue(item.getString("default_value"));
 			
 			t.addColumns(cd);

@@ -1,13 +1,36 @@
 package com.weishao.dbswitch.sql.ddl.sql.impl;
 
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Objects;
 import org.apache.commons.lang3.StringUtils;
 import com.weishao.dbswitch.sql.ddl.DatabaseDialect;
 import com.weishao.dbswitch.sql.ddl.pojo.ColumnDefinition;
 import com.weishao.dbswitch.sql.ddl.type.MySqlDataType;
 
+/**
+ * 关于MySQL的的自增列问题：
+ * （1）一张表中，只能有一列为自增长列。
+ * （2）列的数据类型，必须为数值型。
+ * （3）不能设置默认值。
+ * （4）会自动应用not null。
+ * 
+ * @author tang
+ *
+ */
 public class MySqlDialectImpl extends DatabaseDialect {
+	
+	private static List<MySqlDataType> integerTypes;
+	
+	static{
+		integerTypes= new ArrayList<MySqlDataType>();
+		integerTypes.add(MySqlDataType.TINYINT);
+		integerTypes.add(MySqlDataType.SMALLINT);
+		integerTypes.add(MySqlDataType.MEDIUMINT);
+		integerTypes.add(MySqlDataType.INTEGER);
+		integerTypes.add(MySqlDataType.INT);
+		integerTypes.add(MySqlDataType.BIGINT);
+	}
 
 	@Override
 	public String getSchemaTableName(String schemaName, String tableName) {
@@ -45,6 +68,12 @@ public class MySqlDialectImpl extends DatabaseDialect {
 			type = MySqlDataType.valueOf(column.getColumnType().toUpperCase());
 		} catch (IllegalArgumentException e) {
 			throw new RuntimeException(String.format("Invalid MySQL data type: %s", column.getColumnType()));
+		}
+		
+		if(column.isAutoIncrement()) {
+			if(!MySqlDialectImpl.integerTypes.contains(type)) {
+				throw new RuntimeException(String.format("Invalid MySQL auto increment data type: %s", column.getColumnType()));
+			}
 		}
 
 		sb.append(type.name());
@@ -95,16 +124,21 @@ public class MySqlDialectImpl extends DatabaseDialect {
 		sb.append(String.format("`%s` ",fieldname.trim()));
 		sb.append(this.getFieldTypeName(column));
 
-		if (nullable) {
-			sb.append(" DEFAULT NULL");
-		} else if (Objects.nonNull(defaultValue) && !defaultValue.isEmpty()) {
-			if (defaultValue.toUpperCase().equals("NULL")) {
+		if (column.isAutoIncrement() && column.isPrimaryKey() ) {
+			//在MySQL数据库里只有主键是自增的
+			sb.append(" NOT NULL AUTO_INCREMENT ");
+		} else {
+			if (nullable) {
 				sb.append(" DEFAULT NULL");
+			} else if (Objects.nonNull(defaultValue) && !defaultValue.isEmpty()) {
+				if (defaultValue.toUpperCase().equals("NULL")) {
+					sb.append(" DEFAULT NULL");
+				} else {
+					sb.append(String.format(" DEFAULT '%s'", defaultValue));
+				}
 			} else {
-				sb.append(String.format(" DEFAULT '%s'", defaultValue));
+				sb.append(" NOT NULL");
 			}
-		}else {
-			sb.append(" NOT NULL");
 		}
 
 		if(Objects.nonNull(comment) && !comment.isEmpty()) {
