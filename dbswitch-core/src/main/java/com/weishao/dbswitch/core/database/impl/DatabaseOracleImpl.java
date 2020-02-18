@@ -140,11 +140,7 @@ public class DatabaseOracleImpl extends AbstractDatabase implements IDatabaseInt
 	          } else if ( length > 0 ) {
 	            retval.append( "VARCHAR2(" ).append( length ).append( ')' );
 	          } else {
-	            if ( length <= 0 ) {
-	              retval.append( "VARCHAR2(4000)" ); // We don't know, so we just use the maximum...
-	            } else {
-	              retval.append( "CLOB" );
-	            }
+	            retval.append( "CLOB" );// We don't know, so we just use the maximum...
 	          }
 	        }
 	        break;
@@ -152,7 +148,7 @@ public class DatabaseOracleImpl extends AbstractDatabase implements IDatabaseInt
 	        retval.append( "BLOB" );
 	        break;
 	      default:
-	        retval.append( " CLOB" );
+	        retval.append( "CLOB" );
 	        break;
 	    }
 
