@@ -149,7 +149,10 @@ public class MainService {
 					while (rs.next()) {
 						Object args[] = new Object[metaData.getColumnCount()];
 						for (int j = 0; j < metaData.getColumnCount(); ++j) {
-							args[j] = rs.getObject(j+1);
+							args[j] = rs.getObject(j + 1);
+							if (args[j] instanceof Boolean) {
+								args[j] = String.valueOf((boolean) args[j] ? 1 : 0);
+							}
 						}
 
 						recordValues.add(args);
