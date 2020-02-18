@@ -177,3 +177,20 @@ cd dbswitch-release-0.0.1/
 bin/datasync.sh
 ```
 
+### 4、特别说明
+
+ (1)对于向目的库为PostgreSQL/Greenplum的数据离线同步默认采用copy方式写入数据
+
+  当使用copy写入数据时，需要注意：
+  
+  - 配置为postgresql的jdbcurl和驱动类（不能为greenplum的驱动包），
+  
+  - 此方式不支持含有二进制类型的数据写入，否则请使用insert方式写入，需要在config.properties配置文件中设置如下参数为true:
+
+```
+target.writer-engine.insert=true
+```
+
+ (2)dbswitch离线同步工具支持来源库为oracle/mysql/sqlserver/postgresql;
+
+ (3)dbswitch离线同步工具支持目的库为oracle/postgresql/greenplum;
