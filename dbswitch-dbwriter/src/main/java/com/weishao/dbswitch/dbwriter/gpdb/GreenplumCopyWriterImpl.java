@@ -224,7 +224,11 @@ public class GreenplumCopyWriterImpl extends AbstractDatabaseWriter implements I
 					if(data instanceof String) {
 						record.addColumn(new StringColumn(data.toString()));
 					}else if(null!=data){
-						record.addColumn(new StringColumn(data.toString()));
+						if(data instanceof Boolean) {
+							record.addColumn(new StringColumn((boolean) data?"1":"0"));
+						}else {
+							record.addColumn(new StringColumn(data.toString()));
+						}
 					}else{
 						record.addColumn(new StringColumn(null));
 					}
@@ -235,7 +239,11 @@ public class GreenplumCopyWriterImpl extends AbstractDatabaseWriter implements I
 				case Types.INTEGER:
 				case Types.BIGINT:
 					if(null!=data) {
-						record.addColumn(new StringColumn(data.toString()));
+						if(data instanceof Boolean) {
+							record.addColumn(new StringColumn((boolean) data?"1":"0"));
+						}else {
+							record.addColumn(new StringColumn(data.toString()));
+						}
 					}else {
 						record.addColumn(new StringColumn(null));
 					}
@@ -244,7 +252,11 @@ public class GreenplumCopyWriterImpl extends AbstractDatabaseWriter implements I
 				case Types.NUMERIC:
 				case Types.DECIMAL:
 					if(null!=data) {
-						record.addColumn(new StringColumn(data.toString()));
+						if(data instanceof Boolean) {
+							record.addColumn(new StringColumn((boolean) data?"1":"0"));
+						}else {
+							record.addColumn(new StringColumn(data.toString()));
+						}
 					}else {
 						record.addColumn(new StringColumn(null));
 					}
@@ -254,7 +266,11 @@ public class GreenplumCopyWriterImpl extends AbstractDatabaseWriter implements I
 				case Types.REAL:
 				case Types.DOUBLE:
 					if(null!=data) {
-						record.addColumn(new StringColumn(data.toString()));
+						if(data instanceof Boolean) {
+							record.addColumn(new StringColumn((boolean) data?"1":"0"));
+						}else {
+							record.addColumn(new StringColumn(data.toString()));
+						}
 					}else {
 						record.addColumn(new StringColumn(null));
 					}
@@ -281,7 +297,11 @@ public class GreenplumCopyWriterImpl extends AbstractDatabaseWriter implements I
 						if (data instanceof byte[]) {
 							record.addColumn(new BytesColumn((byte[]) data));
 						} else {
-							record.addColumn(new StringColumn(data.toString()));
+							if(data instanceof Boolean) {
+								record.addColumn(new StringColumn((boolean) data?"1":"0"));
+							}else {
+								record.addColumn(new StringColumn(data.toString()));
+							}
 						}
 					} else {
 						record.addColumn(new StringColumn(null));
