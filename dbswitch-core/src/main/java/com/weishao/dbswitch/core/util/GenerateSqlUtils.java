@@ -1,5 +1,6 @@
 package com.weishao.dbswitch.core.util;
 
+import java.util.ArrayList;
 import java.util.List;
 import com.weishao.dbswitch.common.constant.DatabaseType;
 import com.weishao.dbswitch.core.constant.Const;
@@ -13,6 +14,14 @@ public class GenerateSqlUtils {
 	public static String getDDLCreateTableSQL(DatabaseType type, List<ColumnDescription> fieldNames, List<String> primaryKeys,
 			String schemaName, String tableName, boolean ifNotExist) {
 		StringBuilder retval = new StringBuilder();
+		
+		List<String> pks=new ArrayList<String>();
+		for(ColumnDescription cd : fieldNames) {
+			if(primaryKeys.contains(cd.getFieldName())) {
+				pks.add(cd.getFieldName());
+			}
+		}
+		
 		AbstractDatabase db = DatabaseFactory.getDatabaseInstance(type);
 
 		retval.append(Const.CREATE_TABLE);
@@ -31,11 +40,11 @@ public class GenerateSqlUtils {
 			}
 
 			ColumnMetaData v = fieldNames.get(i).getMetaData();
-			retval.append(db.getFieldDefinition(v, primaryKeys, true));
+			retval.append(db.getFieldDefinition(v, pks, true));
 		}
 
-		if (primaryKeys.size() > 0) {
-			String pk = db.getPrimaryKeyAsString(primaryKeys);
+		if (pks.size() > 0) {
+			String pk = db.getPrimaryKeyAsString(pks);
 			retval.append(", PRIMARY KEY (").append(pk).append(")").append(Const.CR);
 		}
 
