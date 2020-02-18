@@ -72,7 +72,6 @@ public class MainService {
 			for (TableDescription td : tableList) {
 				String tableName = td.getTableName();
 				if (!filters.contains(tableName)) {
-					writer.prepareWrite(properties.dbTargetSchema, tableName);
 					this.doDataMigration(sourceJdbcTemplate,targetJdbcTemplate,td,writer);
 				}
 			}
@@ -117,6 +116,7 @@ public class MainService {
 			columnList.add(entry.getKey());
 		}
 		
+		writer.prepareWrite(properties.dbTargetSchema, table.getTableName());
 		String sqlQuery = CommonUtils.getSelectColumnsSQL(sourceDatabaseType, table.getSchemaName(),table.getTableName(), columnList);
 		logger.info("Query source database table sql: {}", sqlQuery);
 
