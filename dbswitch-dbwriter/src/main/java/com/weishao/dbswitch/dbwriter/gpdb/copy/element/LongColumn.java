@@ -1,4 +1,4 @@
-package com.weishao.dbswitch.gpwriter.element;
+package com.weishao.dbswitch.dbwriter.gpdb.copy.element;
 
 import java.util.Date;
 import org.apache.commons.lang3.math.NumberUtils;

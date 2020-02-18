@@ -1,12 +1,12 @@
-package com.weishao.dbswitch.gpwriter.record.impl;
+package com.weishao.dbswitch.dbwriter.gpdb.copy.record.impl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import com.alibaba.fastjson.JSON;
-import com.weishao.dbswitch.gpwriter.element.Column;
-import com.weishao.dbswitch.gpwriter.record.Record;
+import com.weishao.dbswitch.dbwriter.gpdb.copy.element.Column;
+import com.weishao.dbswitch.dbwriter.gpdb.copy.record.Record;
 
 public class DefaultRecordImpl implements Record {
 

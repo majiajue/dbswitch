@@ -13,6 +13,7 @@
 		<java.version>1.8</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<dbswitch.version>0.0.1</dbswitch.version>
 	</properties>
 
 	<dependencies>
@@ -20,19 +21,19 @@
 		<dependency>
 			<groupId>com.weishao</groupId>
 			<artifactId>dbswitch-common</artifactId>
-			<version>0.0.1</version>
+			<version>${dbswitch.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>com.weishao</groupId>
 			<artifactId>dbswitch-core</artifactId>
-			<version>0.0.1</version>
+			<version>${dbswitch.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>com.weishao</groupId>
 			<artifactId>dbswitch-sql</artifactId>
-			<version>0.0.1</version>
+			<version>${dbswitch.version}</version>
 		</dependency>
 
 		<dependency>

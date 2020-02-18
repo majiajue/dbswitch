@@ -1,36 +1,56 @@
 package com.weishao.dbswitch.common.util;
 
+import java.util.List;
 import com.weishao.dbswitch.common.constant.DatabaseType;
 
 public class CommonUtils {
 
-	/**
-	 * 根据tableName和schemaName转换为全名
-	 * 
-	 * @param dbtype                数据库类型
-	 * @param schemaName     Schema名称
-	 * @param tableName          Table表名称
-	 * @return        表的全名称
-	 */
 	public static String getTableFullNameByDatabase(DatabaseType dbtype, String schemaName, String tableName) {
-		if (dbtype==DatabaseType.MYSQL) {
+		if (dbtype == DatabaseType.MYSQL) {
 			return String.format("`%s`.`%s`", schemaName, tableName);
-		} else if (dbtype==DatabaseType.SQLSERVER || dbtype==DatabaseType.SQLSERVER2000) {
+		} else if (dbtype == DatabaseType.SQLSERVER || dbtype == DatabaseType.SQLSERVER2000) {
 			return String.format("[%s].[%s]", schemaName, tableName);
 		} else {
 			return String.format("\"%s\".\"%s\"", schemaName, tableName);
 		}
 	}
 
-	/**
-	 * 获取数据库SQL中的引号字符
-	 * @param dbtype
-	 * @return
-	 */
+	public static String getSelectColumnsSQL(DatabaseType dbtype, String schema, String table, List<String> columns) {
+		StringBuilder sb = new StringBuilder();
+		sb.append(" SELECT ");
+		for (int i = 0; i < columns.size(); ++i) {
+			String field = columns.get(i);
+			String quoteField = QuoteString(dbtype, field);
+			sb.append(quoteField);
+
+			if (i < columns.size() - 1) {
+				sb.append(",");
+			}
+		}
+		sb.append(" FROM ");
+		if (null != schema && !schema.isEmpty()) {
+			sb.append(QuoteString(dbtype, schema));
+			sb.append(".");
+		}
+		sb.append(QuoteString(dbtype, table));
+
+		return sb.toString();
+	}
+
+	private static String QuoteString(DatabaseType dbtype, String keyName) {
+		if (dbtype == DatabaseType.MYSQL) {
+			return String.format("`%s`", keyName);
+		} else if (dbtype == DatabaseType.SQLSERVER || dbtype == DatabaseType.SQLSERVER2000) {
+			return String.format("[%s]", keyName);
+		} else {
+			return String.format("\"%s\"", keyName);
+		}
+	}
+
 	public static String getQuotationChar(DatabaseType dbtype) {
-		if (dbtype==DatabaseType.MYSQL) {
+		if (dbtype == DatabaseType.MYSQL) {
 			return "`";
-		}else {
+		} else {
 			return "\"";
 		}
 	}
