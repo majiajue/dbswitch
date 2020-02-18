@@ -20,6 +20,32 @@ import com.weishao.dbswitch.core.service.impl.MigrationMetaDataServiceImpl;
 @PropertySource("classpath:config.properties")
 public class PropertiesConfig {
 
+	@Value("${source.datasource.url}")
+	public String dbSourceJdbcUrl;
+	
+	@Value("${source.datasource.driver-class-name}")
+	public String dbSourceClassName;
+
+	@Value("${source.datasource.username}")
+	public String dbSourceUserName;
+
+	@Value("${source.datasource.password}")
+	public String dbSourcePassword;
+	
+	@Value("${target.datasource.url}")
+	public String dbTargetJdbcUrl;
+	
+	@Value("${target.datasource.driver-class-name}")
+	public String dbTargetClassName;
+
+	@Value("${target.datasource.username}")
+	public String dbTargetUserName;
+
+	@Value("${target.datasource.password}")
+	public String dbTargetPassword;
+
+	/////////////////////////////////////////////
+
 	@Value("${source.datasource-fetch.size}")
 	public int fetchSizeSource;
 
