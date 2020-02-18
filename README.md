@@ -194,3 +194,16 @@ target.writer-engine.insert=true
  (2)dbswitch离线同步工具支持来源库为oracle/mysql/sqlserver/postgresql;
 
  (3)dbswitch离线同步工具支持目的库为oracle/postgresql/greenplum;
+ 
+ (4)dbswitch离线同步工具提供各种数据库间表结构转换RESTful类型的API接口，服务启动方式如下：
+ 
+ ```
+cd dbswitch-release-0.0.1/
+bin/startup.sh
+```
+
+提供swagger在线接口文档：htttp://127.0.0.1:9088/swagger-ui.html
+
+### 5、问题反馈
+
+如果您看到或使用了本工具，或您觉得本工具对您有价值，请未此项目点个赞，多谢！如果您在使用时遇到了bug，欢迎在issue中反馈。
