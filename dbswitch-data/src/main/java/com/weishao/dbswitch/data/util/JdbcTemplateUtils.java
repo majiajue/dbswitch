@@ -1,13 +1,13 @@
 package com.weishao.dbswitch.data.util;
 
 import java.sql.Connection;
-import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
+import org.apache.commons.dbcp2.BasicDataSource;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ConnectionCallback;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -18,27 +18,26 @@ public class JdbcTemplateUtils {
 	/**
 	 * 获取数据库类型
 	 * 
-	 * @param jdbcTemplate JDBC数据库连接
+	 * @param dataSource 数据源
 	 * @return DatabaseType 数据库类型
 	 * @throws SQLException
 	 */
-	public static DatabaseType getDatabaseProduceName(JdbcTemplate jdbcTemplate) {
-
-		return jdbcTemplate.execute(new ConnectionCallback<DatabaseType>() {
-
-			@Override
-			public DatabaseType doInConnection(Connection con) throws SQLException, DataAccessException {
-				DatabaseMetaData meta = con.getMetaData();
-
-				String name = meta.getDatabaseProductName();
-				if (name.toLowerCase().equals("microsoft sql server")) {
-					name = "sqlserver";
-				}
-
-				return DatabaseType.valueOf(name.toUpperCase());
-			}
-
-		});
+	public static DatabaseType getDatabaseProduceName(BasicDataSource dataSource) {
+		String driverClassName = dataSource.getDriverClassName();
+		if (driverClassName.contains("mysql")) {
+			return DatabaseType.MYSQL;
+		} else if (driverClassName.contains("oracle")) {
+			return DatabaseType.ORACLE;
+		} else if (driverClassName.contains("postgresql")) {
+			return DatabaseType.POSTGRESQL;
+		} else if (driverClassName.contains("Greenplum")) {
+			return DatabaseType.GREENPLUM;
+		} else if (driverClassName.contains("sqlserver")) {
+			return DatabaseType.SQLSERVER;
+		} else {
+			throw new RuntimeException(
+					String.format("Unsupport database type by driver class name [%s]", driverClassName));
+		}
 
 	}
 

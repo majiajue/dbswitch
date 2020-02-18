@@ -3,7 +3,7 @@ package com.weishao.dbswitch.data.config;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import javax.sql.DataSource;
+import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -73,30 +73,33 @@ public class PropertiesConfig {
 
 	@Value("${target.datasource-target.drop}")
 	public Boolean dropTargetTable;
+	
+	@Value("${target.writer-engine.insert}")
+	public Boolean engineInsert;
 
 	////////////////////////////////////////////
 
 	@Bean(name="sourceDataSource")
 	@Qualifier("sourceDataSource")
 	@ConfigurationProperties(prefix="source.datasource")
-	public DataSource sourceDataSource() {
-		return DataSourceBuilder.create().build();
+	public BasicDataSource sourceDataSource() {
+		return DataSourceBuilder.create().type(BasicDataSource.class).build();
 	}
 	
 	@Bean(name="targetDataSource")
 	@Qualifier("targetDataSource")
 	@ConfigurationProperties(prefix="target.datasource")
-	public DataSource targetDataSource() {
-		return DataSourceBuilder.create().build();
+	public BasicDataSource targetDataSource() {
+		return DataSourceBuilder.create().type(BasicDataSource.class).build();
 	}
 
 	@Bean(name = "sourceJdbcTemplate")
-	public JdbcTemplate sourceJdbcTemplate(@Qualifier("sourceDataSource") DataSource dataSource) {
+	public JdbcTemplate sourceJdbcTemplate(@Qualifier("sourceDataSource") BasicDataSource dataSource) {
 		return new JdbcTemplate(dataSource);
 	}
 
 	@Bean(name = "targetJdbcTemplate")
-	public JdbcTemplate target(@Qualifier("targetDataSource") DataSource dataSource) {
+	public JdbcTemplate target(@Qualifier("targetDataSource") BasicDataSource dataSource) {
 		return new JdbcTemplate(dataSource);
 	}
 

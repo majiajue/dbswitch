@@ -14,12 +14,12 @@
 	<version>0.0.1</version>
 	<packaging>pom</packaging>
 	<name>dbswitch</name>
-	<description>database switch  project</description>
+	<description>database switch project</description>
 
 	<modules>
 		<module>dbswitch-common</module>
 		<module>dbswitch-core</module>
-		<module>dbswitch-gpwriter</module>
+		<module>dbswitch-dbwriter</module>
 		<module>dbswitch-data</module>
 		<module>dbswitch-sql</module>
 		<module>dbswitch-webapi</module>
@@ -46,7 +46,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
-				<version>3.0.2</version>
 				<configuration>
 					<excludes>
 						<exclude>**/*.xml</exclude>

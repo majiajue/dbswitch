@@ -1,4 +1,4 @@
-package com.weishao.dbswitch.gpwriter.element;
+package com.weishao.dbswitch.dbwriter.gpdb.copy.element;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;

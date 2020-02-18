@@ -1,6 +1,6 @@
-package com.weishao.dbswitch.gpwriter.record;
+package com.weishao.dbswitch.dbwriter.gpdb.copy.record;
 
-import com.weishao.dbswitch.gpwriter.element.Column;
+import com.weishao.dbswitch.dbwriter.gpdb.copy.element.Column;
 
 public interface Record {
 
