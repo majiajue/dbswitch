@@ -20,7 +20,8 @@ import com.weishao.dbswitch.core.model.TableDescription;
  * （1）Oracle12c安装教程：
  *  官方安装版：https://www.w3cschool.cn/oraclejc/oraclejc-vuqx2qqu.html
  *  Docker版本：http://www.pianshen.com/article/4448142743/
- *                            https://www.cnblogs.com/Dev0ps/p/10676930.html
+ *            https://www.cnblogs.com/Dev0ps/p/10676930.html
+ *  (2) Oralce的一个表里至多只能有一个字段为LONG类型
  * @author tang
  *
  */
@@ -140,7 +141,7 @@ public class DatabaseOracleImpl extends AbstractDatabase implements IDatabaseInt
 	            retval.append( "VARCHAR2(" ).append( length ).append( ')' );
 	          } else {
 	            if ( length <= 0 ) {
-	              retval.append( "LONG" ); // We don't know, so we just use the maximum...
+	              retval.append( "VARCHAR2(4000)" ); // We don't know, so we just use the maximum...
 	            } else {
 	              retval.append( "CLOB" );
 	            }
