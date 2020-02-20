@@ -52,14 +52,29 @@ public class PropertiesConfig {
 	@Value("${source.datasource-source.schema}")
 	public String schemaNameSource;
 
+	@Value("${source.datasource-source.includes}")
+	private String tableNameIncludesSource;
+	
 	@Value("${source.datasource-source.excludes}")
 	private String tableNameExcludesSource;
+	
+	public List<String> getSourceTableNameIncludes() {
+		if (!Strings.isEmpty(tableNameIncludesSource)) {
+			String[] strs = tableNameIncludesSource.split(",");
+			if (strs.length > 0) {
+				return new ArrayList<String>(Arrays.asList(strs));
+			}
+		}
+
+		return new ArrayList<String>();
+	}
+
 	
 	public List<String> getSourceTableNameExcludes() {
 		if (!Strings.isEmpty(tableNameExcludesSource)) {
 			String[] strs = tableNameExcludesSource.split(",");
 			if (strs.length > 0) {
-				return Arrays.asList(strs);
+				return new ArrayList<String>(Arrays.asList(strs));
 			}
 		}
 
