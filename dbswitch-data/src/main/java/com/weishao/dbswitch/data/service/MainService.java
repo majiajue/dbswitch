@@ -66,14 +66,33 @@ public class MainService {
 
 			List<TableDescription> tableList = metaDataService.queryTableList(properties.dbSourceJdbcUrl,
 					properties.dbSourceUserName, properties.dbSourcePassword, properties.schemaNameSource);
+			List<String> includes = properties.getSourceTableNameIncludes();
+			logger.info("Includes tables is :{}",JSON.toJSONString(includes));
 			List<String> filters = properties.getSourceTableNameExcludes();
 			logger.info("Filter tables is :{}",JSON.toJSONString(filters));
 			
+			boolean useExcludeTables=includes.isEmpty();
+			if(useExcludeTables) {
+				logger.info("!!!! Use source.datasource-source.excludes to filter tables");
+			}else {
+				logger.info("!!!! Use source.datasource-source.includes to filter tables");
+			}
+			
+			int finished = 0;
 			for (TableDescription td : tableList) {
 				String tableName = td.getTableName();
-				if (!filters.contains(tableName)) {
-					this.doDataMigration(sourceJdbcTemplate,targetJdbcTemplate,td,writer);
+				if (useExcludeTables) {
+					if (!filters.contains(tableName)) {
+						this.doDataMigration(sourceJdbcTemplate, targetJdbcTemplate, td, writer);
+					}
+				} else {
+					if (includes.contains(tableName)) {
+						this.doDataMigration(sourceJdbcTemplate, targetJdbcTemplate, td, writer);
+					}
 				}
+
+				logger.info("#### Complete data migration count is {},total is {}, process is {}", ++finished,
+						tableList.size(), finished * 100.0 / tableList.size());
 			}
 
 			logger.info("service run success!");

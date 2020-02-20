@@ -36,10 +36,13 @@ sh ./build.sh
 | target.datasource.password | 目的端连接帐号密码 | 123456 | 无 |
 | source.datasource-fetch.size | 来源端数据库查询时的fetch_size设置 | 10000 | 需要大于100有效 |
 | source.datasource-source.schema | 来源端的schema名称 | ZFXFZB | 无 |
+| source.datasource-source.includes | 来源端schema下的表中需要包含的表名称 | users1,orgs1 | 多个之间用英文逗号分隔 |
 | source.datasource-source.excludes | 来源端schema下的表中需要过滤的表名称 | users,orgs | 不包含的表名称，多个之间用英文逗号分隔 |
 | target.datasource-target.schema | 目的端的schema名称 | public | 无 |
 | target.datasource-target.drop | 是否执行drop table命令 | true | 可选值为：true、false |
 | target.writer-engine.insert | 是否使用insert写入数据 | true | 可选值为：true为insert写入、false为copy写入，只针对目的端数据库为PostgreSQL/Greenplum的有效 |
+
+> **注意**：（1）如果source.datasource-source.includes不为空，则按照包含表的方式来执行；（2）如果source.datasource-source.includes为空，则按照source.datasource-source.excludes排除表的方式来执行。
 
 - mysql的配置样例
 
@@ -61,6 +64,8 @@ target.datasource.password= 123456
 source.datasource-fetch.size=10000
 ## schema name for query source database
 source.datasource-source.schema=test
+## table name include from table lists
+source.datasource-source.includes=
 ## table name exclude from table lists
 source.datasource-source.excludes=users,orgs
 
@@ -94,6 +99,8 @@ target.datasource.password= 123456
 source.datasource-fetch.size=10000
 ## schema name for query source database
 source.datasource-source.schema=ZFXFZB
+## table name include from table lists
+source.datasource-source.includes=
 ## table name exclude from table lists
 source.datasource-source.excludes=users,orgs
 
@@ -126,6 +133,8 @@ target.datasource.password= 123456
 source.datasource-fetch.size=10000
 ## schema name for query source database
 source.datasource-source.schema=dbo
+## table name include from table lists
+source.datasource-source.includes=
 ## table name exclude from table lists
 source.datasource-source.excludes=users,orgs
 
@@ -158,6 +167,8 @@ target.datasource.password= 123456
 source.datasource-fetch.size=10000
 ## schema name for query source database
 source.datasource-source.schema= public
+## table name include from table lists
+source.datasource-source.includes=
 ## table name exclude from table lists
 source.datasource-source.excludes=users,orgs
 
