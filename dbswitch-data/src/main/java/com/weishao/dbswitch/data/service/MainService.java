@@ -119,16 +119,16 @@ public class MainService {
 				logger.info("Table {} is not exits!", targetFullTableName);
 			}
 			logger.info("Execute SQL: {}", sqlDropTable);
+			
+			List<ColumnDescription> columnDescs = metaDataService.queryTableColumnMeta(properties.dbSourceJdbcUrl,
+					properties.dbSourceUserName, properties.dbSourcePassword, table.getSchemaName(), table.getTableName());
+			List<String> primaryKeys = metaDataService.queryTablePrimaryKeys(properties.dbSourceJdbcUrl,
+					properties.dbSourceUserName, properties.dbSourcePassword, table.getSchemaName(), table.getTableName());
+			String sqlCreateTable = metaDataService.getDDLCreateTableSQL(targetDatabaseType, columnDescs, primaryKeys,
+					properties.dbTargetSchema, table.getTableName(), false);
+			targetJdbcTemplate.execute(sqlCreateTable);
+			logger.info("Execute SQL: \n{}", sqlCreateTable);
 		}
-
-		List<ColumnDescription> columnDescs = metaDataService.queryTableColumnMeta(properties.dbSourceJdbcUrl,
-				properties.dbSourceUserName, properties.dbSourcePassword, table.getSchemaName(), table.getTableName());
-		List<String> primaryKeys = metaDataService.queryTablePrimaryKeys(properties.dbSourceJdbcUrl,
-				properties.dbSourceUserName, properties.dbSourcePassword, table.getSchemaName(), table.getTableName());
-		String sqlCreateTable = metaDataService.getDDLCreateTableSQL(targetDatabaseType, columnDescs, primaryKeys,
-				properties.dbTargetSchema, table.getTableName(), false);
-		targetJdbcTemplate.execute(sqlCreateTable);
-		logger.info("Execute SQL: \n{}", sqlCreateTable);
 
 		List<String> columnList = new ArrayList<String>();
 		for (Map.Entry<String, Integer> entry : columnMetaData.entrySet()) {
