@@ -39,7 +39,7 @@ sh ./build.sh
 | source.datasource-source.includes | 来源端schema下的表中需要包含的表名称 | users1,orgs1 | 多个之间用英文逗号分隔 |
 | source.datasource-source.excludes | 来源端schema下的表中需要过滤的表名称 | users,orgs | 不包含的表名称，多个之间用英文逗号分隔 |
 | target.datasource-target.schema | 目的端的schema名称 | public | 无 |
-| target.datasource-target.drop | 是否执行drop table命令 | true | 可选值为：true、false |
+| target.datasource-target.drop | 是否执行先drop表然后create表命令 | true | 可选值为：true、false |
 | target.writer-engine.insert | 是否使用insert写入数据 | true | 可选值为：true为insert写入、false为copy写入，只针对目的端数据库为PostgreSQL/Greenplum的有效 |
 
 > **注意**：（1）如果source.datasource-source.includes不为空，则按照包含表的方式来执行；（2）如果source.datasource-source.includes为空，则按照source.datasource-source.excludes排除表的方式来执行。
@@ -72,7 +72,7 @@ source.datasource-source.excludes=users,orgs
 # target database configuration parameters
 ## schema name for create/insert table data
 target.datasource-target.schema=public
-## whether drop table where target database exist
+## whether drop-create table when target table exist
 target.datasource-target.drop=true
 ## whether use insert engine to write data for target database
 ## Only usefull for PostgreSQL/Greenplum database
@@ -107,7 +107,7 @@ source.datasource-source.excludes=users,orgs
 # target database configuration parameters
 ## schema name for create/insert table data
 target.datasource-target.schema=public
-## whether drop table where target database exist
+## whether drop-create table when target table exist
 target.datasource-target.drop=true
 ## whether use insert engine to write data for target database
 ## Only usefull for PostgreSQL/Greenplum database
@@ -141,7 +141,7 @@ source.datasource-source.excludes=users,orgs
 # target database configuration parameters
 ## schema name for create/insert table data
 target.datasource-target.schema=public
-## whether drop table where target database exist
+## whether drop-create table when target table exist
 target.datasource-target.drop=true
 ## whether use insert engine to write data for target database
 ## Only usefull for PostgreSQL/Greenplum database
@@ -175,7 +175,7 @@ source.datasource-source.excludes=users,orgs
 # target database configuration parameters
 ## schema name for create/insert table data
 target.datasource-target.schema=public
-## whether drop table where target database exist
+## whether drop-create table when target table exist
 target.datasource-target.drop=true
 ## whether use insert engine to write data for target database
 ## Only usefull for PostgreSQL/Greenplum database
