@@ -72,7 +72,7 @@ source.datasource-source.excludes=users,orgs
 # target database configuration parameters
 ## schema name for create/insert table data
 target.datasource-target.schema=public
-## whether drop table where target database exist
+## whether drop-create table when target table exist
 target.datasource-target.drop=true
 ## whether use insert engine to write data for target database
 ## Only usefull for PostgreSQL/Greenplum database
@@ -107,7 +107,7 @@ source.datasource-source.excludes=users,orgs
 # target database configuration parameters
 ## schema name for create/insert table data
 target.datasource-target.schema=public
-## whether drop table where target database exist
+## whether drop-create table when target table exist
 target.datasource-target.drop=true
 ## whether use insert engine to write data for target database
 ## Only usefull for PostgreSQL/Greenplum database
@@ -141,7 +141,7 @@ source.datasource-source.excludes=users,orgs
 # target database configuration parameters
 ## schema name for create/insert table data
 target.datasource-target.schema=public
-## whether drop table where target database exist
+## whether drop-create table when target table exist
 target.datasource-target.drop=true
 ## whether use insert engine to write data for target database
 ## Only usefull for PostgreSQL/Greenplum database
@@ -175,7 +175,7 @@ source.datasource-source.excludes=users,orgs
 # target database configuration parameters
 ## schema name for create/insert table data
 target.datasource-target.schema=public
-## whether drop table where target database exist
+## whether drop-create table when target table exist
 target.datasource-target.drop=true
 ## whether use insert engine to write data for target database
 ## Only usefull for PostgreSQL/Greenplum database
