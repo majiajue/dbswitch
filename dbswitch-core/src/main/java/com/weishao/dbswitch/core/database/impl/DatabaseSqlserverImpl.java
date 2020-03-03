@@ -176,6 +176,11 @@ public class DatabaseSqlserverImpl extends AbstractDatabase implements IDatabase
 			if (length < 8000) {
 				// Maybe use some default DB String length in case length<=0
 				if (length > 0) {
+					//VARCHAR(n)最多能存n个字节，一个中文是两个字节。
+					length=2*length;
+					if(length>8000) {
+						length=8000;
+					}
 					retval += "VARCHAR(" + length + ")";
 				} else {
 					retval += "VARCHAR(100)";
@@ -204,7 +209,7 @@ public class DatabaseSqlserverImpl extends AbstractDatabase implements IDatabase
 		if (pks.size() > 0) {
 			StringBuilder sb = new StringBuilder();
 			sb.append("[");
-			sb.append(StringUtils.join(pks, " ] , [ "));
+			sb.append(StringUtils.join(pks, "] , ["));
 			sb.append("]");
 			return sb.toString();
 		}

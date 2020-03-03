@@ -84,7 +84,7 @@ public abstract class AbstractDatabase implements IDatabaseInterface {
 		try {
 			schemas = this.metaData.getSchemas();
 			while (schemas.next()) {
-				ret.add(schemas.getString("TABLE_SCHEM"));
+				ret.add(schemas.getString("TABLE_SCHEM").trim());
 			}
 			return new ArrayList<String>(ret);
 		} catch (SQLException e) {
@@ -101,7 +101,7 @@ public abstract class AbstractDatabase implements IDatabaseInterface {
 		try {
 			tables = this.metaData.getTables(this.catalogName, schemaName,"%",new String[]{"TABLE","VIEW"});
 			while (tables.next()) {
-				String tableName = tables.getString("TABLE_NAME");
+				String tableName = tables.getString("TABLE_NAME").trim();
 				if (uniqueSet.contains(tableName)) {
 					continue;
 				} else {
@@ -128,8 +128,8 @@ public abstract class AbstractDatabase implements IDatabaseInterface {
 		try {
 			ResultSet columns = this.metaData.getColumns( this.catalogName, schemaName,tableName, null );
 			while (columns.next()) {
-				String column_name = columns.getString("COLUMN_NAME");
-				String remarks = columns.getString("REMARKS");
+				String column_name = columns.getString("COLUMN_NAME").trim();
+				String remarks = columns.getString("REMARKS").trim();
 				for(ColumnDescription cd : ret) {
 					if(column_name.equalsIgnoreCase(cd.getFieldName())) {
 						cd.setRemarks(remarks);
@@ -149,7 +149,7 @@ public abstract class AbstractDatabase implements IDatabaseInterface {
 		try {
 			ResultSet primarykeys = this.metaData.getPrimaryKeys(this.catalogName, schemaName, tableName);
 			while (primarykeys.next()) {
-				String name = primarykeys.getString("COLUMN_NAME");
+				String name = primarykeys.getString("COLUMN_NAME").trim();
 				if (!ret.contains(name)) {
 					ret.add(name);
 				}
@@ -218,9 +218,9 @@ public abstract class AbstractDatabase implements IDatabaseInterface {
 			ResultSetMetaData m = rs.getMetaData();
 			int columns = m.getColumnCount();
 			for (int i = 1; i <= columns; i++) {
-				String name = m.getColumnLabel(i);
+				String name = m.getColumnLabel(i).trim();
 				if (null == name) {
-					name = m.getColumnName(i);
+					name = m.getColumnName(i).trim();
 				}
 
 				ColumnDescription cd=new ColumnDescription();

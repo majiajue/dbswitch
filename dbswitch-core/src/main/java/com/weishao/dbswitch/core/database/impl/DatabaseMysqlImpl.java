@@ -202,7 +202,7 @@ public class DatabaseMysqlImpl extends AbstractDatabase implements IDatabaseInte
 		if(pks.size()>0) {
 			StringBuilder sb = new StringBuilder();
 			sb.append("`");
-			sb.append(StringUtils.join(pks, " ` , ` "));
+			sb.append(StringUtils.join(pks, "` , `"));
 			sb.append("`");
 			return sb.toString();
 		}
