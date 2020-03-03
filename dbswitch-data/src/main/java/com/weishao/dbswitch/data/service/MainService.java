@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.alibaba.fastjson.JSON;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -61,15 +61,16 @@ public class MainService {
 		
 		try {
 			logger.info("service is running....");
+			ObjectMapper jackson = new ObjectMapper();
 			JdbcTemplate sourceJdbcTemplate=new JdbcTemplate(this.sourceDataSource);
 			JdbcTemplate targetJdbcTemplate=new JdbcTemplate(this.targetDataSource);
 
 			List<TableDescription> tableList = metaDataService.queryTableList(properties.dbSourceJdbcUrl,
 					properties.dbSourceUserName, properties.dbSourcePassword, properties.schemaNameSource);
 			List<String> includes = properties.getSourceTableNameIncludes();
-			logger.info("Includes tables is :{}",JSON.toJSONString(includes));
+			logger.info("Includes tables is :{}",jackson.writeValueAsString(includes));
 			List<String> filters = properties.getSourceTableNameExcludes();
-			logger.info("Filter tables is :{}",JSON.toJSONString(filters));
+			logger.info("Filter tables is :{}",jackson.writeValueAsString(filters));
 			
 			boolean useExcludeTables=includes.isEmpty();
 			if(useExcludeTables) {
@@ -147,8 +148,8 @@ public class MainService {
 				long totalCount = 0;
 				List<Object[]> recordValues = new LinkedList<Object[]>();
 
-				int fetchSize = 100;
-				if (properties.fetchSizeSource >= 100) {
+				int fetchSize = 1000;
+				if (properties.fetchSizeSource >= fetchSize) {
 					fetchSize = properties.fetchSizeSource;
 				}
 
