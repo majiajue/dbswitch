@@ -2,13 +2,24 @@
 
 ## 一、支持功能
 
-  oracle/SqlServer/mysql/PostgreSQL表结构及数据向Greenplum数据库的同步功能。示例如如下：
+  oracle/SqlServer/mysql/PostgreSQL表结构及数据向Greenplum/PostgreSQL数据库的迁移(表结构+表数据)同步功能。示例如如下：
   
   ![structure](images/function.PNG)
+ 
 
 ## 二、编译配置
 
+本工具纯Java语言开发，环境要求、编译方法及其配置方式如下：
+
 ### 1、编译打包命令
+
+- 环境要求:
+
+ **JDK**:>=1.8
+ 
+ **maven**:>=3.0
+ 
+- 编译命令:
 
 ```
 git clone https://gitee.com/inrgihc/dbswitch.git
@@ -190,23 +201,21 @@ bin/datasync.sh
 
 ### 4、特别说明
 
- (1)对于向目的库为PostgreSQL/Greenplum的数据离线同步默认采用copy方式写入数据
-
-  当使用copy写入数据时，需要注意：
+- (1)对于向目的库为PostgreSQL/Greenplum的数据离线同步默认采用copy方式写入数据，注意事项如下：
   
-  - 配置为postgresql的jdbcurl和驱动类（不能为greenplum的驱动包），
+  **（a）** 如若使用copy方式写入，配置文件中需配置为postgresql的jdbcurl和驱动类（不能为greenplum的驱动包），
   
-  - 此方式不支持含有二进制类型的数据写入，否则请使用insert方式写入，需要在config.properties配置文件中设置如下参数为true:
+  **（b）** 如若使用insert方式写入，需要在config.properties配置文件中设置如下参数为true:
 
 ```
 target.writer-engine.insert=true
 ```
 
- (2)dbswitch离线同步工具支持来源库为oracle/mysql/sqlserver/postgresql;
+- (2)dbswitch离线同步工具支持来源库为oracle/mysql/sqlserver/postgresql;
 
- (3)dbswitch离线同步工具支持目的库为oracle/postgresql/greenplum;
+- (3)dbswitch离线同步工具支持目的库为oracle/postgresql/greenplum;
  
- (4)dbswitch离线同步工具提供各种数据库间表结构转换RESTful类型的API接口，服务启动方式如下：
+- (4)dbswitch离线同步工具提供各种数据库间表结构转换RESTful类型的API接口，服务启动方式如下：
  
  ```
 cd dbswitch-release-0.0.1/
@@ -214,6 +223,8 @@ bin/startup.sh
 ```
 
 提供swagger在线接口文档：htttp://127.0.0.1:9088/swagger-ui.html
+
+- (5)dbswitch离线同步工具支持的数据类型包括：整型、时间、文本、二进制等多种数据类型;
 
 ### 5、问题反馈
 

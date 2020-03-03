@@ -91,7 +91,7 @@ public class MainService {
 					}
 				}
 
-				logger.info("#### Complete data migration count is {},total is {}, process is {}", ++finished,
+				logger.info("#### Complete data migration count is {},total is {}, process is {}%", ++finished,
 						tableList.size(), finished * 100.0 / tableList.size());
 			}
 
