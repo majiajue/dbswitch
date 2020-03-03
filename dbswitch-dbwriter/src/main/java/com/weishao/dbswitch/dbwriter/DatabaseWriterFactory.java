@@ -21,7 +21,7 @@ public class DatabaseWriterFactory {
 		{
 			put("MYSQL", "com.weishao.dbswitch.dbwriter.mysql.MySqlWriterImpl");
 			put("ORACLE", "com.weishao.dbswitch.dbwriter.oracle.OracleWriterImpl");
-			put("sqlserver", "com.weishao.dbswitch.dbwriter.mssql.SqlServrerWriterImpl");
+			put("SQLSERVER", "com.weishao.dbswitch.dbwriter.mssql.SqlServrerWriterImpl");
 			put("POSTGRESQL", "com.weishao.dbswitch.dbwriter.gpdb.GreenplumCopyWriterImpl");
 			put("GREENPLUM", "com.weishao.dbswitch.dbwriter.gpdb.GreenplumCopyWriterImpl");
 		}
