@@ -20,11 +20,12 @@ import com.weishao.dbswitch.core.model.TableDescription;
 
 /**
  * 数据库元信息抽象基类
+ * 
  * @author tang
  *
  */
 public abstract class AbstractDatabase implements IDatabaseInterface {
-	
+
 	public static final int CLOB_LENGTH = 9999999;
 
 	protected Connection connection = null;
@@ -32,59 +33,58 @@ public abstract class AbstractDatabase implements IDatabaseInterface {
 	protected String catalogName = null;
 
 	public AbstractDatabase(String driverClassName) {
-		this.catalogName=null;
-		
+		this.catalogName = null;
+
 		try {
 			Class.forName(driverClassName);
 		} catch (ClassNotFoundException e) {
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 	@Override
-	public void Connect(String jdbcUrl, String username, String password) {
+	public void connect(String jdbcUrl, String username, String password) {
 		/*
-		 * 超时时间设置问题：
-		 * https://blog.csdn.net/lsunwing/article/details/79461217
+		 * 超时时间设置问题： https://blog.csdn.net/lsunwing/article/details/79461217
 		 * https://blog.csdn.net/weixin_34405332/article/details/91664781
 		 */
 		try {
 			/**
 			 * Oracle在通过jdbc连接的时候需要添加一个参数来设置是否获取注释
 			 */
-			Properties props =new Properties();
+			Properties props = new Properties();
 			props.put("user", username);
 			props.put("password", password);
-			props.put("remarksReporting","true");
-			
-			DriverManager.setLoginTimeout(15);//设置最大时间
+			props.put("remarksReporting", "true");
+
+			DriverManager.setLoginTimeout(15);// 设置最大时间
 			this.connection = DriverManager.getConnection(jdbcUrl, props);
 			this.metaData = this.connection.getMetaData();
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
-		
+
 	}
 
 	@Override
-	public void Close() {
-		if(null!=connection) {
+	public void close() {
+		if (null != connection) {
 			try {
 				connection.close();
-			}catch(SQLException e) {
+			} catch (SQLException e) {
 			}
-			connection=null;
+			connection = null;
 		}
 	}
 
 	@Override
 	public List<String> querySchemaList() {
-		Set<String> ret=new HashSet<String>();
+		Set<String> ret = new HashSet<String>();
 		ResultSet schemas;
 		try {
 			schemas = this.metaData.getSchemas();
 			while (schemas.next()) {
-				ret.add(schemas.getString("TABLE_SCHEM").trim());
+				ret.add(schemas.getString("TABLE_SCHEM"));
 			}
 			return new ArrayList<String>(ret);
 		} catch (SQLException e) {
@@ -95,43 +95,43 @@ public abstract class AbstractDatabase implements IDatabaseInterface {
 
 	@Override
 	public List<TableDescription> queryTableList(String schemaName) {
-		List<TableDescription> ret=new ArrayList<TableDescription>();
-		Set<String> uniqueSet=new HashSet<String>();
+		List<TableDescription> ret = new ArrayList<TableDescription>();
+		Set<String> uniqueSet = new HashSet<String>();
 		ResultSet tables;
 		try {
-			tables = this.metaData.getTables(this.catalogName, schemaName,"%",new String[]{"TABLE","VIEW"});
+			tables = this.metaData.getTables(this.catalogName, schemaName, "%", new String[] { "TABLE", "VIEW" });
 			while (tables.next()) {
-				String tableName = tables.getString("TABLE_NAME").trim();
+				String tableName = tables.getString("TABLE_NAME");
 				if (uniqueSet.contains(tableName)) {
 					continue;
 				} else {
 					uniqueSet.add(tableName);
 				}
-				
-				TableDescription td=new TableDescription();
+
+				TableDescription td = new TableDescription();
 				td.setSchemaName(schemaName);
 				td.setTableName(tableName);
 				td.setRemarks(tables.getString("REMARKS"));
-				td.setTableType(tables.getString("TABLE_TYPE").trim().toUpperCase());
+				td.setTableType(tables.getString("TABLE_TYPE").toUpperCase());
 				ret.add(td);
 			}
 			return ret;
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
-		} 
+		}
 	}
 
 	@Override
 	public List<ColumnDescription> queryTableColumnMeta(String schemaName, String tableName) {
-		String sql=this.getTableFieldsQuerySQL(schemaName, tableName);
-		List<ColumnDescription> ret= this.querySelectSqlColumnMeta(sql);
+		String sql = this.getTableFieldsQuerySQL(schemaName, tableName);
+		List<ColumnDescription> ret = this.querySelectSqlColumnMeta(sql);
 		try {
-			ResultSet columns = this.metaData.getColumns( this.catalogName, schemaName,tableName, null );
+			ResultSet columns = this.metaData.getColumns(this.catalogName, schemaName, tableName, null);
 			while (columns.next()) {
-				String column_name = columns.getString("COLUMN_NAME").trim();
-				String remarks = columns.getString("REMARKS").trim();
-				for(ColumnDescription cd : ret) {
-					if(column_name.equalsIgnoreCase(cd.getFieldName())) {
+				String column_name = columns.getString("COLUMN_NAME");
+				String remarks = columns.getString("REMARKS");
+				for (ColumnDescription cd : ret) {
+					if (column_name.equalsIgnoreCase(cd.getFieldName())) {
 						cd.setRemarks(remarks);
 					}
 				}
@@ -139,17 +139,17 @@ public abstract class AbstractDatabase implements IDatabaseInterface {
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
-		
+
 		return ret;
 	}
-	
+
 	@Override
 	public List<String> queryTablePrimaryKeys(String schemaName, String tableName) {
 		Set<String> ret = new HashSet<String>();
 		try {
 			ResultSet primarykeys = this.metaData.getPrimaryKeys(this.catalogName, schemaName, tableName);
 			while (primarykeys.next()) {
-				String name = primarykeys.getString("COLUMN_NAME").trim();
+				String name = primarykeys.getString("COLUMN_NAME");
 				if (!ret.contains(name)) {
 					ret.add(name);
 				}
@@ -162,10 +162,10 @@ public abstract class AbstractDatabase implements IDatabaseInterface {
 
 	@Override
 	public abstract List<ColumnDescription> querySelectSqlColumnMeta(String sql);
-	
+
 	@Override
 	public void testQuerySQL(String sql) {
-		String wrapperSql=this.getTestQuerySQL(sql);
+		String wrapperSql = this.getTestQuerySQL(sql);
 
 		try {
 			PreparedStatement pstmt = this.connection.prepareStatement(wrapperSql);
@@ -174,38 +174,40 @@ public abstract class AbstractDatabase implements IDatabaseInterface {
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 	@Override
 	public String getQuotedSchemaTableCombination(String schemaName, String tableName) {
 		return String.format(" \"%s\".\"%s\" ", schemaName, tableName);
 	}
-	
+
 	@Override
 	public String getFieldDefinition(ColumnMetaData v, List<String> pks, boolean add_cr) {
 		throw new RuntimeException("AbstractDatabase Unempliment!");
 	}
-	
+
 	@Override
-	public  String getPrimaryKeyAsString(List<String> pks) {
-		if(pks.size()>0) {
+	public String getPrimaryKeyAsString(List<String> pks) {
+		if (pks.size() > 0) {
 			StringBuilder sb = new StringBuilder();
 			sb.append("\"");
 			sb.append(StringUtils.join(pks, "\" , \""));
 			sb.append("\"");
 			return sb.toString();
 		}
-		
+
 		return "";
 	}
 
-	public abstract String formatSQL(String sql) ;
-	
-	////////////////////internal function////////////////////////////////////////////////
-	
-	protected abstract String getTableFieldsQuerySQL(String schemaName, String tableName) ;
-	
+	public abstract String formatSQL(String sql);
+
+	/**************************************
+	 * internal function
+	 **************************************/
+
+	protected abstract String getTableFieldsQuerySQL(String schemaName, String tableName);
+
 	protected abstract String getTestQuerySQL(String sql);
-	
+
 	protected List<ColumnDescription> getSelectSqlColumnMeta(String querySQL, DatabaseType dbtype) {
 		List<ColumnDescription> ret = new ArrayList<ColumnDescription>();
 		PreparedStatement pstmt = null;
@@ -223,20 +225,20 @@ public abstract class AbstractDatabase implements IDatabaseInterface {
 					name = m.getColumnName(i).trim();
 				}
 
-				ColumnDescription cd=new ColumnDescription();
+				ColumnDescription cd = new ColumnDescription();
 				cd.setFieldName(name);
 				cd.setLabelName(name);
 				cd.setFieldType(m.getColumnType(i));
-				if(0!=cd.getFieldType()) {
-					cd.setFieldTypeName( m.getColumnTypeName(i));
+				if (0 != cd.getFieldType()) {
+					cd.setFieldTypeName(m.getColumnTypeName(i));
 					cd.setFiledTypeClassName(m.getColumnClassName(i));
 					cd.setDisplaySize(m.getColumnDisplaySize(i));
 					cd.setPrecisionSize(m.getPrecision(i));
 					cd.setScaleSize(m.getScale(i));
 					cd.setAutoIncrement(m.isAutoIncrement(i));
-					cd.setNullable(m.isNullable(i)!=ResultSetMetaData.columnNoNulls);
-				}else {
-					//处理视图中NULL as fieldName的情况
+					cd.setNullable(m.isNullable(i) != ResultSetMetaData.columnNoNulls);
+				} else {
+					// 处理视图中NULL as fieldName的情况
 					cd.setFieldTypeName("CHAR");
 					cd.setFiledTypeClassName(String.class.getName());
 					cd.setDisplaySize(1);
@@ -245,7 +247,7 @@ public abstract class AbstractDatabase implements IDatabaseInterface {
 					cd.setAutoIncrement(false);
 					cd.setNullable(true);
 				}
-				
+
 				boolean signed = false;
 				try {
 					signed = m.isSigned(i);
@@ -258,7 +260,7 @@ public abstract class AbstractDatabase implements IDatabaseInterface {
 
 				ret.add(cd);
 			}
-			
+
 			return ret;
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
