@@ -133,12 +133,9 @@ public class MySqlDialectImpl extends DatabaseDialect {
 			} else if (Objects.nonNull(defaultValue) && !defaultValue.isEmpty()) {
 				if (defaultValue.toUpperCase().equals("NULL")) {
 					sb.append(" DEFAULT NULL");
-<<<<<<< HEAD
-=======
 				} else if (defaultValue.toUpperCase().trim().startsWith("CURRENT_TIMESTAMP")) {
 					// 处理时间字段的默认当前时间问题
 					sb.append(String.format(" DEFAULT %s", defaultValue));
->>>>>>> 4a13e121a4301e8dd0193879083b9422830635fe
 				} else {
 					sb.append(String.format(" DEFAULT '%s'", defaultValue));
 				}
