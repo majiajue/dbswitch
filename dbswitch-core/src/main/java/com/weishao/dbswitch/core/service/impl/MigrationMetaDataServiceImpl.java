@@ -22,10 +22,10 @@ public class MigrationMetaDataServiceImpl implements IMetaDataService {
 	public List<String> querySchemaList(String jdbcUrl, String username, String password) {
 		AbstractDatabase db = Objects.requireNonNull(this.database, "Please call setDatabaseConnection() first!");
 		try {
-			db.Connect(jdbcUrl, username, password);
+			db.connect(jdbcUrl, username, password);
 			return db.querySchemaList();
 		} finally {
-			db.Close();
+			db.close();
 		}
 	}
 
@@ -33,10 +33,10 @@ public class MigrationMetaDataServiceImpl implements IMetaDataService {
 	public List<TableDescription> queryTableList(String jdbcUrl, String username, String password, String schemaName) {
 		AbstractDatabase db = Objects.requireNonNull(this.database, "Please call setDatabaseConnection() first!");
 		try {
-			db.Connect(jdbcUrl, username, password);
+			db.connect(jdbcUrl, username, password);
 			return db.queryTableList(schemaName);
 		} finally {
-			db.Close();
+			db.close();
 		}
 	}
 
@@ -45,10 +45,10 @@ public class MigrationMetaDataServiceImpl implements IMetaDataService {
 			String schemaName, String tableName) {
 		AbstractDatabase db = Objects.requireNonNull(this.database, "Please call setDatabaseConnection() first!");
 		try {
-			db.Connect(jdbcUrl, username, password);
+			db.connect(jdbcUrl, username, password);
 			return db.queryTableColumnMeta(schemaName, tableName);
 		} finally {
-			db.Close();
+			db.close();
 		}
 	}
 
@@ -57,10 +57,10 @@ public class MigrationMetaDataServiceImpl implements IMetaDataService {
 			String querySql) {
 		AbstractDatabase db = Objects.requireNonNull(this.database, "Please call setDatabaseConnection() first!");
 		try {
-			db.Connect(jdbcUrl, username, password);
+			db.connect(jdbcUrl, username, password);
 			return db.querySelectSqlColumnMeta(querySql);
 		} finally {
-			db.Close();
+			db.close();
 		}
 	}
 
@@ -69,20 +69,20 @@ public class MigrationMetaDataServiceImpl implements IMetaDataService {
 			String tableName) {
 		AbstractDatabase db = Objects.requireNonNull(this.database, "Please call setDatabaseConnection() first!");
 		try {
-			db.Connect(jdbcUrl, username, password);
+			db.connect(jdbcUrl, username, password);
 			return db.queryTablePrimaryKeys(schemaName, tableName);
 		} finally {
-			db.Close();
+			db.close();
 		}
 	}
 
 	public void testQuerySQL(String jdbcUrl, String username, String password, String sql) {
 		AbstractDatabase db = Objects.requireNonNull(this.database, "Please call setDatabaseConnection() first!");
 		try {
-			db.Connect(jdbcUrl, username, password);
+			db.connect(jdbcUrl, username, password);
 			db.testQuerySQL(sql);
 		} finally {
-			db.Close();
+			db.close();
 		}
 	}
 

@@ -36,10 +36,10 @@ public class MigrationConvertServiceImpl implements IMigrationService {
 		String password=this.databaseDesc.getPassword();
 
 		try {
-			this.database.Connect(jdbcUrl, username, password);
+			this.database.connect(jdbcUrl, username, password);
 			return this.database.querySchemaList();
 		}finally {
-			this.database.Close();
+			this.database.close();
 		}
 	}
 
@@ -50,10 +50,10 @@ public class MigrationConvertServiceImpl implements IMigrationService {
 		String password=this.databaseDesc.getPassword();
 
 		try {
-			this.database.Connect(jdbcUrl, username, password);
+			this.database.connect(jdbcUrl, username, password);
 			return this.database.queryTableList(schemaName);
 		}finally {
-			this.database.Close();
+			this.database.close();
 		}
 	}
 
@@ -64,10 +64,10 @@ public class MigrationConvertServiceImpl implements IMigrationService {
 		String password=this.databaseDesc.getPassword();
 
 		try {
-			this.database.Connect(jdbcUrl, username, password);
+			this.database.connect(jdbcUrl, username, password);
 			return this.database.queryTableColumnMeta(schemaName, tableName);
 		}finally {
-			this.database.Close();
+			this.database.close();
 		}
 	}
 	
@@ -78,10 +78,10 @@ public class MigrationConvertServiceImpl implements IMigrationService {
 		String password=this.databaseDesc.getPassword();
 
 		try {
-			this.database.Connect(jdbcUrl, username, password);
+			this.database.connect(jdbcUrl, username, password);
 			return this.database.querySelectSqlColumnMeta(querySql);
 		}finally {
-			this.database.Close();
+			this.database.close();
 		}
 	}
 
@@ -92,10 +92,10 @@ public class MigrationConvertServiceImpl implements IMigrationService {
 		String password=this.databaseDesc.getPassword();
 
 		try {
-			this.database.Connect(jdbcUrl, username, password);
+			this.database.connect(jdbcUrl, username, password);
 			return this.database.queryTablePrimaryKeys(schemaName, tableName);
 		}finally {
-			this.database.Close();
+			this.database.close();
 		}
 	}
 
@@ -105,10 +105,10 @@ public class MigrationConvertServiceImpl implements IMigrationService {
 		String password=this.databaseDesc.getPassword();
 
 		try {
-			this.database.Connect(jdbcUrl, username, password);
+			this.database.connect(jdbcUrl, username, password);
 			this.database.testQuerySQL(sql);
 		}finally {
-			this.database.Close();
+			this.database.close();
 		}
 	}
 
