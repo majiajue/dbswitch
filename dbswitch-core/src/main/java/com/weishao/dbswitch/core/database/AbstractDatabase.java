@@ -220,7 +220,9 @@ public abstract class AbstractDatabase implements IDatabaseInterface {
 			ResultSetMetaData m = rs.getMetaData();
 			int columns = m.getColumnCount();
 			for (int i = 1; i <= columns; i++) {
+				String name = m.getColumnLabel(i);
 				if (null == name) {
+					name = m.getColumnName(i);
 				}
 
 				ColumnDescription cd = new ColumnDescription();
