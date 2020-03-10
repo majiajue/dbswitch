@@ -2,7 +2,7 @@
 
 ## 一、工具介绍
 
-1、功能描述
+### 1、功能描述
 
 一句话，dbswitch工具提供源端数据库向目的端数据的迁移功能。
 
@@ -16,11 +16,11 @@
 
 基于JDBC的fetchSize批次读取源端数据库数据，并基于insert/copy方式将数据分批次写入目的数据库。
 
-2、功能设计
+### 2、功能设计
 
  ![function](images/function.PNG)
  
-3、详细功能
+### 3、详细功能
 
 - 源端oracle/SqlServer/mysql/PostgreSQL向目的端为Greenplum的迁移
 
@@ -40,7 +40,7 @@
  
 - *源端oracle/SqlServer/mysql/PostgreSQL向目的端为MySQL的迁移(测试中)*
 
-4、结构设计
+### 4、结构设计
   
   ![structure](images/stucture.PNG)
  
@@ -70,7 +70,7 @@ sh ./build.sh
 
 ### 3、配置文件
 
-配置文件信息如下：vim conf/config.properties
+配置文件信息请见部署包中的：conf/config.properties
 
 | 配置参数 | 配置说明 | 示例 | 备注 |
 | :------| :------ | :------ | :------ |
@@ -96,142 +96,32 @@ sh ./build.sh
 
 - *（2）如果source.datasource-source.includes为空，则按照source.datasource-source.excludes排除表的方式来执行。*
 
-- mysql的配置样例
+- mysql的驱动配置样例
 
 ```
-# source database connection information
-source.datasource.url= jdbc:mysql://172.17.207.210:3306/test?useUnicode=true&characterEncoding=utf-8&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai
-source.datasource.driver-class-name= com.mysql.cj.jdbc.Driver
-source.datasource.username= tang
-source.datasource.password= tang
-
-# target database connection information
-target.datasource.url= jdbc:postgresql://172.17.11.90:5432/study
-target.datasource.driver-class-name= org.postgresql.Driver
-target.datasource.username= study
-target.datasource.password= 123456
-
-# source database configuration parameters
-## fetch size for query source database
-source.datasource-fetch.size=10000
-## schema name for query source database
-source.datasource-source.schema=test
-## table name include from table lists
-source.datasource-source.includes=
-## table name exclude from table lists
-source.datasource-source.excludes=users,orgs
-
-# target database configuration parameters
-## schema name for create/insert table data
-target.datasource-target.schema=public
-## whether drop-create table when target table exist
-target.datasource-target.drop=true
-## whether use insert engine to write data for target database
-## Only usefull for PostgreSQL/Greenplum database
-target.writer-engine.insert=false
+jdbc连接地址：jdbc:mysql://172.17.2.10:3306/test?useUnicode=true&characterEncoding=utf-8&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai
+jdbc驱动名称： com.mysql.cj.jdbc.Driver
 ```
 
-- oracle的配置样例
+- oracle的驱动配置样例
 
 ```
-# source database connection information
-source.datasource.url= jdbc:oracle:thin:@172.17.207.158:1521:ORCL
-source.datasource.driver-class-name= oracle.jdbc.driver.OracleDriver
-source.datasource.username= ZFXFZB
-source.datasource.password= ZFXFZB
-
-# target database connection information
-target.datasource.url= jdbc:postgresql://172.17.207.90:5432/study
-target.datasource.driver-class-name= org.postgresql.Driver
-target.datasource.username= study
-target.datasource.password= 123456
-
-# source database configuration parameters
-## fetch size for query source database
-source.datasource-fetch.size=10000
-## schema name for query source database
-source.datasource-source.schema=ZFXFZB
-## table name include from table lists
-source.datasource-source.includes=
-## table name exclude from table lists
-source.datasource-source.excludes=users,orgs
-
-# target database configuration parameters
-## schema name for create/insert table data
-target.datasource-target.schema=public
-## whether drop-create table when target table exist
-target.datasource-target.drop=true
-## whether use insert engine to write data for target database
-## Only usefull for PostgreSQL/Greenplum database
-target.writer-engine.insert=false
+jdbc连接地址：jdbc:oracle:thin:@172.17.2.58:1521:ORCL
+jdbc驱动名称：oracle.jdbc.driver.OracleDriver
 ```
 
-- SqlServer的配置样例
+- SqlServer的驱动配置样例
+
 ```
-# source database connection information
-source.datasource.url= jdbc:sqlserver://172.16.90.166:1433;DatabaseName=hqtest
-source.datasource.driver-class-name= com.microsoft.sqlserver.jdbc.SQLServerDriver
-source.datasource.username= hqtest
-source.datasource.password= 123456
-
-# target database connection information
-target.datasource.url= jdbc:postgresql://172.17.207.90:5432/study
-target.datasource.driver-class-name= org.postgresql.Driver
-target.datasource.username= study
-target.datasource.password= 123456
-
-# source database configuration parameters
-## fetch size for query source database
-source.datasource-fetch.size=10000
-## schema name for query source database
-source.datasource-source.schema=dbo
-## table name include from table lists
-source.datasource-source.includes=
-## table name exclude from table lists
-source.datasource-source.excludes=users,orgs
-
-# target database configuration parameters
-## schema name for create/insert table data
-target.datasource-target.schema=public
-## whether drop-create table when target table exist
-target.datasource-target.drop=true
-## whether use insert engine to write data for target database
-## Only usefull for PostgreSQL/Greenplum database
-target.writer-engine.insert=false
+jdbc连接地址：jdbc:sqlserver://172.16.2.66:1433;DatabaseName=hqtest
+jdbc驱动名称：com.microsoft.sqlserver.jdbc.SQLServerDriver
 ```
 
-- PostgreSQL的配置样例
+- PostgreSQL的驱动配置样例
+
 ```
-# source database connection information
-source.datasource.url= jdbc:postgresql://172.17.207.210:5432/tangyibo
-source.datasource.driver-class-name= org.postgresql.Driver
-source.datasource.username= tangyibo
-source.datasource.password= tangyibo
-
-# target database connection information
-target.datasource.url= jdbc:postgresql://172.17.207.90:5432/study
-target.datasource.driver-class-name= org.postgresql.Driver
-target.datasource.username= study
-target.datasource.password= 123456
-
-# source database configuration parameters
-## fetch size for query source database
-source.datasource-fetch.size=10000
-## schema name for query source database
-source.datasource-source.schema= public
-## table name include from table lists
-source.datasource-source.includes=
-## table name exclude from table lists
-source.datasource-source.excludes=users,orgs
-
-# target database configuration parameters
-## schema name for create/insert table data
-target.datasource-target.schema=public
-## whether drop-create table when target table exist
-target.datasource-target.drop=true
-## whether use insert engine to write data for target database
-## Only usefull for PostgreSQL/Greenplum database
-target.writer-engine.insert=false
+jdbc连接地址：jdbc:postgresql://172.17.207.210:5432/tangyibo
+jdbc驱动名称：org.postgresql.Driver
 ```
 
 启动执行命令如下：
@@ -261,7 +151,7 @@ bin/startup.sh
 
 提供swagger在线接口文档：htttp://127.0.0.1:9088/swagger-ui.html
 
-- 3、dbswitch离线同步工具支持的数据类型包括：整型、时间、文本、二进制等多种数据类型;
+- 3、dbswitch离线同步工具支持的数据类型包括：整型、时间、文本、二进制等常用数据类型;
 
 ## 四、问题反馈
 
