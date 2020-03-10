@@ -4,9 +4,7 @@
 
 ### 1、功能描述
 
-一句话，dbswitch工具提供源端数据库向目的端数据的迁移功能。
-
-迁移包括：
+一句话，dbswitch工具提供源端数据库向目的端数据的迁移功能。迁移包括：
 
 - **结构迁移**
 
@@ -153,7 +151,15 @@ bin/startup.sh
 
 - 3、dbswitch离线同步工具支持的数据类型包括：整型、时间、文本、二进制等常用数据类型;
 
-## 四、问题反馈
+## 四、文档博客
+
+（1）https://blog.csdn.net/inrgihc/article/details/103739629
+
+（2）https://blog.csdn.net/inrgihc/article/details/104642238
+
+（3）https://blog.csdn.net/inrgihc/article/details/103738656
+
+## 五、问题反馈
 
 如果您看到或使用了本工具，或您觉得本工具对您有价值，请为此项目**点个赞**，多谢！如果您在使用时遇到了bug，欢迎在issue中反馈。也可扫描下方二维码入群讨论：
 
