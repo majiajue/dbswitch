@@ -151,6 +151,8 @@ bin/startup.sh
 
 - 3、dbswitch离线同步工具支持的数据类型包括：整型、时间、文本、二进制等常用数据类型;
 
+- 4、Oracle的表虽然设置了主键，如果**主键约束实际为DISABLED状态**，那在进行结构转换时会按照没有此主键处理。
+
 ## 四、文档博客
 
 （1）https://blog.csdn.net/inrgihc/article/details/103739629
