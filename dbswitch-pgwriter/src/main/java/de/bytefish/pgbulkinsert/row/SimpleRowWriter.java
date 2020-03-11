@@ -5,7 +5,6 @@ import de.bytefish.pgbulkinsert.pgsql.handlers.ValueHandlerProvider;
 import de.bytefish.pgbulkinsert.util.StringUtils;
 import org.postgresql.PGConnection;
 import org.postgresql.copy.PGCopyOutputStream;
-
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.HashMap;

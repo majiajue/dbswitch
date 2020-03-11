@@ -148,7 +148,7 @@ public class MainService {
 				long totalCount = 0;
 				List<Object[]> recordValues = new LinkedList<Object[]>();
 
-				int fetchSize = 1000;
+				int fetchSize = 100;
 				if (properties.fetchSizeSource >= fetchSize) {
 					fetchSize = properties.fetchSizeSource;
 				}

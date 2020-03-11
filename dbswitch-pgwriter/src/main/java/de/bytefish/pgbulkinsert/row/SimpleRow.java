@@ -8,6 +8,7 @@ import de.bytefish.pgbulkinsert.pgsql.handlers.IValueHandler;
 import de.bytefish.pgbulkinsert.pgsql.handlers.ValueHandlerProvider;
 import de.bytefish.pgbulkinsert.pgsql.model.geometric.*;
 import de.bytefish.pgbulkinsert.pgsql.model.network.MacAddress;
+import de.bytefish.pgbulkinsert.util.StringUtils;
 
 import java.net.Inet4Address;
 import java.net.Inet6Address;
@@ -181,19 +182,19 @@ public class SimpleRow {
     }
 
     public void setText(String columnName, String value) {
-        setValue(columnName, DataType.Text, value);
+        setValue(columnName, DataType.Text, StringUtils.escapeString(value));
     }
 
     public void setText(int ordinal, String value) {
-        setValue(ordinal, DataType.Text, value);
+        setValue(ordinal, DataType.Text, StringUtils.escapeString(value));
     }
 
     public void setVarChar(String columnName, String value) {
-        setValue(columnName, DataType.Text, value);
+        setValue(columnName, DataType.Text, StringUtils.escapeString(value));
     }
 
     public void setVarChar(int ordinal, String value) {
-        setValue(ordinal, DataType.Text, value);
+        setValue(ordinal, DataType.Text, StringUtils.escapeString(value));
     }
 
     public void setUUID(String columnName, UUID value) {
@@ -213,11 +214,11 @@ public class SimpleRow {
     }
 
     public void setJsonb(String columnName, String value) {
-        setValue(columnName, DataType.Jsonb, value);
+        setValue(columnName, DataType.Jsonb, StringUtils.escapeString(value));
     }
 
     public void setJsonb(int ordinal, String value) {
-        setValue(ordinal, DataType.Jsonb, value);
+        setValue(ordinal, DataType.Jsonb, StringUtils.escapeString(value));
     }
 
     public void setHstore(String columnName, Map<String, String> value) {
