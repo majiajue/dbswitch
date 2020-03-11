@@ -148,13 +148,15 @@ public class GreenplumCopyWriterImpl extends AbstractDatabaseWriter implements I
 									row.setVarChar(i, null);
 								} else if (fieldValue instanceof java.lang.String) {
 									row.setVarChar(i, (java.lang.String) fieldValue);
+								} else if (fieldValue instanceof java.sql.Clob) {
+									row.setVarChar(i, clob2Str((java.sql.Clob) fieldValue));
 								} else if (fieldValue instanceof java.lang.Number) {
 									row.setVarChar(i, fieldValue.toString());
 								} else if (fieldValue instanceof java.lang.Boolean) {
 									row.setVarChar(i, fieldValue.toString());
 								} else {
 									throw new RuntimeException(
-											String.format("表名:[%s.%s]的字段名:[%s]数据类型错误，应该为java.lang.String", schemaName,
+											String.format("表名:[%s.%s]的字段名:[%s]数据类型错误，应该为java.lang.String/java.sql.Clob", schemaName,
 													tableName, fieldName));
 								}
 								break;
@@ -164,13 +166,15 @@ public class GreenplumCopyWriterImpl extends AbstractDatabaseWriter implements I
 									row.setText(i, null);
 								} else if (fieldValue instanceof java.lang.String) {
 									row.setText(i, (java.lang.String) fieldValue);
+								} else if (fieldValue instanceof java.sql.Clob) {
+									row.setVarChar(i, clob2Str((java.sql.Clob) fieldValue));
 								} else if (fieldValue instanceof java.lang.Number) {
 									row.setText(i, fieldValue.toString());
 								} else if (fieldValue instanceof java.lang.Boolean) {
 									row.setText(i, fieldValue.toString());
 								} else {
 									throw new RuntimeException(
-											String.format("表名:[%s.%s]的字段名:[%s]数据类型错误，应该为java.lang.String", schemaName,
+											String.format("表名:[%s.%s]的字段名:[%s]数据类型错误，应该为java.lang.String/java.sql.Clob", schemaName,
 													tableName, fieldName));
 								}
 								break;
@@ -383,4 +387,37 @@ public class GreenplumCopyWriterImpl extends AbstractDatabaseWriter implements I
 
 	}
 
+	/**
+	 * 将java.sql.Clob类型转换为java.lang.String类型
+	 * @param clob java.sql.Clob类型对象
+	 * @return java.lang.String类型数据
+	 */
+	private String clob2Str(java.sql.Clob clob) {
+		java.io.Reader is = null;
+		java.io.BufferedReader reader = null;
+		try {
+			is = clob.getCharacterStream();
+			reader = new java.io.BufferedReader(reader);
+			String line = reader.readLine();
+			StringBuffer sb = new StringBuffer();
+			while (line != null) {
+				sb.append(line);
+				line = reader.readLine();
+			}
+			return sb.toString();
+		} catch (SQLException | java.io.IOException e) {
+			throw new RuntimeException(e);
+		} finally {
+			try {
+				if (null != reader) {
+					reader.close();
+				}
+				if (null != is) {
+					is.close();
+				}
+			} catch (Exception ex) {
+
+			}
+		}
+	}
 }
