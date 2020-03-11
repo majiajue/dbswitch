@@ -87,7 +87,7 @@ public class GreenplumCopyWriterImpl extends AbstractDatabaseWriter implements I
 			throw new RuntimeException("内部代码出现错误，请开发人员排查！");
 		}
 	}
-	
+
 	@Override
 	public long write(List<String> fieldNames, List<Object[]> recordValues) {
 		if (null == this.columnType || this.columnType.isEmpty()) {
@@ -97,7 +97,7 @@ public class GreenplumCopyWriterImpl extends AbstractDatabaseWriter implements I
 		if (fieldNames.isEmpty()) {
 			throw new IllegalArgumentException("参数1(fieldNames)为空无效!");
 		}
-		
+
 		if (recordValues.isEmpty()) {
 			return 0;
 		}
@@ -108,21 +108,21 @@ public class GreenplumCopyWriterImpl extends AbstractDatabaseWriter implements I
 			if (!this.columnType.containsKey(s)) {
 				throw new RuntimeException(String.format("表%s.%s 中不存在字段名为%s的字段，请检查参数传入!", schemaName, tableName, s));
 			}
-			
-			columnNames[i]=s;
+
+			columnNames[i] = s;
 		}
 
 		String schemaName = Objects.requireNonNull(this.schemaName, "schema名称为空，不合法!");
 		String tableName = Objects.requireNonNull(this.tableName, "table名称为空，不合法!");
 		SimpleRowWriter.Table table = new SimpleRowWriter.Table(schemaName, tableName, columnNames);
 		SimpleRowWriter pgwriter = new SimpleRowWriter(table);
-		Connection connection=null;
+		Connection connection = null;
 		try {
 			connection = dataSource.getConnection();
 			PGConnection pgConnection = PostgreSqlUtils.getPGConnection(connection);
 			pgwriter.open(pgConnection);
-			
-			long count=recordValues.size();
+
+			long count = recordValues.size();
 			for (Object[] objects : recordValues) {
 				if (fieldNames.size() != objects.length) {
 					throw new RuntimeException(
@@ -156,8 +156,8 @@ public class GreenplumCopyWriterImpl extends AbstractDatabaseWriter implements I
 									row.setVarChar(i, fieldValue.toString());
 								} else {
 									throw new RuntimeException(
-											String.format("表名:[%s.%s]的字段名:[%s]数据类型错误，应该为java.lang.String/java.sql.Clob", schemaName,
-													tableName, fieldName));
+											String.format("表名:[%s.%s]的字段名:[%s]数据类型错误，应该为java.lang.String/java.sql.Clob",
+													schemaName, tableName, fieldName));
 								}
 								break;
 							case Types.CLOB:
@@ -167,15 +167,15 @@ public class GreenplumCopyWriterImpl extends AbstractDatabaseWriter implements I
 								} else if (fieldValue instanceof java.lang.String) {
 									row.setText(i, (java.lang.String) fieldValue);
 								} else if (fieldValue instanceof java.sql.Clob) {
-									row.setVarChar(i, clob2Str((java.sql.Clob) fieldValue));
+									row.setText(i, clob2Str((java.sql.Clob) fieldValue));
 								} else if (fieldValue instanceof java.lang.Number) {
 									row.setText(i, fieldValue.toString());
 								} else if (fieldValue instanceof java.lang.Boolean) {
 									row.setText(i, fieldValue.toString());
 								} else {
 									throw new RuntimeException(
-											String.format("表名:[%s.%s]的字段名:[%s]数据类型错误，应该为java.lang.String/java.sql.Clob", schemaName,
-													tableName, fieldName));
+											String.format("表名:[%s.%s]的字段名:[%s]数据类型错误，应该为java.lang.String/java.sql.Clob",
+													schemaName, tableName, fieldName));
 								}
 								break;
 							case Types.TINYINT:
@@ -282,7 +282,7 @@ public class GreenplumCopyWriterImpl extends AbstractDatabaseWriter implements I
 									java.sql.Time date = java.sql.Time.valueOf(fieldValue.toString());
 									LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 									row.setDate(i, localDate);
-								}else {
+								} else {
 									throw new RuntimeException(
 											String.format("表名:[%s.%s]的字段名:[%s]数据类型错误，应该为java.sql.Time", schemaName,
 													tableName, fieldName));
@@ -299,7 +299,7 @@ public class GreenplumCopyWriterImpl extends AbstractDatabaseWriter implements I
 									java.sql.Time date = java.sql.Time.valueOf(fieldValue.toString());
 									LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 									row.setDate(i, localDate);
-								}else {
+								} else {
 									throw new RuntimeException(
 											String.format("表名:[%s.%s]的字段名:[%s]数据类型错误，应该为java.sql.Date", schemaName,
 													tableName, fieldName));
@@ -309,20 +309,22 @@ public class GreenplumCopyWriterImpl extends AbstractDatabaseWriter implements I
 								if (null == fieldValue) {
 									row.setTimeStamp(i, null);
 								} else if (fieldValue instanceof java.sql.Timestamp) {
-									java.sql.Timestamp t=(java.sql.Timestamp)fieldValue;
-									LocalDateTime localDateTime = LocalDateTime.ofInstant(t.toInstant(), ZoneId.systemDefault());
+									java.sql.Timestamp t = (java.sql.Timestamp) fieldValue;
+									LocalDateTime localDateTime = LocalDateTime.ofInstant(t.toInstant(),
+											ZoneId.systemDefault());
 									row.setTimeStamp(i, localDateTime);
 								} else if (fieldValue instanceof java.sql.Date) {
 									java.sql.Date date = (java.sql.Date) fieldValue;
-									LocalDate localDate=date.toLocalDate();
+									LocalDate localDate = date.toLocalDate();
 									LocalTime localTime = LocalTime.of(0, 0, 0);
 									LocalDateTime localDateTime = LocalDateTime.of(localDate, localTime);
 									row.setTimeStamp(i, localDateTime);
 								} else if (fieldValue instanceof java.lang.String) {
 									java.sql.Timestamp t = java.sql.Timestamp.valueOf(fieldValue.toString());
-									LocalDateTime localDateTime = LocalDateTime.ofInstant(t.toInstant(), ZoneId.systemDefault());
+									LocalDateTime localDateTime = LocalDateTime.ofInstant(t.toInstant(),
+											ZoneId.systemDefault());
 									row.setTimeStamp(i, localDateTime);
-								}else {
+								} else {
 									throw new RuntimeException(
 											String.format("表名:[%s.%s]的字段名:[%s]数据类型错误，应该为java.sql.Timestamp", schemaName,
 													tableName, fieldName));
@@ -335,7 +337,7 @@ public class GreenplumCopyWriterImpl extends AbstractDatabaseWriter implements I
 								if (null == fieldValue) {
 									row.setByteArray(i, null);
 								} else if (fieldValue instanceof byte[]) {
-									row.setByteArray(i, (byte[])fieldValue);
+									row.setByteArray(i, (byte[]) fieldValue);
 								} else if (fieldValue instanceof java.lang.String) {
 									row.setByteArray(i, ((java.lang.String) fieldValue).getBytes());
 								} else {
@@ -381,7 +383,7 @@ public class GreenplumCopyWriterImpl extends AbstractDatabaseWriter implements I
 			return count;
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
-		}finally {
+		} finally {
 			JdbcUtils.closeConnection(connection);
 		}
 
@@ -389,6 +391,7 @@ public class GreenplumCopyWriterImpl extends AbstractDatabaseWriter implements I
 
 	/**
 	 * 将java.sql.Clob类型转换为java.lang.String类型
+	 * 
 	 * @param clob java.sql.Clob类型对象
 	 * @return java.lang.String类型数据
 	 */
@@ -397,7 +400,7 @@ public class GreenplumCopyWriterImpl extends AbstractDatabaseWriter implements I
 		java.io.BufferedReader reader = null;
 		try {
 			is = clob.getCharacterStream();
-			reader = new java.io.BufferedReader(reader);
+			reader = new java.io.BufferedReader(is);
 			String line = reader.readLine();
 			StringBuffer sb = new StringBuffer();
 			while (line != null) {
