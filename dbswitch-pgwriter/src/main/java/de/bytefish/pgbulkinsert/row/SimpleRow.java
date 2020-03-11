@@ -214,11 +214,11 @@ public class SimpleRow {
     }
 
     public void setJsonb(String columnName, String value) {
-        setValue(columnName, DataType.Jsonb, value);
+        setValue(columnName, DataType.Jsonb, StringUtils.escapeString(value));
     }
 
     public void setJsonb(int ordinal, String value) {
-        setValue(ordinal, DataType.Jsonb, value);
+        setValue(ordinal, DataType.Jsonb, StringUtils.escapeString(value));
     }
 
     public void setHstore(String columnName, Map<String, String> value) {
