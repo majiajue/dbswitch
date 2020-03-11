@@ -25,6 +25,10 @@ public class StringUtils {
 	 * @return 处理后的字符串
 	 */
 	public static String escapeString(String data) {
+		if (null == data) {
+			return data;
+		}
+		
 		StringBuilder sb = new StringBuilder();
 
 		for (int i = 0; i < data.length(); ++i) {
