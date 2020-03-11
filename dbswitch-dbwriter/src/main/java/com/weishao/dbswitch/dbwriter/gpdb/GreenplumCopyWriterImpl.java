@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectOutputStream;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -338,12 +340,12 @@ public class GreenplumCopyWriterImpl extends AbstractDatabaseWriter implements I
 									row.setByteArray(i, null);
 								} else if (fieldValue instanceof byte[]) {
 									row.setByteArray(i, (byte[]) fieldValue);
+								} else if (fieldValue instanceof java.sql.Blob) {
+									row.setByteArray(i, blob2Bytes((java.sql.Blob) fieldValue));
 								} else if (fieldValue instanceof java.lang.String) {
 									row.setByteArray(i, ((java.lang.String) fieldValue).getBytes());
 								} else {
-									throw new RuntimeException(
-											String.format("表名:[%s.%s]的字段名:[%s]数据类型错误，应该为java.lang.Byte", schemaName,
-													tableName, fieldName));
+									row.setByteArray(i, toByteArray(fieldValue));
 								}
 								break;
 							case Types.BOOLEAN:
@@ -396,6 +398,10 @@ public class GreenplumCopyWriterImpl extends AbstractDatabaseWriter implements I
 	 * @return java.lang.String类型数据
 	 */
 	private String clob2Str(java.sql.Clob clob) {
+		if (null == clob) {
+			return null;
+		}
+
 		java.io.Reader is = null;
 		java.io.BufferedReader reader = null;
 		try {
@@ -419,6 +425,74 @@ public class GreenplumCopyWriterImpl extends AbstractDatabaseWriter implements I
 					is.close();
 				}
 			} catch (Exception ex) {
+
+			}
+		}
+	}
+
+	/**
+	 * 将java.sql.Blob类型转换为byte数组
+	 * 
+	 * @param clob java.sql.Blob类型对象
+	 * @return byte数组
+	 */
+	private byte[] blob2Bytes(java.sql.Blob blob) {
+		if (null == blob) {
+			return null;
+		}
+
+		java.io.BufferedInputStream bufferedInputStream = null;
+		try {
+			bufferedInputStream = new java.io.BufferedInputStream(blob.getBinaryStream());
+			byte[] bytes = new byte[(int) blob.length()];
+			int len = bytes.length;
+			int offset = 0;
+			int read = 0;
+			while (offset < len && (read = bufferedInputStream.read(bytes, offset, len - offset)) >= 0) {
+				offset += read;
+			}
+			return bytes;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		} finally {
+			try {
+				bufferedInputStream.close();
+			} catch (Exception e) {
+			}
+		}
+	}
+
+	/**
+	 * 将Object对象转换为字节数组
+	 * 
+	 * @param obj 对象
+	 * @return 字节数组
+	 */
+	private byte[] toByteArray(Object obj) {
+		if (null == obj) {
+			return null;
+		}
+
+		ByteArrayOutputStream bos = null;
+		ObjectOutputStream oos = null;
+		try {
+			bos = new ByteArrayOutputStream();
+			oos = new ObjectOutputStream(bos);
+			oos.writeObject(obj);
+			oos.flush();
+			return bos.toByteArray();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		} finally {
+			try {
+				if (null != oos) {
+					oos.close();
+				}
+
+				if (null != bos) {
+					bos.close();
+				}
+			} catch (Exception e) {
 
 			}
 		}
