@@ -5,6 +5,7 @@ import de.bytefish.pgbulkinsert.pgsql.handlers.ValueHandlerProvider;
 import de.bytefish.pgbulkinsert.util.StringUtils;
 import org.postgresql.PGConnection;
 import org.postgresql.copy.PGCopyOutputStream;
+
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -55,6 +56,7 @@ public class SimpleRowWriter {
     private final PgBinaryWriter writer;
     private final ValueHandlerProvider provider;
     private final Map<String, Integer> lookup;
+    private PGCopyOutputStream output;
 
     public SimpleRowWriter(Table table) {
         this.writer = new PgBinaryWriter();
@@ -62,6 +64,8 @@ public class SimpleRowWriter {
         this.provider = new ValueHandlerProvider();
 
         this.lookup = new HashMap<>();
+        
+        this.output=null;
 
         for (int ordinal = 0; ordinal < table.columns.length; ordinal++) {
             lookup.put(table.columns[ordinal], ordinal);
@@ -69,7 +73,8 @@ public class SimpleRowWriter {
     }
 
     public void open(PGConnection connection) throws SQLException  {
-        writer.open(new PGCopyOutputStream(connection, getCopyCommand(table), 1));
+    	output=new PGCopyOutputStream(connection, getCopyCommand(table), 1);
+        writer.open(output);
     }
 
     public synchronized void startRow(Consumer<SimpleRow> consumer) {
@@ -78,9 +83,21 @@ public class SimpleRowWriter {
 
         SimpleRow row = new SimpleRow(provider, lookup);
 
-        consumer.accept(row);
+		try {
+			consumer.accept(row);
 
-        row.writeRow(writer);
+			row.writeRow(writer);
+		} catch(Exception e) {
+			// 此次必须要执行PGCopyOutputStream的close方法释放资源；
+			// 否则会被锁死在postgresql的驱动里，导致线程永远被卡死
+			//
+			try {
+				this.output.close();
+			} catch (Exception ex) {
+			}
+			
+			throw e;
+		}
     }
 
     public void close() throws SQLException  {
