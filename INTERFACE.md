@@ -1192,7 +1192,7 @@ CREATE TABLE "private"."t_test_postgres_table" (
 | MySQL | 文本 | TEXT | TEXT |
 | MySQL | 文本 | MEDIUMBLOB | MEDIUMBLOB |
 | MySQL | 文本 | MEDIUMTEXT | MEDIUMTEXT |
-| MySQL | 文本 | LONGBLOB | LONGBLOB |
+| MySQL | 二进制 | LONGBLOB | LONGBLOB |
 | MySQL | 文本 | LONGTEXT | LONGTEXT |
 | Oracle | 数字 | NUMBER | NUMBER(38,0)、NUMBER(38,2) |
 | Oracle | 时间 | DATE | DATE |
@@ -1203,7 +1203,7 @@ CREATE TABLE "private"."t_test_postgres_table" (
 | Oracle | 文本 | VARCHAR2 | VARCHAR2(2) |
 | Oracle | 文本 | LONG | LONG |
 | Oracle | 文本 | CLOB | CLOB |
-| Oracle | 文本 | BLOB | BLOB |
+| Oracle | 二进制 | BLOB | BLOB |
 | Greenplum | 数字 | SMALLINT | SMALLINT(2) |
 | Greenplum | 数字 | INT2 | INT2 |
 | Greenplum | 数字 | INTEGER | INTEGER |
@@ -1222,5 +1222,5 @@ CREATE TABLE "private"."t_test_postgres_table" (
 | Greenplum | 文本 | CHAR | CHAR(2) |
 | Greenplum | 文本 | VARCHAR | VARCHAR(128) |
 | Greenplum | 文本 | TEXT | TEXT |
-| Greenplum | 文本 | BYTEA | BYTEA |
+| Greenplum | 二进制 | BYTEA | BYTEA |
 

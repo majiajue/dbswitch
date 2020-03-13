@@ -3,7 +3,9 @@ package com.weishao.dbswitch.dbwriter;
 import java.util.Map;
 import java.util.HashMap;
 import javax.sql.DataSource;
-import org.apache.commons.dbcp2.BasicDataSource;
+import org.springframework.boot.jdbc.DatabaseDriver;
+import org.springframework.jdbc.support.JdbcUtils;
+import org.springframework.jdbc.support.MetaDataAccessException;
 import java.lang.reflect.Constructor;
 
 /**
@@ -32,7 +34,7 @@ public class DatabaseWriterFactory {
 	 * @param dataSource  DBCP连接池的数据源
 	 * @return  写入器对象
 	 */
-	public static AbstractDatabaseWriter createDatabaseWriter(BasicDataSource dataSource) {
+	public static AbstractDatabaseWriter createDatabaseWriter(DataSource dataSource) {
 		return DatabaseWriterFactory.createDatabaseWriter(dataSource, false);
 	}
 
@@ -42,8 +44,7 @@ public class DatabaseWriterFactory {
 	 * @param insert    对于GP数据库来说是否使用insert引擎写入
 	 * @return  写入器对象
 	 */
-	public static AbstractDatabaseWriter createDatabaseWriter(BasicDataSource dataSource,boolean insert) {
-		dataSource.setAccessToUnderlyingConnectionAllowed(true);
+	public static AbstractDatabaseWriter createDatabaseWriter(DataSource dataSource,boolean insert) {
 		String type=DatabaseWriterFactory.getDatabaseNameByDataSource(dataSource).toUpperCase();
 		if (insert) {
 			if (type.equals("POSTGRESQL") || type.equals("GREENPLUM")) {
@@ -70,23 +71,27 @@ public class DatabaseWriterFactory {
 	
 	/**
 	 * 根据DataSource获取数据库的类型
-	 * @param dataSource  数据库DataSource对象
-	 * @return  数据库的类型：mysql/oracle/postgresql/greenplum
+	 * 
+	 * @param dataSource 数据库源
+	 * @return 数据库的类型：mysql/oracle/postgresql/greenplum
 	 */
-	public static String getDatabaseNameByDataSource(BasicDataSource dataSource) {
-		String driverClassName=dataSource.getDriverClassName();
-		if(driverClassName.contains("mysql")) {
-			return "mysql";
-		}else if(driverClassName.contains("oracle")) {
-			return "oracle";
-		}else if(driverClassName.contains("postgresql")) {
-			return "postgresql";
-		}else if(driverClassName.contains("Greenplum")) {
-			return "greenplum";
-		}else if (driverClassName.contains("sqlserver")) {
-			return "sqlserver";
-		}else {
-			throw new RuntimeException(String.format("Unsupport database type by driver class name [%s]",driverClassName));
+	private static String getDatabaseNameByDataSource(DataSource dataSource) {
+		try {
+			String productName = JdbcUtils.commonDatabaseName(
+					JdbcUtils.extractDatabaseMetaData(dataSource, "getDatabaseProductName").toString());
+			if (productName.equalsIgnoreCase("Greenplum")) {
+				return "greenplum";
+			} else if (productName.equalsIgnoreCase("Microsoft SQL Server")) {
+				return "sqlserver";
+			}
+
+			DatabaseDriver databaseDriver = DatabaseDriver.fromProductName(productName);
+			if (databaseDriver == DatabaseDriver.UNKNOWN) {
+				throw new IllegalStateException("[dbwrite] Unable to detect database type from data source instance");
+			}
+			return databaseDriver.getId();
+		} catch (MetaDataAccessException ex) {
+			throw new IllegalStateException("[dbwrite] Unable to detect database type", ex);
 		}
 	}
 }
