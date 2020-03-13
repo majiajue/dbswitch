@@ -19,7 +19,6 @@
 	<modules>
 		<module>dbswitch-common</module>
 		<module>dbswitch-core</module>
-		<module>dbswitch-pgwriter</module>
 		<module>dbswitch-dbwriter</module>
 		<module>dbswitch-data</module>
 		<module>dbswitch-sql</module>

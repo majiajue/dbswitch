@@ -23,9 +23,9 @@
 			<artifactId>commons-dbcp2</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.weishao</groupId>
-			<artifactId>dbswitch-pgwriter</artifactId>
-			<version>0.0.1</version>
+			<groupId>de.bytefish</groupId>
+			<artifactId>pgbulkinsert</artifactId>
+			<version>3.8</version>
 		</dependency>
 	</dependencies>
 

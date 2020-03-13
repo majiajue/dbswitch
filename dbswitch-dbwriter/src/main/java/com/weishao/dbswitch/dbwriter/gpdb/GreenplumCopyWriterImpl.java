@@ -117,7 +117,8 @@ public class GreenplumCopyWriterImpl extends AbstractDatabaseWriter implements I
 		String schemaName = Objects.requireNonNull(this.schemaName, "schema名称为空，不合法!");
 		String tableName = Objects.requireNonNull(this.tableName, "table名称为空，不合法!");
 		SimpleRowWriter.Table table = new SimpleRowWriter.Table(schemaName, tableName, columnNames);
-		SimpleRowWriter pgwriter = new SimpleRowWriter(table);
+		SimpleRowWriter pgwriter = new SimpleRowWriter(table,true);
+		pgwriter.enableNullCharacterHandler();
 		Connection connection = null;
 		try {
 			connection = dataSource.getConnection();
