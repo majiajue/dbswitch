@@ -25,11 +25,11 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 import com.weishao.dbswitch.dbwriter.AbstractDatabaseWriter;
 import com.weishao.dbswitch.dbwriter.IDatabaseWriter;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class SqlServrerWriterImpl extends AbstractDatabaseWriter implements IDatabaseWriter {
 
-	private static final Logger logger = LoggerFactory.getLogger(SqlServrerWriterImpl.class);
-	
 	public SqlServrerWriterImpl(DataSource dataSource) {
 		super(dataSource);
 	}
@@ -110,8 +110,8 @@ public class SqlServrerWriterImpl extends AbstractDatabaseWriter implements IDat
 
 			recordValues.clear();
 			transactionManager.commit(status);
-			if (logger.isDebugEnabled()) {
-				logger.debug("SQL Server insert data affect count: {}", affect_count);
+			if (log.isDebugEnabled()) {
+				log.debug("SQL Server insert data affect count: {}", affect_count);
 			}
 			return affect_count;
 		} catch (TransactionException e) {
