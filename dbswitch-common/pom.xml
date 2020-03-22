@@ -5,14 +5,9 @@
 	<parent>
 		<groupId>com.weishao</groupId>
 		<artifactId>dbswitch</artifactId>
-		<version>0.0.1</version>
+		<version>${revision}</version>
 	</parent>
-	<artifactId>dbswitch-common</artifactId>
 
-	<properties>
-		<java.version>1.8</java.version>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-	</properties>
+	<artifactId>dbswitch-common</artifactId>
 
 </project>

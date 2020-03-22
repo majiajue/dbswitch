@@ -6,7 +6,7 @@
 #############################################
 # !!!!!! Modify here please
 
-APP_PROG="dbswitch-webapi-0.0.1.jar"
+APP_MAIN="com.weishao.dbswitch.webapi.WebServiceApplication"
 
 #############################################
 
@@ -20,7 +20,7 @@ APP_BIN_PATH=$APP_HOME/bin
 APP_LIB_PATH=$APP_HOME/lib
 APP_CONF_PATH=$APP_HOME/conf
 
-PIDS=`ps -ef | grep java | grep "$APP_HOME" | grep "$APP_PROG" |awk '{print $2}'`
+PIDS=`ps -ef | grep java | grep "$APP_HOME" | grep "$APP_MAIN" |awk '{print $2}'`
 if [ -z "$PIDS" ]; then
         echo "ERROR: The server does not started!"
         exit 1

@@ -1,7 +1,5 @@
 package com.weishao.dbswitch.dbwriter.gpdb;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -29,6 +27,7 @@ import com.weishao.dbswitch.dbwriter.IDatabaseWriter;
 import de.bytefish.pgbulkinsert.row.SimpleRow;
 import de.bytefish.pgbulkinsert.row.SimpleRowWriter;
 import de.bytefish.pgbulkinsert.util.PostgreSqlUtils;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Greenplum数据库Copy写入实现类
@@ -36,9 +35,8 @@ import de.bytefish.pgbulkinsert.util.PostgreSqlUtils;
  * @author tang
  *
  */
+@Slf4j
 public class GreenplumCopyWriterImpl extends AbstractDatabaseWriter implements IDatabaseWriter {
-
-	private static final Logger logger = LoggerFactory.getLogger(GreenplumCopyWriterImpl.class);
 
 	protected Map<String, Integer> columnType;
 
@@ -77,8 +75,8 @@ public class GreenplumCopyWriterImpl extends AbstractDatabaseWriter implements I
 		});
 
 		if (ret) {
-			this.schemaName = schemaName;
-			this.tableName = tableName;
+			this.schemaName = Objects.requireNonNull(schemaName, "schema-name名称为空，不合法!");
+			this.tableName = Objects.requireNonNull(tableName, "table-name名称为空，不合法!");
 			this.columnType = Objects.requireNonNull(columnMetaData);
 
 			if (this.columnType.isEmpty()) {
@@ -97,7 +95,7 @@ public class GreenplumCopyWriterImpl extends AbstractDatabaseWriter implements I
 		}
 
 		if (fieldNames.isEmpty()) {
-			throw new IllegalArgumentException("参数1(fieldNames)为空无效!");
+			throw new IllegalArgumentException("第一个参数[fieldNames]为空,无效!");
 		}
 
 		if (recordValues.isEmpty()) {
@@ -114,10 +112,10 @@ public class GreenplumCopyWriterImpl extends AbstractDatabaseWriter implements I
 			columnNames[i] = s;
 		}
 
-		String schemaName = Objects.requireNonNull(this.schemaName, "schema名称为空，不合法!");
-		String tableName = Objects.requireNonNull(this.tableName, "table名称为空，不合法!");
+		String schemaName = Objects.requireNonNull(this.schemaName, "schema-name名称为空，不合法!");
+		String tableName = Objects.requireNonNull(this.tableName, "table-name名称为空，不合法!");
 		SimpleRowWriter.Table table = new SimpleRowWriter.Table(schemaName, tableName, columnNames);
-		SimpleRowWriter pgwriter = new SimpleRowWriter(table,true);
+		SimpleRowWriter pgwriter = new SimpleRowWriter(table, true);
 		pgwriter.enableNullCharacterHandler();
 		Connection connection = null;
 		try {
@@ -158,9 +156,9 @@ public class GreenplumCopyWriterImpl extends AbstractDatabaseWriter implements I
 								} else if (fieldValue instanceof java.lang.Boolean) {
 									row.setVarChar(i, fieldValue.toString());
 								} else {
-									throw new RuntimeException(
-											String.format("表名:[%s.%s]的字段名:[%s]数据类型错误，应该为java.lang.String/java.sql.Clob",
-													schemaName, tableName, fieldName));
+									throw new RuntimeException(String.format(
+											"表[%s.%s]的字段名[%s]数据类型转换错误，应该为java.lang.String/java.sql.Clob，而实际的数据类型为%s",
+											schemaName, tableName, fieldName, fieldValue.getClass().getName()));
 								}
 								break;
 							case Types.CLOB:
@@ -176,9 +174,9 @@ public class GreenplumCopyWriterImpl extends AbstractDatabaseWriter implements I
 								} else if (fieldValue instanceof java.lang.Boolean) {
 									row.setText(i, fieldValue.toString());
 								} else {
-									throw new RuntimeException(
-											String.format("表名:[%s.%s]的字段名:[%s]数据类型错误，应该为java.lang.String/java.sql.Clob",
-													schemaName, tableName, fieldName));
+									throw new RuntimeException(String.format(
+											"表名[%s.%s]的字段名[%s]数据类型转换错误，应该为java.lang.String/java.sql.Clob，而实际的数据类型为%s",
+											schemaName, tableName, fieldName, fieldValue.getClass().getName()));
 								}
 								break;
 							case Types.TINYINT:
@@ -191,13 +189,13 @@ public class GreenplumCopyWriterImpl extends AbstractDatabaseWriter implements I
 										row.setByte(i, Byte.parseByte(fieldValue.toString()));
 									} catch (NumberFormatException e) {
 										throw new RuntimeException(
-												String.format("表名:[%s.%s]的字段名:[%s]数据类型错误，无法将String类型转换为Number类型:%s",
+												String.format("表名[%s.%s]的字段名[%s]数据类型转换错误，无法将java.lang.String类型转换为java.lang.Number类型:%s",
 														schemaName, tableName, fieldName, e.getMessage()));
 									}
 								} else {
 									throw new RuntimeException(
-											String.format("表名:[%s.%s]的字段名:[%s]数据类型错误，应该为java.lang.Number", schemaName,
-													tableName, fieldName));
+											String.format("表名[%s.%s]的字段名[%s]数据类型转错误，应该为java.lang.Number，而实际的数据类型为%s",
+													schemaName, tableName, fieldName, fieldValue.getClass().getName()));
 								}
 								break;
 							case Types.SMALLINT:
@@ -210,13 +208,13 @@ public class GreenplumCopyWriterImpl extends AbstractDatabaseWriter implements I
 										row.setShort(i, Short.parseShort(fieldValue.toString()));
 									} catch (NumberFormatException e) {
 										throw new RuntimeException(
-												String.format("表名:[%s.%s]的字段名:[%s]数据类型错误，无法将String类型转换为Number类型:%s",
+												String.format("表名[%s.%s]的字段名[%s]数据类型转换错误，无法将java.lang.String类型转换为java.lang.Number类型:%s",
 														schemaName, tableName, fieldName, e.getMessage()));
 									}
 								} else {
 									throw new RuntimeException(
-											String.format("表名:[%s.%s]的字段名:[%s]数据类型错误，应该为java.lang.Number", schemaName,
-													tableName, fieldName));
+											String.format("表名[%s.%s]的字段名[%s]数据类型转换错误，应该为java.lang.Number，而实际的数据类型为%s",
+													schemaName, tableName, fieldName, fieldValue.getClass().getName()));
 								}
 								break;
 							case Types.INTEGER:
@@ -229,13 +227,13 @@ public class GreenplumCopyWriterImpl extends AbstractDatabaseWriter implements I
 										row.setInteger(i, Integer.parseInt(fieldValue.toString()));
 									} catch (NumberFormatException e) {
 										throw new RuntimeException(
-												String.format("表名:[%s.%s]的字段名:[%s]数据类型错误，无法将String类型转换为Number类型:%s",
+												String.format("表名[%s.%s]的字段名[%s]数据类型转换错误，无法将java.lang.String类型转换为java.lang.Number类型:%s",
 														schemaName, tableName, fieldName, e.getMessage()));
 									}
 								} else {
 									throw new RuntimeException(
-											String.format("表名:[%s.%s]的字段名:[%s]数据类型错误，应该为java.lang.Number", schemaName,
-													tableName, fieldName));
+											String.format("表名[%s.%s]的字段名[%s]数据类型转换错误，应该为java.lang.Number，而实际的数据类型为%s",
+													schemaName, tableName, fieldName, fieldValue.getClass().getName()));
 								}
 								break;
 							case Types.BIGINT:
@@ -248,13 +246,13 @@ public class GreenplumCopyWriterImpl extends AbstractDatabaseWriter implements I
 										row.setLong(i, Long.parseLong(fieldValue.toString()));
 									} catch (NumberFormatException e) {
 										throw new RuntimeException(
-												String.format("表名:[%s.%s]的字段名:[%s]数据类型错误，无法将String类型转换为Number类型:%s",
+												String.format("表名[%s.%s]的字段名[%s]数据类型转换错误，无法将java.lang.String类型转换为java.lang.Number类型:%s",
 														schemaName, tableName, fieldName, e.getMessage()));
 									}
 								} else {
 									throw new RuntimeException(
-											String.format("表名:[%s.%s]的字段名:[%s]数据类型错误，应该为java.lang.Number", schemaName,
-													tableName, fieldName));
+											String.format("表名[%s.%s]的字段名[%s]数据类型转换错误，应该为java.lang.Number，而实际的数据类型为%s",
+													schemaName, tableName, fieldName, fieldValue.getClass().getName()));
 								}
 								break;
 							case Types.NUMERIC:
@@ -268,13 +266,13 @@ public class GreenplumCopyWriterImpl extends AbstractDatabaseWriter implements I
 										row.setNumeric(i, new java.math.BigDecimal(fieldValue.toString()));
 									} catch (NumberFormatException e) {
 										throw new RuntimeException(
-												String.format("表名:[%s.%s]的字段名:[%s]数据类型错误，无法将String类型转换为Numeric类型:%s",
+												String.format("表名[%s.%s]的字段名[%s]数据类型转换错误，无法将java.lang.String类型转换为java.lang.Number类型:%s",
 														schemaName, tableName, fieldName, e.getMessage()));
 									}
 								} else {
 									throw new RuntimeException(
-											String.format("表名:[%s.%s]的字段名:[%s]数据类型错误，应该为java.lang.Number", schemaName,
-													tableName, fieldName));
+											String.format("表名[%s.%s]的字段名[%s]数据类型转换错误，应该为java.lang.Number，而实际的数据类型为%s",
+													schemaName, tableName, fieldName, fieldValue.getClass().getName()));
 								}
 								break;
 							case Types.FLOAT:
@@ -288,13 +286,13 @@ public class GreenplumCopyWriterImpl extends AbstractDatabaseWriter implements I
 										row.setFloat(i, Float.parseFloat(fieldValue.toString()));
 									} catch (NumberFormatException e) {
 										throw new RuntimeException(
-												String.format("表名:[%s.%s]的字段名:[%s]数据类型错误，无法将String类型转换为Number类型:%s",
+												String.format("表名[%s.%s]的字段名[%s]数据类型转换错误，无法将java.lang.String类型转换为java.lang.Number类型:%s",
 														schemaName, tableName, fieldName, e.getMessage()));
 									}
 								} else {
 									throw new RuntimeException(
-											String.format("表名:[%s.%s]的字段名:[%s]数据类型错误，应该为java.lang.Number", schemaName,
-													tableName, fieldName));
+											String.format("表名[%s.%s]的字段名[%s]数据类型转换错误，应该为java.lang.Number，而实际的数据类型为%s",
+													schemaName, tableName, fieldName, fieldValue.getClass().getName()));
 								}
 								break;
 							case Types.DOUBLE:
@@ -307,13 +305,13 @@ public class GreenplumCopyWriterImpl extends AbstractDatabaseWriter implements I
 										row.setDouble(i, Double.parseDouble(fieldValue.toString()));
 									} catch (NumberFormatException e) {
 										throw new RuntimeException(
-												String.format("表名:[%s.%s]的字段名:[%s]数据类型错误，无法将将String类型转换为Number类型:%s",
+												String.format("表名[%s.%s]的字段名[%s]数据类型错误，无法将将java.lang.String类型转换为java.lang.Number类型:%s",
 														schemaName, tableName, fieldName, e.getMessage()));
 									}
 								} else {
 									throw new RuntimeException(
-											String.format("表名:[%s.%s]的字段名:[%s]数据类型错误，应该为java.lang.Number", schemaName,
-													tableName, fieldName));
+											String.format("表名[%s.%s]的字段名[%s]数据类型转换错误，应该为java.lang.Number，而实际的数据类型为%s",
+													schemaName, tableName, fieldName, fieldValue.getClass().getName()));
 								}
 								break;
 							case Types.TIME:
@@ -331,13 +329,13 @@ public class GreenplumCopyWriterImpl extends AbstractDatabaseWriter implements I
 										row.setDate(i, localDate);
 									} catch (IllegalArgumentException e) {
 										throw new RuntimeException(
-												String.format("表名:[%s.%s]的字段名:[%s]数据类型错误，无法将String类型转换为Date类型:%s",
+												String.format("表名[%s.%s]的字段名[%s]数据类型转换错误，无法将java.lang.String类型转换为java.sql.Time类型:%s",
 														schemaName, tableName, fieldName, e.getMessage()));
 									}
 								} else {
 									throw new RuntimeException(
-											String.format("表名:[%s.%s]的字段名:[%s]数据类型错误，应该为java.sql.Time", schemaName,
-													tableName, fieldName));
+											String.format("表名[%s.%s]的字段名[%s]数据类型转换错误，应该为java.sql.Time，而实际的数据类型为%s",
+													schemaName, tableName, fieldName, fieldValue.getClass().getName()));
 								}
 								break;
 							case Types.DATE:
@@ -355,13 +353,13 @@ public class GreenplumCopyWriterImpl extends AbstractDatabaseWriter implements I
 										row.setDate(i, localDate);
 									} catch (IllegalArgumentException e) {
 										throw new RuntimeException(
-												String.format("表名:[%s.%s]的字段名:[%s]数据类型错误，无法String类型转换为Date类型:%s",
+												String.format("表名[%s.%s]的字段名[%s]数据类型转换错误，无法java.lang.String类型转换为java.sql.Date类型:%s",
 														schemaName, tableName, fieldName, e.getMessage()));
 									}
 								} else {
 									throw new RuntimeException(
-											String.format("表名:[%s.%s]的字段名:[%s]数据类型错误，应该为java.sql.Date", schemaName,
-													tableName, fieldName));
+											String.format("表名[%s.%s]的字段名[%s]数据类型转换错误，应该为java.sql.Date，而实际的数据类型为%s",
+													schemaName, tableName, fieldName, fieldValue.getClass().getName()));
 								}
 								break;
 							case Types.TIMESTAMP:
@@ -386,13 +384,13 @@ public class GreenplumCopyWriterImpl extends AbstractDatabaseWriter implements I
 										row.setTimeStamp(i, localDateTime);
 									} catch (IllegalArgumentException e) {
 										throw new RuntimeException(
-												String.format("表名:[%s.%s]的字段名:[%s]数据类型错误，无法将String类型转换为TimeStamp类型:%s",
+												String.format("表名[%s.%s]的字段名[%s]数据类型错误，无法将java.lang.String类型转换为java.sql.TimeStamp类型:%s",
 														schemaName, tableName, fieldName, e.getMessage()));
 									}
 								} else {
 									throw new RuntimeException(
-											String.format("表名:[%s.%s]的字段名:[%s]数据类型错误，应该为java.sql.Timestamp", schemaName,
-													tableName, fieldName));
+											String.format("表名[%s.%s]的字段名[%s]数据类型错误，应该为java.sql.Timestamp，而实际的数据类型为%s",
+													schemaName, tableName, fieldName, fieldValue.getClass().getName()));
 								}
 								break;
 							case Types.BINARY:
@@ -421,8 +419,8 @@ public class GreenplumCopyWriterImpl extends AbstractDatabaseWriter implements I
 									row.setBoolean(i, ((java.lang.Number) fieldValue).intValue() != 0);
 								} else {
 									throw new RuntimeException(
-											String.format("表名:[%s.%s]的字段名:[%s]数据类型错误，应该为java.lang.Boolean", schemaName,
-													tableName, fieldName));
+											String.format("表名[%s.%s]的字段名[%s]数据类型错误，应该为java.lang.Boolean，而实际的数据类型为%s",
+													schemaName, tableName, fieldName, fieldValue.getClass().getName()));
 								}
 								break;
 							case Types.NULL:
@@ -433,7 +431,7 @@ public class GreenplumCopyWriterImpl extends AbstractDatabaseWriter implements I
 								}
 								break;
 							default:
-								throw new RuntimeException(String.format("不支持的数据库字段类型,表名:[%s.%s] 字段名:[%s].", schemaName,
+								throw new RuntimeException(String.format("不支持的数据库字段类型,表名[%s.%s] 字段名[%s].", schemaName,
 										tableName, fieldName));
 							}
 						}
@@ -442,8 +440,8 @@ public class GreenplumCopyWriterImpl extends AbstractDatabaseWriter implements I
 			}
 			pgwriter.close();
 			recordValues.clear();
-			if (logger.isDebugEnabled()) {
-				logger.debug("Greenplum copy write data affect count:{}", count);
+			if (log.isDebugEnabled()) {
+				log.debug("Greenplum copy write data affect count:{}", count);
 			}
 			return count;
 		} catch (SQLException e) {

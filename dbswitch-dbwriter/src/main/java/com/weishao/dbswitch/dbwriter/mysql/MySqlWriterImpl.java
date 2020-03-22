@@ -10,8 +10,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import javax.sql.DataSource;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.dao.DataAccessException;
@@ -26,6 +24,7 @@ import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
 import com.weishao.dbswitch.dbwriter.AbstractDatabaseWriter;
 import com.weishao.dbswitch.dbwriter.IDatabaseWriter;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * MySQL数据库写入实现类
@@ -33,15 +32,14 @@ import com.weishao.dbswitch.dbwriter.IDatabaseWriter;
  * @author tang
  *
  */
+@Slf4j
 public class MySqlWriterImpl extends AbstractDatabaseWriter implements IDatabaseWriter {
 
-	private static final Logger logger = LoggerFactory.getLogger(MySqlWriterImpl.class);
-	
 	private DefaultTransactionDefinition definition;
 
 	public MySqlWriterImpl(DataSource dataSource) {
 		super(dataSource);
-		
+
 		this.definition = new DefaultTransactionDefinition();
 		this.definition.setIsolationLevel(TransactionDefinition.ISOLATION_READ_COMMITTED);
 		this.definition.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
@@ -89,7 +87,7 @@ public class MySqlWriterImpl extends AbstractDatabaseWriter implements IDatabase
 			throw new RuntimeException("内部代码出现错误，请开发人员排查！");
 		}
 	}
-	
+
 	@Override
 	public long write(List<String> fieldNames, List<Object[]> recordValues) {
 		List<String> placeHolders = new ArrayList<String>();
@@ -97,17 +95,17 @@ public class MySqlWriterImpl extends AbstractDatabaseWriter implements IDatabase
 			placeHolders.add("?");
 		}
 
-		String schemaName = Objects.requireNonNull(this.schemaName, "schema名称为空，不合法!");
-		String tableName = Objects.requireNonNull(this.tableName, "table名称为空，不合法!");
+		String schemaName = Objects.requireNonNull(this.schemaName, "schema-name名称为空，不合法!");
+		String tableName = Objects.requireNonNull(this.tableName, "table-name名称为空，不合法!");
 		String sqlInsert = String.format("INSERT INTO `%s`.`%s` ( `%s` ) VALUES ( %s )", schemaName, tableName,
 				StringUtils.join(fieldNames, "`,`"), StringUtils.join(placeHolders, ","));
 
-		int[] argTypes=new int[fieldNames.size()];
-		for(int i=0;i<fieldNames.size();++i) {
-			String col=fieldNames.get(i);
-			argTypes[i]=this.columnType.get(col);
+		int[] argTypes = new int[fieldNames.size()];
+		for (int i = 0; i < fieldNames.size(); ++i) {
+			String col = fieldNames.get(i);
+			argTypes[i] = this.columnType.get(col);
 		}
-		
+
 		PlatformTransactionManager transactionManager = new DataSourceTransactionManager(this.dataSource);
 		TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManager, definition);
 		Integer ret = transactionTemplate.execute(new TransactionCallback<Integer>() {
@@ -115,7 +113,7 @@ public class MySqlWriterImpl extends AbstractDatabaseWriter implements IDatabase
 			@Override
 			public Integer doInTransaction(TransactionStatus transactionStatus) {
 				try {
-					int[] affects=jdbcTemplate.batchUpdate(sqlInsert, recordValues,argTypes);
+					int[] affects = jdbcTemplate.batchUpdate(sqlInsert, recordValues, argTypes);
 					int affect_count = 0;
 					for (int i : affects) {
 						affect_count += i;
@@ -129,8 +127,8 @@ public class MySqlWriterImpl extends AbstractDatabaseWriter implements IDatabase
 		});
 
 		recordValues.clear();
-		if (logger.isDebugEnabled()) {
-			logger.debug("MySQL insert write data  affect count:{}", ret.longValue());
+		if (log.isDebugEnabled()) {
+			log.debug("MySQL insert write data  affect count:{}", ret.longValue());
 		}
 
 		return ret.longValue();
