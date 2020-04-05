@@ -124,7 +124,7 @@ jdbc驱动名称：org.postgresql.Driver
 
 启动执行命令如下：
 ```
-cd dbswitch-release-0.0.1/
+cd dbswitch-release-X.X.X/
 bin/datasync.sh
 ```
 
@@ -143,7 +143,7 @@ target.writer-engine.insert=true
 - 2、dbswitch离线同步工具提供各种数据库间表结构转换RESTful类型的API接口，服务启动方式如下：
  
  ```
-cd dbswitch-release-0.0.1/
+cd dbswitch-release-X.X.X/
 bin/startup.sh
 ```
 
