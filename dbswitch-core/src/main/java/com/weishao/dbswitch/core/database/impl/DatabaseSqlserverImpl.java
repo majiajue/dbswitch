@@ -24,15 +24,31 @@ import com.weishao.dbswitch.core.model.TableDescription;
 public class DatabaseSqlserverImpl extends AbstractDatabase implements IDatabaseInterface {
 
 	public DatabaseSqlserverImpl() {
-		super("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+		//super("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+		super("net.sourceforge.jtds.jdbc.Driver");
 	}
 	
 	public DatabaseSqlserverImpl(String driverName) {
 		super(driverName);
 	}
+	
+	private int getDatabaseMajorVersion() {
+		int majorVersion=0;
+		try {
+			majorVersion=this.metaData.getDatabaseMajorVersion();
+			return majorVersion;
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+	}
 
 	@Override
 	public List<TableDescription> queryTableList(String schemaName) {
+		int majorVersion=getDatabaseMajorVersion();
+		if(majorVersion<=8) {
+			return super.queryTableList(schemaName);
+		}
+		
 		List<TableDescription> ret = new ArrayList<TableDescription>();
 		String sql = String.format(
 				"SELECT t.TABLE_SCHEMA as TABLE_SCHEMA,	t.TABLE_NAME as TABLE_NAME,	t.TABLE_TYPE as TABLE_TYPE,	CONVERT(nvarchar(50),ISNULL(g.[value], '')) as COMMENTS \r\n" + 
@@ -75,6 +91,11 @@ public class DatabaseSqlserverImpl extends AbstractDatabase implements IDatabase
 	
 	@Override
 	public List<ColumnDescription> queryTableColumnMeta(String schemaName, String tableName) {
+		int majorVersion = getDatabaseMajorVersion();
+		if (majorVersion <= 8) {
+			return super.queryTableColumnMeta(schemaName, tableName);
+		}
+		
 		String sql=this.getTableFieldsQuerySQL(schemaName, tableName);
 		List<ColumnDescription> ret= this.querySelectSqlColumnMeta(sql);
 		String qsql = String.format(

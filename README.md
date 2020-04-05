@@ -111,8 +111,8 @@ jdbc驱动名称：oracle.jdbc.driver.OracleDriver
 - SqlServer的驱动配置样例
 
 ```
-jdbc连接地址：jdbc:sqlserver://172.16.2.66:1433;DatabaseName=hqtest
-jdbc驱动名称：com.microsoft.sqlserver.jdbc.SQLServerDriver
+jdbc连接地址：jdbc:jtds:sqlserver://172.16.4.3:1433/hqtest
+jdbc驱动名称：net.sourceforge.jtds.jdbc.Driver
 ```
 
 - PostgreSQL的驱动配置样例

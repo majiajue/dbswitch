@@ -8,7 +8,7 @@ public class CommonUtils {
 	public static String getTableFullNameByDatabase(DatabaseType dbtype, String schemaName, String tableName) {
 		if (dbtype == DatabaseType.MYSQL) {
 			return String.format("`%s`.`%s`", schemaName, tableName);
-		} else if (dbtype == DatabaseType.SQLSERVER || dbtype == DatabaseType.SQLSERVER2000) {
+		} else if (dbtype == DatabaseType.SQLSERVER) {
 			return String.format("[%s].[%s]", schemaName, tableName);
 		} else {
 			return String.format("\"%s\".\"%s\"", schemaName, tableName);
@@ -40,7 +40,7 @@ public class CommonUtils {
 	private static String QuoteString(DatabaseType dbtype, String keyName) {
 		if (dbtype == DatabaseType.MYSQL) {
 			return String.format("`%s`", keyName);
-		} else if (dbtype == DatabaseType.SQLSERVER || dbtype == DatabaseType.SQLSERVER2000) {
+		} else if (dbtype == DatabaseType.SQLSERVER) {
 			return String.format("[%s]", keyName);
 		} else {
 			return String.format("\"%s\"", keyName);
