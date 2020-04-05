@@ -111,8 +111,8 @@ jdbc驱动名称：oracle.jdbc.driver.OracleDriver
 - SqlServer的驱动配置样例
 
 ```
-jdbc连接地址：jdbc:sqlserver://172.16.2.66:1433;DatabaseName=hqtest
-jdbc驱动名称：com.microsoft.sqlserver.jdbc.SQLServerDriver
+jdbc连接地址：jdbc:jtds:sqlserver://172.16.4.3:1433/hqtest
+jdbc驱动名称：net.sourceforge.jtds.jdbc.Driver
 ```
 
 - PostgreSQL的驱动配置样例
@@ -124,7 +124,7 @@ jdbc驱动名称：org.postgresql.Driver
 
 启动执行命令如下：
 ```
-cd dbswitch-release-0.0.1/
+cd dbswitch-release-X.X.X/
 bin/datasync.sh
 ```
 
@@ -143,7 +143,7 @@ target.writer-engine.insert=true
 - 2、dbswitch离线同步工具提供各种数据库间表结构转换RESTful类型的API接口，服务启动方式如下：
  
  ```
-cd dbswitch-release-0.0.1/
+cd dbswitch-release-X.X.X/
 bin/startup.sh
 ```
 

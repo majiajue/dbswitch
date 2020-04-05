@@ -39,6 +39,9 @@ public class JdbcUrlUtils {
 	 *  而SQL Server 2005和SQL Server 2008 中加载驱动和URL的语句则为
 	 *  String driverName = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
 	 *  String dbURL = "jdbc:sqlserver://localhost:1433; DatabaseName=sample";
+	 *  ==========================================================================
+	 *  SQL Server 2000/SQL Server 2005和SQL Server 2008等可以综合使用jDTS驱动（开源）
+	 *  参考文章地址：https://blog.csdn.net/inrgihc/article/details/105244514
 	 *  （2）Oracle数据库驱动连接问题
 	 *  JDBC的URL三种方式：https://blog.csdn.net/gnail_oug/article/details/80075263
 	 *  
@@ -83,10 +86,12 @@ public class JdbcUrlUtils {
 			}else {
 				return String.format("jdbc:oracle:thin:@%s:%d:%s", db.getHost(), db.getPort(), db.getDbname());
 			}
-		case SQLSERVER2000:
-			return String.format("jdbc:microsoft:sqlserver://%s:%d;DatabaseName=%s",db.getHost(),db.getPort(),db.getDbname());
+		//case SQLSERVER2000:
+		//	return String.format("jdbc:microsoft:sqlserver://%s:%d;DatabaseName=%s",db.getHost(),db.getPort(),db.getDbname());
+		//case SQLSERVER:
+		//	return String.format("jdbc:sqlserver://%s:%d;DatabaseName=%s",db.getHost(),db.getPort(),db.getDbname());
 		case SQLSERVER:
-			return String.format("jdbc:sqlserver://%s:%d;DatabaseName=%s",db.getHost(),db.getPort(),db.getDbname());
+			return String.format("jdbc:jtds:sqlserver://%s:%d/;DatabaseName=%s",db.getHost(),db.getPort(),db.getDbname());
 		case POSTGRESQL:
 			return String.format("jdbc:postgresql://%s:%d/%s?connectTimeout=%d", db.getHost(),db.getPort(),db.getDbname(),connectTimeout);
 		case GREENPLUM:

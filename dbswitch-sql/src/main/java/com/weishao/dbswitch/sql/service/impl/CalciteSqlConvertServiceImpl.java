@@ -38,7 +38,6 @@ public class CalciteSqlConvertServiceImpl implements ISqlConvertService {
 		case ORACLE:
 			return Lex.ORACLE;
 		case SQLSERVER:
-		case SQLSERVER2000:
 			return Lex.SQL_SERVER;
 		case POSTGRESQL:
 			return Lex.MYSQL_ANSI;
@@ -54,7 +53,6 @@ public class CalciteSqlConvertServiceImpl implements ISqlConvertService {
 		case ORACLE:
 			return TheOracleSqlDialect.DEFAULT;
 		case SQLSERVER:
-		case SQLSERVER2000:
 			return TheMssqlSqlDialect.DEFAULT;
 		case POSTGRESQL:
 			return ThePostgresqlSqlDialect.DEFAULT;
