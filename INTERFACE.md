@@ -412,7 +412,7 @@ CREATE TABLE "private"."t_test_postgres_table" (
  
 | 字段名称 | 类型 | 描述 | 取值范围 |
 | :------:| :------: | :------: | :------ |
-| type | string | 数据库类型 | 可取值：oracle,mysql,sqlserver,postgresql |
+| type | string | 数据库类型 | 可取值：oracle,mysql,sqlserver2000,sqlserver,postgresql |
 | host | string | IP地址 | 数据库主机的IP地址 |
 | port | integer | 端口号 | 整型的端口号 |
 | mode | string | 连接方式 | 非必填，但只对Oracle连接有效，可取范围为：sid,servicename,tnsname三种，默认为sid |
@@ -467,7 +467,7 @@ CREATE TABLE "private"."t_test_postgres_table" (
  
 | 字段名称 | 类型 | 描述 | 取值范围 |
 | :------:| :------: | :------: | :------ |
-| type | string | 数据库类型 | 可取值：oracle,mysql,sqlserver,postgresql |
+| type | string | 数据库类型 | 可取值：oracle,mysql,sqlserver2000,sqlserver,postgresql |
 | host | string | IP地址 | 数据库主机的IP地址 |
 | port | integer | 端口号 | 整型的端口号 |
 | mode | string | 连接方式 | 非必填，但只对Oracle连接有效，可取范围为：sid,servicename,tnsname三种，默认为sid |
@@ -535,7 +535,7 @@ CREATE TABLE "private"."t_test_postgres_table" (
  
  | 字段名称 | 类型 | 描述 | 取值范围 |
 | :------:| :------: | :------: | :------ |
-| type | string | 数据库类型 | 可取值：oracle,mysql,sqlserver,postgresql |
+| type | string | 数据库类型 | 可取值：oracle,mysql,sqlserver2000,sqlserver,postgresql |
 | host | string | IP地址 | 数据库主机的IP地址 |
 | port | integer | 端口号 | 整型的端口号 |
 | mode | string | 连接方式 | 非必填，但只对Oracle连接有效，可取范围为：sid,servicename,tnsname三种，默认为sid |
@@ -646,7 +646,7 @@ CREATE TABLE "private"."t_test_postgres_table" (
  
  | 字段名称 | 类型 | 描述 | 取值范围 |
 | :------:| :------: | :------: | :------ |
-| type | string | 数据库类型 | 可取值：oracle,mysql,sqlserver,postgresql |
+| type | string | 数据库类型 | 可取值：oracle,mysql,sqlserver2000,sqlserver,postgresql |
 | host | string | IP地址 | 数据库主机的IP地址 |
 | port | integer | 端口号 | 整型的端口号 |
 | mode | string | 连接方式 | 非必填，但只对Oracle连接有效，可取范围为：sid,servicename,tnsname三种，默认为sid |
@@ -743,7 +743,7 @@ CREATE TABLE "private"."t_test_postgres_table" (
  
  | 字段名称 | 类型 | 描述 | 取值范围 |
 | :------:| :------: | :------: | :------ |
-| type | string | 源数据库类型 | 可取值：oracle,mysql,sqlserver,postgresql |
+| type | string | 源数据库类型 | 可取值：oracle,mysql,sqlserver2000,sqlserver,postgresql |
 | host | string | IP地址 | 数据库主机的IP地址 |
 | port | integer | 端口号 | 整型的端口号 |
 | mode | string | 连接方式 | 非必填，但只对Oracle连接有效，可取范围为：sid,servicename,tnsname三种，默认为sid |
@@ -861,7 +861,7 @@ CREATE TABLE "private"."t_test_postgres_table" (
  
 | 字段名称 | 类型 | 描述 | 取值范围 |
 | :------:| :------: | :------: | :------ |
-| type | string | 数据库类型 | 可取值：oracle,mysql,sqlserver,postgresql |
+| type | string | 数据库类型 | 可取值：oracle,mysql,sqlserver2000,sqlserver,postgresql |
 | host | string | IP地址 | 数据库主机的IP地址 |
 | port | integer | 端口号 | 整型的端口号 |
 | mode | string | 连接方式 | 非必填，但只对Oracle连接有效，可取范围为：sid,servicename,tnsname三种，默认为sid |
