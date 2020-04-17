@@ -76,7 +76,7 @@ sh ./build.sh
 | source.datasource.driver-class-name | 来源端数据库的驱动类名称 | oracle.jdbc.driver.OracleDriver | 对应数据库的驱动类 |
 | source.datasource.username | 来源端连接帐号名 | tangyibo | 无 |
 | source.datasource.password | 来源端连接帐号密码 | tangyibo | 无 |
-| target.datasource.url | 目的端JDBC连接的URL | jdbc:postgresql://10.17.1.90:5432/study | 可为：oracle/postgresql/greenplum |
+| target.datasource.url | 目的端JDBC连接的URL | jdbc:postgresql://10.17.1.90:5432/study | 可为：oracle/sqlserver/postgresql/greenplum |
 | target.datasource.driver-class-name |目的端 数据库的驱动类名称 | org.postgresql.Driver | 对应数据库的驱动类 |
 | target.datasource.username | 目的端连接帐号名 | study | 无 |
 | target.datasource.password | 目的端连接帐号密码 | 123456 | 无 |
