@@ -125,7 +125,7 @@ public class DatabaseMysqlImpl extends AbstractDatabase implements IDatabaseInte
 			retval += "DATETIME";
 			break;
 		case ColumnMetaData.TYPE_BOOLEAN:
-			retval += "CHAR(1)";
+			retval += "CHAR(32)";
 			break;
 		case ColumnMetaData.TYPE_NUMBER:
 		case ColumnMetaData.TYPE_INTEGER:

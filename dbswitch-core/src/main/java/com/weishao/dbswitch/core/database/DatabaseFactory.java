@@ -7,6 +7,7 @@ import com.weishao.dbswitch.core.database.impl.DatabaseGreenplumImpl;
 import com.weishao.dbswitch.core.database.impl.DatabaseMysqlImpl;
 import com.weishao.dbswitch.core.database.impl.DatabaseOracleImpl;
 import com.weishao.dbswitch.core.database.impl.DatabasePostgresImpl;
+import com.weishao.dbswitch.core.database.impl.DatabaseSqlserver2000Impl;
 import com.weishao.dbswitch.core.database.impl.DatabaseSqlserverImpl;
 
 /**
@@ -23,6 +24,7 @@ public class DatabaseFactory {
 	{  
 	      put(DatabaseType.MYSQL,DatabaseMysqlImpl.class.getName());
 	      put(DatabaseType.ORACLE,DatabaseOracleImpl.class.getName());
+	      put(DatabaseType.SQLSERVER2000,DatabaseSqlserver2000Impl.class.getName());
 	      put(DatabaseType.SQLSERVER,DatabaseSqlserverImpl.class.getName());
 	      put(DatabaseType.POSTGRESQL,DatabasePostgresImpl.class.getName());
 	      put(DatabaseType.GREENPLUM,DatabaseGreenplumImpl.class.getName());

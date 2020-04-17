@@ -24,8 +24,7 @@ import com.weishao.dbswitch.core.model.TableDescription;
 public class DatabaseSqlserverImpl extends AbstractDatabase implements IDatabaseInterface {
 
 	public DatabaseSqlserverImpl() {
-		//super("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-		super("net.sourceforge.jtds.jdbc.Driver");
+		super("com.microsoft.sqlserver.jdbc.SQLServerDriver");
 	}
 	
 	public DatabaseSqlserverImpl(String driverName) {
@@ -166,7 +165,7 @@ public class DatabaseSqlserverImpl extends AbstractDatabase implements IDatabase
 			retval += "DATETIME";
 			break;
 		case ColumnMetaData.TYPE_BOOLEAN:
-			retval += "CHAR(1)";
+			retval += "CHAR(32)";
 			break;
 		case ColumnMetaData.TYPE_NUMBER:
 		case ColumnMetaData.TYPE_INTEGER:
