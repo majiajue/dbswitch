@@ -57,7 +57,7 @@ public class DatabasePostgresImpl extends AbstractDatabase implements IDatabaseI
 			retval += "TIMESTAMP";
 			break;
 		case ColumnMetaData.TYPE_BOOLEAN:
-			retval += "CHAR(1)";
+			retval += "CHAR(32)";
 			break;
 		case ColumnMetaData.TYPE_NUMBER:
 		case ColumnMetaData.TYPE_INTEGER:
