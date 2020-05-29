@@ -1,7 +1,8 @@
 package com.weishao.dbswitch.core.util;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import com.weishao.dbswitch.common.constant.DatabaseType;
 import com.weishao.dbswitch.core.constant.Const;
 import com.weishao.dbswitch.core.database.AbstractDatabase;
@@ -11,17 +12,12 @@ import com.weishao.dbswitch.core.model.ColumnMetaData;
 
 public class GenerateSqlUtils {
 
-	public static String getDDLCreateTableSQL(DatabaseType type, List<ColumnDescription> fieldNames, List<String> primaryKeys,
-			String schemaName, String tableName, boolean ifNotExist) {
+	public static String getDDLCreateTableSQL(DatabaseType type, List<ColumnDescription> fieldNames,
+			List<String> primaryKeys, String schemaName, String tableName, boolean ifNotExist) {
 		StringBuilder retval = new StringBuilder();
-		
-		List<String> pks=new ArrayList<String>();
-		for(ColumnDescription cd : fieldNames) {
-			if(primaryKeys.contains(cd.getFieldName())) {
-				pks.add(cd.getFieldName());
-			}
-		}
-		
+		List<String> pks = fieldNames.stream().filter((cd) -> primaryKeys.contains(cd.getFieldName()))
+				.map((cd) -> cd.getFieldName()).collect(Collectors.toList());
+
 		AbstractDatabase db = DatabaseFactory.getDatabaseInstance(type);
 
 		retval.append(Const.CREATE_TABLE);

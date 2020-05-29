@@ -80,7 +80,7 @@ public abstract class AbstractDatabase implements IDatabaseInterface {
 	@Override
 	public List<String> querySchemaList() {
 		Set<String> ret = new HashSet<String>();
-		ResultSet schemas;
+		ResultSet schemas = null;
 		try {
 			schemas = this.metaData.getSchemas();
 			while (schemas.next()) {
@@ -89,6 +89,14 @@ public abstract class AbstractDatabase implements IDatabaseInterface {
 			return new ArrayList<String>(ret);
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
+		} finally {
+			try {
+				if (null != schemas) {
+					schemas.close();
+					schemas = null;
+				}
+			} catch (SQLException e) {
+			}
 		}
 
 	}
@@ -97,7 +105,7 @@ public abstract class AbstractDatabase implements IDatabaseInterface {
 	public List<TableDescription> queryTableList(String schemaName) {
 		List<TableDescription> ret = new ArrayList<TableDescription>();
 		Set<String> uniqueSet = new HashSet<String>();
-		ResultSet tables;
+		ResultSet tables = null;
 		try {
 			tables = this.metaData.getTables(this.catalogName, schemaName, "%", new String[] { "TABLE", "VIEW" });
 			while (tables.next()) {
@@ -118,6 +126,14 @@ public abstract class AbstractDatabase implements IDatabaseInterface {
 			return ret;
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
+		} finally {
+			try {
+				if (null != tables) {
+					tables.close();
+					tables = null;
+				}
+			} catch (SQLException e) {
+			}
 		}
 	}
 
@@ -125,8 +141,9 @@ public abstract class AbstractDatabase implements IDatabaseInterface {
 	public List<ColumnDescription> queryTableColumnMeta(String schemaName, String tableName) {
 		String sql = this.getTableFieldsQuerySQL(schemaName, tableName);
 		List<ColumnDescription> ret = this.querySelectSqlColumnMeta(sql);
+		ResultSet columns = null;
 		try {
-			ResultSet columns = this.metaData.getColumns(this.catalogName, schemaName, tableName, null);
+			columns = this.metaData.getColumns(this.catalogName, schemaName, tableName, null);
 			while (columns.next()) {
 				String column_name = columns.getString("COLUMN_NAME");
 				String remarks = columns.getString("REMARKS");
@@ -138,6 +155,14 @@ public abstract class AbstractDatabase implements IDatabaseInterface {
 			}
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
+		} finally {
+			try {
+				if (null != columns) {
+					columns.close();
+					columns = null;
+				}
+			} catch (SQLException e) {
+			}
 		}
 
 		return ret;
@@ -146,8 +171,9 @@ public abstract class AbstractDatabase implements IDatabaseInterface {
 	@Override
 	public List<String> queryTablePrimaryKeys(String schemaName, String tableName) {
 		Set<String> ret = new HashSet<String>();
+		ResultSet primarykeys = null;
 		try {
-			ResultSet primarykeys = this.metaData.getPrimaryKeys(this.catalogName, schemaName, tableName);
+			primarykeys = this.metaData.getPrimaryKeys(this.catalogName, schemaName, tableName);
 			while (primarykeys.next()) {
 				String name = primarykeys.getString("COLUMN_NAME");
 				if (!ret.contains(name)) {
@@ -157,6 +183,14 @@ public abstract class AbstractDatabase implements IDatabaseInterface {
 			return new ArrayList<String>(ret);
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
+		} finally {
+			try {
+				if (null != primarykeys) {
+					primarykeys.close();
+					primarykeys = null;
+				}
+			} catch (SQLException e) {
+			}
 		}
 	}
 
@@ -166,9 +200,7 @@ public abstract class AbstractDatabase implements IDatabaseInterface {
 	@Override
 	public void testQuerySQL(String sql) {
 		String wrapperSql = this.getTestQuerySQL(sql);
-
-		try {
-			PreparedStatement pstmt = this.connection.prepareStatement(wrapperSql);
+		try(PreparedStatement pstmt = this.connection.prepareStatement(wrapperSql);) {
 			pstmt.executeQuery();
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
@@ -264,6 +296,19 @@ public abstract class AbstractDatabase implements IDatabaseInterface {
 			return ret;
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
+		} finally {
+			try {
+				if (null != rs) {
+					rs.close();
+					rs = null;
+				}
+
+				if (null != pstmt) {
+					pstmt.close();
+					pstmt = null;
+				}
+			} catch (SQLException e) {
+			}
 		}
 	}
 }

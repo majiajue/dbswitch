@@ -16,6 +16,7 @@ import com.weishao.dbswitch.core.database.IDatabaseInterface;
 import com.weishao.dbswitch.core.model.ColumnDescription;
 import com.weishao.dbswitch.core.model.ColumnMetaData;
 import com.weishao.dbswitch.core.model.TableDescription;
+import com.weishao.dbswitch.core.util.JdbcOperatorUtils;
 
 /**
  * 支持Oracle数据库的元信息实现
@@ -64,13 +65,9 @@ public class DatabaseOracleImpl extends AbstractDatabase implements IDatabaseInt
 			return ret;
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
-		}finally {
-			if(null!=pstmt) {
-				try {
-					pstmt.close();
-				} catch (SQLException e) {
-				}
-			}
+		} finally {
+			JdbcOperatorUtils.closeResultSet(rs);
+			JdbcOperatorUtils.closeStatement(pstmt);
 		}
 	}
 
@@ -97,12 +94,8 @@ public class DatabaseOracleImpl extends AbstractDatabase implements IDatabaseInt
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		} finally {
-			if (null != pstmt) {
-				try {
-					pstmt.close();
-				} catch (SQLException e) {
-				}
-			}
+			JdbcOperatorUtils.closeResultSet(rs);
+			JdbcOperatorUtils.closeStatement(pstmt);
 		}
 	}
 	

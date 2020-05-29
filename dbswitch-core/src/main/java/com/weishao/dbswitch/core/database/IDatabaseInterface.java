@@ -11,7 +11,7 @@ import com.weishao.dbswitch.core.model.TableDescription;
  * @author tang
  *
  */
-public interface IDatabaseInterface {
+public interface IDatabaseInterface extends AutoCloseable {
 
 	/**
 	 * 建立数据库连接
@@ -25,6 +25,7 @@ public interface IDatabaseInterface {
 	/**
 	 * 断开数据库连接
 	 */
+	@Override
 	public void close();
 
 	/**

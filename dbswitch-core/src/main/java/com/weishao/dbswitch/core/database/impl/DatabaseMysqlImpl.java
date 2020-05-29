@@ -15,6 +15,7 @@ import com.weishao.dbswitch.core.database.IDatabaseInterface;
 import com.weishao.dbswitch.core.model.ColumnDescription;
 import com.weishao.dbswitch.core.model.ColumnMetaData;
 import com.weishao.dbswitch.core.model.TableDescription;
+import com.weishao.dbswitch.core.util.JdbcOperatorUtils;
 import com.weishao.dbswitch.core.util.JdbcUrlUtils;
 
 /**
@@ -74,13 +75,9 @@ public class DatabaseMysqlImpl extends AbstractDatabase implements IDatabaseInte
 			return ret;
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
-		}finally {
-			if(null!=pstmt) {
-				try {
-					pstmt.close();
-				} catch (SQLException e) {
-				}
-			}
+		} finally {
+			JdbcOperatorUtils.closeResultSet(rs);
+			JdbcOperatorUtils.closeStatement(pstmt);
 		}
 	}
 
@@ -186,7 +183,7 @@ public class DatabaseMysqlImpl extends AbstractDatabase implements IDatabaseInte
 			retval += "LONGBLOB";
 			break;
 		default:
-			retval += " UNKNOWN";
+			retval += " LONGTEXT";
 			break;
 		}
 
@@ -198,15 +195,15 @@ public class DatabaseMysqlImpl extends AbstractDatabase implements IDatabaseInte
 	}
 
 	@Override
-	public  String getPrimaryKeyAsString(List<String> pks) {
-		if(pks.size()>0) {
+	public String getPrimaryKeyAsString(List<String> pks) {
+		if (pks.size() > 0) {
 			StringBuilder sb = new StringBuilder();
 			sb.append("`");
 			sb.append(StringUtils.join(pks, "` , `"));
 			sb.append("`");
 			return sb.toString();
 		}
-		
+
 		return "";
 	}
 	

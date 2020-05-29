@@ -9,6 +9,7 @@ import java.util.Set;
 import com.weishao.dbswitch.core.database.IDatabaseInterface;
 import com.weishao.dbswitch.core.model.ColumnDescription;
 import com.weishao.dbswitch.core.model.TableDescription;
+import com.weishao.dbswitch.core.util.JdbcOperatorUtils;
 
 /**
  * 支持SQLServer2000数据库的元信息实现
@@ -26,7 +27,7 @@ public class DatabaseSqlserver2000Impl extends DatabaseSqlserverImpl implements 
 	public List<TableDescription> queryTableList(String schemaName) {
 		List<TableDescription> ret = new ArrayList<TableDescription>();
 		Set<String> uniqueSet = new HashSet<String>();
-		ResultSet tables;
+		ResultSet tables = null;
 		try {
 			tables = this.metaData.getTables(this.catalogName, schemaName, "%", null /*new String[] { "TABLE","SYSTEM TABLE","VIEW" }*/);
 			while (tables.next()) {
@@ -51,6 +52,8 @@ public class DatabaseSqlserver2000Impl extends DatabaseSqlserverImpl implements 
 			return ret;
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
+		} finally {
+			JdbcOperatorUtils.closeResultSet(tables);
 		}
 	}
 	
@@ -58,8 +61,9 @@ public class DatabaseSqlserver2000Impl extends DatabaseSqlserverImpl implements 
 	public List<ColumnDescription> queryTableColumnMeta(String schemaName, String tableName) {
 		String sql = this.getTableFieldsQuerySQL(schemaName, tableName);
 		List<ColumnDescription> ret = this.querySelectSqlColumnMeta(sql);
+		ResultSet columns = null;
 		try {
-			ResultSet columns = this.metaData.getColumns(this.catalogName, schemaName, tableName, null);
+			columns = this.metaData.getColumns(this.catalogName, schemaName, tableName, null);
 			while (columns.next()) {
 				String column_name = columns.getString("COLUMN_NAME");
 				String remarks = columns.getString("REMARKS");
@@ -71,6 +75,8 @@ public class DatabaseSqlserver2000Impl extends DatabaseSqlserverImpl implements 
 			}
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
+		} finally {
+			JdbcOperatorUtils.closeResultSet(columns);
 		}
 
 		return ret;
