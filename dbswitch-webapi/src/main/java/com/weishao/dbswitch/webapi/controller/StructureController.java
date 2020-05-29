@@ -205,6 +205,7 @@ public class StructureController {
 			one.put("scale", col.getScaleSize());
 			one.put("nullable", col.isNullable());
 			one.put("remarks", col.getRemarks());
+			one.put("auto_increment", col.isAutoIncrement());
 
 			columns.add(one);
 		}
@@ -285,6 +286,7 @@ public class StructureController {
 			one.put("scale", col.getScaleSize());
 			one.put("nullable", col.isNullable());
 			one.put("remarks", col.getRemarks());
+			one.put("auto_increment", col.isAutoIncrement());
 			
 			columns.add(one);
 		}
