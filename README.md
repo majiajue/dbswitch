@@ -118,7 +118,7 @@ jdbc驱动名称：com.microsoft.sqlserver.jdbc.SQLServerDriver
 - PostgreSQL的驱动配置样例
 
 ```
-jdbc连接地址：jdbc:postgresql://172.17.207.210:5432/tangyibo
+jdbc连接地址：jdbc:postgresql://172.17.2.10:5432/study
 jdbc驱动名称：org.postgresql.Driver
 ```
 
