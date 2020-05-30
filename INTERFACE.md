@@ -1,14 +1,50 @@
 # dbswitch-weibapi接口调用说明文档
 
+## 目录
+
+<!-- TOC -->
+
+- [异构数据库适配服务](#异构数据库适配服务)
+    - [目录](#目录)
+    - [一、功能描述](#一功能描述)
+        - [1、SQL语句的分类](#1sql语句的分类)
+        - [2、sql 语句大小写问题](#2sql-语句大小写问题)
+        - [3、支持的功能](#3支持的功能)
+        - [4、标准SQL参考](#4标准sql参考)
+    - [二、不支持的功能描述](#二不支持的功能描述)
+        - [1、不支持的功能总述](#1不支持的功能总述)
+        - [2、建表语句不能完全支持所有数据类型](#2建表语句不能完全支持所有数据类型)
+        - [3、建表时的表与字段注释问题不完全支持](#3建表时的表与字段注释问题不完全支持)
+        - [4、表主键的修改问题](#4表主键的修改问题)
+        - [5、数据库结构转换的兼容性问题](#5数据库结构转换的兼容性问题)
+    - [三、支持的数据库](#三支持的数据库)
+    - [四、错误异常返回](#四错误异常返回)
+    - [五、SQL语法转换部分接口](#五sql语法转换部分接口)
+        - [1、标准DML类SQL语句转换](#1标准dml类sql语句转换)
+        - [2、标准DDL类SQL语句转换](#2标准ddl类sql语句转换)
+        - [3、[**调试使用**]标准DML类SQL语句转换](#3调试使用标准dml类sql语句转换)
+        - [4、[**调试使用**]指定数据库的DML类SQL语句转换](#4调试使用指定数据库的dml类sql语句转换)
+        - [5、[**调试使用**]标准DDL类SQL语句转换](#5调试使用标准ddl类sql语句转换)
+        - [6、[**调试使用**]指定数据库的DDL类SQL语句转换](#6调试使用指定数据库的ddl类sql语句转换)
+    - [六、异构库表结构转换部分接口](#六异构库表结构转换部分接口)
+        - [1、获取数据库中所有的模式(model/schema)](#1获取数据库中所有的模式modelschema)
+        - [2、获取数据库中指定模式下的所有表](#2获取数据库中指定模式下的所有表)
+        - [3、获取业务数据库中指定表的元信息](#3获取业务数据库中指定表的元信息)
+        - [4、获取业务数据库中指定SQL的元信息](#4获取业务数据库中指定sql的元信息)
+        - [5、转换业务数据库中指定表为建表SQL语句](#5转换业务数据库中指定表为建表sql语句)
+        - [6、测试指定数据库中sql有效性](#6测试指定数据库中sql有效性)
+    - [七、表结构拼接生成部分接口](#七表结构拼接生成部分接口)
+        - [1、创建表拼接生成SQL语句](#1创建表拼接生成sql语句)
+        - [2、修改表拼接生成SQL语句](#2修改表拼接生成sql语句)
+        - [3、删除表拼接生成SQL语句](#3删除表拼接生成sql语句)
+        - [4、清空表拼接生成SQL语句](#4清空表拼接生成sql语句)
+    - [附录一、支持的三种数据库数据类型明细表](#附录一支持的三种数据库数据类型明细表)
+    - [附录二、编译打包方法](#附录二编译打包方法)
+    - [附录三、其他数据库向Greenplum迁移](#附录三其他数据库向greenplum迁移)
+
+<!-- /TOC -->
+
 ## 一、功能描述
-
-- 支持标准SQL语法DML/DDL(部分)格式与MySQL/Oralce/PostgreSQL/SqlServer/Greenplum数据库语法的转换；
-- 通过给定的数据库连接信息获取相关的元信息数据(模式列表信息、表或视图信息、字段列信息、主键信息等)；
-- 异构数据库建根据表结构分析对应数据库的建表语句等；
-- 基于函数式的DDL建表/改表/删表/清表的SQL拼接生成；
-- 允许使用?占位符进行DML类的SQL进行语法转换；
-
-## 二、相关只是
 
 ### 1、SQL语句的分类
 - DDL—数据定义语言(CREATE，ALTER，DROP，DECLARE) 
@@ -21,11 +57,60 @@
  - 标识符如果不加英文双引号，表名字段名默认是按大写执行
  - 标识符如果加英文双引号，则表名字段名是按原始大小写执行
 
-### 3、参考资料
+### 3、支持的功能
+
+- 支持标准SQL语法DML/DDL(部分)格式与MySQL/Oralce/PostgreSQL/SqlServer/Greenplum数据库语法的转换；
+- 通过给定的数据库连接信息获取相关的元信息数据(模式列表信息、表或视图信息、字段列信息、主键信息等)；
+- 异构数据库建根据表结构分析对应数据库的建表语句等；
+- 基于函数式的DDL建表/改表/删表/清表的SQL拼接生成；
+- 允许使用?占位符进行DML类的SQL进行语法转换；
+- 异构数据向PostgreSQL/Greenplum的表结构与数据的迁移；
+
+### 4、标准SQL参考
 
 - 参考地址：[SQL99参考地址](https://crate.io/docs/sql-99/en/latest/)
 
 - SQL书写建议：表名及字段名用双引号"进行包裹
+
+## 二、不支持的功能描述
+
+### 1、不支持的功能总述
+
+- 全部的DCL类的SQL转换
+> Oracle建帐号User牵涉表空间；Greenplum建帐号需要修改pg_hba.conf配置文件支持外部可访问等；
+
+> **解决方法**: 具体问题具体分析；
+
+- 非标准的DDL类SQL的转换
+> 牵涉数据库的专用数据类型
+
+> **解决方法**: 具体问题具体分析；
+
+### 2、建表语句不能完全支持所有数据类型
+> 因牵涉数据库的专用数据类型,需要在标准管理中使用底层数据库支持的数据类型建表；
+> 不同数据库支持的数据类型整理见附录一；
+
+> **解决方法**: 此问题为规则增加问题，发现问题可按照BUG处理；
+
+### 3、建表时的表与字段注释问题不完全支持
+> 当前MySQL支持在create table中使用comment 设置字段中文注释;
+> 在Oracle/Greenplum需要使用单独的COMMENT ON TABLE、COMMENT ON COLUMN命令设置；
+
+> **解决方法**: 不是问题，因在标准管理中的表的注释信息存储在MySQL配置库中；
+
+### 4、表主键的修改问题
+> MySQL/Oracle数据库允许直接使用修改,但Greenplum需要先将主键删除后再添加，不支持修改；
+
+> **解决方法**: 考虑单独处理；
+
+### 5、数据库结构转换的兼容性问题
+ - oracle中 VARCHAR2(4000) 类型可以作为主键，在MySQL中varchar做主键最大长度为255 ;
+ - 在MySQL数据库中text、varchar(>255)、blob等类型不允许做主键 ;
+ - 在Greenplum中分布式键不允许修改；
+ - 在MySQL数据库中varchar类型的总长度不应大于65535
+ - 整理中....
+ 
+> **解决方法**: 出现的案例及其少见，考虑人工干预处理；
 
 ## 三、支持的数据库
 
@@ -46,7 +131,7 @@
 | 数据库名称 | 数据库英文 | 简写 | 数据库版本 |
 | :------:| :------: | :------: | :------: |
 | 甲骨文数据库 | oracle | oracle | >=9i |
-| 微软SqlServer | SqlServer | sqlserver |>=2000 |
+| 微软SqlServer | SqlServer | sqlserver | >=2000 |
 | MySQL数据库 | mysql | mysql | >=5.5 |
 | PostgreSQL | PostgreSQL | postgresql | >=9.0 |
 
@@ -579,6 +664,7 @@ CREATE TABLE "private"."t_test_postgres_table" (
 | precision | integer | 浮点数的精度 | 浮点数的精度 |
 | scale | integer | 浮点数的位数 | 浮点数的位数 |
 | class_type | string | 内部存储类型 | 内部存储类型 |
+| auto_increment | bool | 是否为自增类型 | 取值：true-是；false-否, 说明：该字段在MySQL/SqlServer/PostgreSQL有效，在Oracle无效 |
 | remarks    | string | 字段注释 | 源库里的字段的comment描述,可能为null |
 | metadata | Object | 表元信息 | 表元信息对象 |
 | table_name | string | 表名称 | 表或视图的英文名称 |
@@ -605,6 +691,7 @@ CREATE TABLE "private"."t_test_postgres_table" (
         "name": "id",
         "display_size": 12,
         "scale": 0,
+        "auto_increment": true,
         "type": "NUMBER",
         "remarks": "编号"
       },
@@ -615,6 +702,7 @@ CREATE TABLE "private"."t_test_postgres_table" (
         "name": "name",
         "display_size": 255,
         "scale": 0,
+        "auto_increment": false,
         "type": "NVARCHAR2",
         "remarks": "名称"
       },
@@ -625,6 +713,7 @@ CREATE TABLE "private"."t_test_postgres_table" (
         "name": "value",
         "display_size": 255,
         "scale": 0,
+        "auto_increment": false,
         "type": "NVARCHAR2",
         "remarks": "取值"
       }
@@ -688,6 +777,7 @@ CREATE TABLE "private"."t_test_postgres_table" (
 | precision | integer | 浮点数的精度 | 浮点数的精度 |
 | scale | integer | 浮点数的位数 | 浮点数的位数 |
 | class_type | string | 内部存储类型 | 内部存储类型 |
+| auto_increment | bool | 是否为自增类型 | 取值：true-是；false-否, 说明：该字段在MySQL/SqlServer/PostgreSQL有效，在Oracle无效 |
 | remarks    | string | 中文描述 | 源库里的字段的comment描述,可能为null |
 
  **Response Example:**
@@ -705,6 +795,7 @@ CREATE TABLE "private"."t_test_postgres_table" (
         "name": "id",
         "display_size": 12,
         "scale": 0,
+        "auto_increment": false,
         "type": "NUMBER",
         "remarks": null
       },
@@ -715,6 +806,7 @@ CREATE TABLE "private"."t_test_postgres_table" (
         "name": "name",
         "display_size": 255,
         "scale": 0,
+        "auto_increment": false,
         "type": "NVARCHAR2",
         "remarks": null
       },
@@ -725,6 +817,7 @@ CREATE TABLE "private"."t_test_postgres_table" (
         "name": "value",
         "display_size": 255,
         "scale": 0,
+        "auto_increment": false,
         "type": "NVARCHAR2",
         "remarks": null
       }
@@ -914,7 +1007,7 @@ CREATE TABLE "private"."t_test_postgres_table" (
  **Request Format:** JOSN格式
  
 | 字段名称 | 类型 | 描述 | 取值范围 |
-| :------:| :------: | :------: | :------ |
+| :------| :------ | :------ | :------ |
 | type | string | 数据库类型 | 可取值：oracle,mysql,sqlserver,postgresql,greenplum |
 | schema_name | string | 模式名称 | 模式(model/Schema)名称 |
 | table_name | string | 表名称 | 表名称 |
@@ -1006,7 +1099,7 @@ CREATE TABLE "private"."t_test_postgres_table" (
  **Request Format:** JOSN格式
  
 | 字段名称 | 类型 | 描述 | 取值范围 |
-| :------:| :------: | :------: | :------ |
+| :------| :------ | :------ | :------ |
 | type | string | 数据库类型 | 可取值：oracle,mysql,sqlserver,postgresql,greenplum |
 | schema_name | string | 模式名称 | 模式(model/schema)名称 |
 | table_name | string | 表名称 | 表名称 |
@@ -1188,12 +1281,12 @@ CREATE TABLE "private"."t_test_postgres_table" (
 | MySQL | 文本 | VARCHAR | VARCHAR(2) |
 | MySQL | 文本 | TINYBLOB | TINYBLOB(2) |
 | MySQL | 文本 | TINYTEXT | TINYTEXT |
-| MySQL | 文本 | BLOB | BLOB |
 | MySQL | 文本 | TEXT | TEXT |
-| MySQL | 文本 | MEDIUMBLOB | MEDIUMBLOB |
 | MySQL | 文本 | MEDIUMTEXT | MEDIUMTEXT |
-| MySQL | 二进制 | LONGBLOB | LONGBLOB |
 | MySQL | 文本 | LONGTEXT | LONGTEXT |
+| MySQL | 二进制 | BLOB | BLOB |
+| MySQL | 二进制 | MEDIUMBLOB | MEDIUMBLOB |
+| MySQL | 二进制 | LONGBLOB | LONGBLOB |
 | Oracle | 数字 | NUMBER | NUMBER(38,0)、NUMBER(38,2) |
 | Oracle | 时间 | DATE | DATE |
 | Oracle | 时间 | TIMESTAMP | TIMESTAMP |
@@ -1223,4 +1316,3 @@ CREATE TABLE "private"."t_test_postgres_table" (
 | Greenplum | 文本 | VARCHAR | VARCHAR(128) |
 | Greenplum | 文本 | TEXT | TEXT |
 | Greenplum | 二进制 | BYTEA | BYTEA |
-

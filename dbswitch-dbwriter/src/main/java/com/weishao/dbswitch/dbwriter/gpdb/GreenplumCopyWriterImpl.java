@@ -158,9 +158,9 @@ public class GreenplumCopyWriterImpl extends AbstractDatabaseWriter implements I
 								if (null == fieldValue) {
 									row.setVarChar(i, null);
 								} else if (fieldValue.getClass().getName().equals("oracle.sql.TIMESTAMPLTZ")) {
-									row.setTimeStamp(i, null);
+									row.setVarChar(i, null);
 								} else if (fieldValue.getClass().getName().equals("oracle.sql.TIMESTAMPTZ")) {
-									row.setTimeStamp(i, null);
+									row.setVarChar(i, null);
 								} else {
 									String val = castToString(fieldValue);
 									if (null == val) {
@@ -177,9 +177,9 @@ public class GreenplumCopyWriterImpl extends AbstractDatabaseWriter implements I
 								if (null == fieldValue) {
 									row.setText(i, null);
 								} else if (fieldValue.getClass().getName().equals("oracle.sql.TIMESTAMPLTZ")) {
-									row.setTimeStamp(i, null);
+									row.setText(i, null);
 								} else if (fieldValue.getClass().getName().equals("oracle.sql.TIMESTAMPTZ")) {
-									row.setTimeStamp(i, null);
+									row.setText(i, null);
 								} else {
 									String val = castToString(fieldValue);
 									if (null == val) {

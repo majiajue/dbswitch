@@ -15,7 +15,7 @@ import com.weishao.dbswitch.core.database.impl.DatabaseSqlserverImpl;
  * @author tang
  *
  */
-public class DatabaseFactory {
+public final class DatabaseFactory {
 	
 	private static final Map<DatabaseType,String> DATABASE_MAPPER=new HashMap<DatabaseType, String>(){
 		

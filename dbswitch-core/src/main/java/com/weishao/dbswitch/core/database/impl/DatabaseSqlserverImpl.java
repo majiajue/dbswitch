@@ -14,6 +14,7 @@ import com.weishao.dbswitch.core.database.IDatabaseInterface;
 import com.weishao.dbswitch.core.model.ColumnDescription;
 import com.weishao.dbswitch.core.model.ColumnMetaData;
 import com.weishao.dbswitch.core.model.TableDescription;
+import com.weishao.dbswitch.core.util.JdbcOperatorUtils;
 
 /**
  * 支持SQLServer数据库的元信息实现
@@ -61,33 +62,29 @@ public class DatabaseSqlserverImpl extends AbstractDatabase implements IDatabase
 			pstmt = this.connection.prepareStatement(sql);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				TableDescription td=new TableDescription();
+				TableDescription td = new TableDescription();
 				td.setSchemaName(rs.getString("TABLE_SCHEMA"));
 				td.setTableName(rs.getString("TABLE_NAME"));
 				td.setRemarks(rs.getString("COMMENTS"));
-				String tableType=rs.getString("TABLE_TYPE").trim();
-				 if(tableType.equalsIgnoreCase("VIEW")) {
+				String tableType = rs.getString("TABLE_TYPE").trim();
+				if (tableType.equalsIgnoreCase("VIEW")) {
 					td.setTableType("VIEW");
-				}else {
+				} else {
 					td.setTableType("TABLE");
 				}
-				 
-				 ret.add(td);
+
+				ret.add(td);
 			}
 
 			return ret;
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
-		}finally {
-			if(null!=pstmt) {
-				try {
-					pstmt.close();
-				} catch (SQLException e) {
-				}
-			}
+		} finally {
+			JdbcOperatorUtils.closeResultSet(rs);
+			JdbcOperatorUtils.closeStatement(pstmt);
 		}
 	}
-	
+
 	@Override
 	public List<ColumnDescription> queryTableColumnMeta(String schemaName, String tableName) {
 		int majorVersion = getDatabaseMajorVersion();
@@ -111,16 +108,19 @@ public class DatabaseSqlserverImpl extends AbstractDatabase implements IDatabase
 			while (rs.next()) {
 				String column_name = rs.getString("COLUMN_NAME");
 				String remarks = rs.getString("REMARKS");
-				for(ColumnDescription cd : ret) {
-					if(column_name.equalsIgnoreCase(cd.getFieldName())) {
+				for (ColumnDescription cd : ret) {
+					if (column_name.equalsIgnoreCase(cd.getFieldName())) {
 						cd.setRemarks(remarks);
 					}
 				}
 			}
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
+		} finally {
+			JdbcOperatorUtils.closeResultSet(rs);
+			JdbcOperatorUtils.closeStatement(pstmt);
 		}
-		
+
 		return ret;
 	}
 	
