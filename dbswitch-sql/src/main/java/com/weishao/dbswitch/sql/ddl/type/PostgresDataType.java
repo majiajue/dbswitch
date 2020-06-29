@@ -14,28 +14,34 @@ public enum PostgresDataType {
 
 	//~~~~~整型类型~~~~~~~~
 	SMALLINT(0,Types.SMALLINT),
-	INT2(0,Types.SMALLINT),
-	INTEGER(1,Types.INTEGER),
-	INT4(0,Types.INTEGER),
-	BIGINT(2,Types.BIGINT),
-	INT8(0,Types.BIGINT),
-	DECIMAL(3,Types.DECIMAL),
-	NUMERIC(4,Types.NUMERIC),
-	REAL(5,Types.REAL),
-	DOUBLE(6,Types.DOUBLE),
-	SERIAL(7,Types.INTEGER),
-	BIGSERIAL(8,Types.BIGINT),
+	INT2(1,Types.SMALLINT),
+	INTEGER(2,Types.INTEGER),
+	INT4(3,Types.INTEGER),
+	BIGINT(4,Types.BIGINT),
+	INT8(5,Types.BIGINT),
+	DECIMAL(6,Types.DECIMAL),
+	NUMERIC(7,Types.NUMERIC),
+	REAL(8,Types.REAL),//equal float4
+	FLOAT4(9,Types.FLOAT),
+	DOUBLE(10,Types.DOUBLE),
+	FLOAT8(11,Types.DOUBLE),
+	SMALLSERIAL(12,Types.SMALLINT),
+	SERIAL2(13,Types.SMALLINT),
+	SERIAL(14,Types.INTEGER),
+	SERIAL4(15,Types.INTEGER),
+	BIGSERIAL(16,Types.BIGINT),
+	SERIAL8(17,Types.BIGINT),
 	
 	//~~~~~日期和时间类型~~~~~~~~
-	DATE(9,Types.DATE),
-	TIME(10,Types.TIME),
-	TIMESTAMP(11,Types.TIMESTAMP),
+	DATE(18,Types.DATE),
+	TIME(19,Types.TIME),
+	TIMESTAMP(20,Types.TIMESTAMP),
 	
 	//~~~~~字符串类型~~~~~~~~
-	CHAR(12,Types.CHAR),
-	VARCHAR(13,Types.VARCHAR),
-	TEXT(14,Types.CLOB),
-	BYTEA(15,Types.BLOB);
+	CHAR(21,Types.CHAR),
+	VARCHAR(22,Types.VARCHAR),
+	TEXT(23,Types.CLOB),
+	BYTEA(24,Types.BLOB);
 	
 	private int index;
 	private int jdbctype;
@@ -52,5 +58,4 @@ public enum PostgresDataType {
 	public int getJdbcType() {
 		return this.jdbctype;
 	}
-	
 }

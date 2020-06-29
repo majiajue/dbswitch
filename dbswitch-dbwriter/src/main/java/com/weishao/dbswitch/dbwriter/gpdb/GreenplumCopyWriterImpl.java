@@ -1,9 +1,5 @@
 package com.weishao.dbswitch.dbwriter.gpdb;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.function.Consumer;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.Method;
@@ -13,13 +9,17 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.function.Consumer;
 import javax.sql.DataSource;
-import org.postgresql.PGConnection;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ConnectionCallback;
 import org.springframework.jdbc.support.JdbcUtils;
@@ -116,14 +116,17 @@ public class GreenplumCopyWriterImpl extends AbstractDatabaseWriter implements I
 		String schemaName = Objects.requireNonNull(this.schemaName, "schema-name名称为空，不合法!");
 		String tableName = Objects.requireNonNull(this.tableName, "table-name名称为空，不合法!");
 		SimpleRowWriter.Table table = new SimpleRowWriter.Table(schemaName, tableName, columnNames);
-		SimpleRowWriter pgwriter = new SimpleRowWriter(table, true);
-		pgwriter.enableNullCharacterHandler();
-		Connection connection = null;
+		
+		Connection connection=null;
 		try {
 			connection = dataSource.getConnection();
-			PGConnection pgConnection = PostgreSqlUtils.getPGConnection(connection);
-			pgwriter.open(pgConnection);
-
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+		
+		try(SimpleRowWriter pgwriter = new SimpleRowWriter(table, PostgreSqlUtils.getPGConnection(connection), true);) {
+			pgwriter.enableNullCharacterHandler();
+			
 			long count = recordValues.size();
 			for (Object[] objects : recordValues) {
 				if (fieldNames.size() != objects.length) {
@@ -362,15 +365,15 @@ public class GreenplumCopyWriterImpl extends AbstractDatabaseWriter implements I
 								break;
 							case Types.TIME:
 								if (null == fieldValue) {
-									row.setDate(i, null);
+									row.setTime(i, null);
 								} else if (fieldValue.getClass().getName().equals("oracle.sql.TIMESTAMPLTZ")) {
-									row.setDate(i, null);
+									row.setTime(i, null);
 								} else if (fieldValue.getClass().getName().equals("oracle.sql.TIMESTAMPTZ")) {
-									row.setDate(i, null);
+									row.setTime(i, null);
 								} else {
-									LocalDate val = null;
+									LocalTime val = null;
 									try {
-										val = castToLocalDate(fieldValue);
+										val = castToLocalTime(fieldValue);
 									} catch (RuntimeException e) {
 										throw new RuntimeException(String.format("表名[%s.%s]的字段名[%s]数据类型转错误，%s",
 												schemaName, tableName, fieldName, e.getMessage()));
@@ -381,7 +384,7 @@ public class GreenplumCopyWriterImpl extends AbstractDatabaseWriter implements I
 												"表名[%s.%s]的字段名[%s]数据类型转换错误，应该为java.sql.Time，而实际的数据类型为%s", schemaName,
 												tableName, fieldName, fieldValue.getClass().getName()));
 									}
-									row.setDate(i, val);
+									row.setTime(i, val);
 								}
 								break;
 							case Types.DATE:
@@ -459,7 +462,6 @@ public class GreenplumCopyWriterImpl extends AbstractDatabaseWriter implements I
 					}
 				});
 			}
-			pgwriter.close();
 			if (log.isDebugEnabled()) {
 				log.debug("Greenplum copy write data affect count:{}", count);
 			}
@@ -913,19 +915,19 @@ public class GreenplumCopyWriterImpl extends AbstractDatabaseWriter implements I
 	private LocalDate castToLocalDate(final Object in) {
 		if (in instanceof java.sql.Time) {
 			java.sql.Time date = (java.sql.Time) in;
-			LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+			LocalDate localDate = Instant.ofEpochMilli(date.getTime()).atZone(ZoneId.systemDefault()).toLocalDate();
 			return localDate;
 		} else if (in instanceof java.sql.Timestamp) {
 			java.sql.Timestamp t = (java.sql.Timestamp) in;
 			LocalDateTime localDateTime = LocalDateTime.ofInstant(t.toInstant(), ZoneId.systemDefault());
 			return localDateTime.toLocalDate();
 		} else if (in instanceof java.util.Date) {
-			java.sql.Date date = new java.sql.Date(((java.util.Date) in).getTime());
-			LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+			java.util.Date date = (java.util.Date)in;
+			LocalDate localDate = Instant.ofEpochMilli(date.getTime()).atZone(ZoneId.systemDefault()).toLocalDate();
 			return localDate;
 		} else if (in instanceof java.util.Calendar) {
 			java.sql.Date date = new java.sql.Date(((java.util.Calendar) in).getTime().getTime());
-			LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+			LocalDate localDate = Instant.ofEpochMilli(date.getTime()).atZone(ZoneId.systemDefault()).toLocalDate();
 			return localDate;
 		} else if (in instanceof java.time.LocalDate) {
 			return (java.time.LocalDate) in;
@@ -958,7 +960,7 @@ public class GreenplumCopyWriterImpl extends AbstractDatabaseWriter implements I
 		} else if (in instanceof java.lang.String || in instanceof java.lang.Character) {
 			try {
 				java.sql.Time date = java.sql.Time.valueOf(in.toString());
-				LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+				LocalDate localDate = Instant.ofEpochMilli(date.getTime()).atZone(ZoneId.systemDefault()).toLocalDate();
 				return localDate;
 			} catch (IllegalArgumentException e) {
 				throw new RuntimeException(String.format("无法将java.lang.String类型转换为java.sql.Time类型:%s", e.getMessage()));
@@ -966,7 +968,7 @@ public class GreenplumCopyWriterImpl extends AbstractDatabaseWriter implements I
 		} else if (in instanceof java.sql.Clob) {
 			try {
 				java.sql.Time date = java.sql.Time.valueOf(clob2Str((java.sql.Clob) in));
-				LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+				LocalDate localDate = Instant.ofEpochMilli(date.getTime()).atZone(ZoneId.systemDefault()).toLocalDate();
 				return localDate;
 			} catch (NumberFormatException e) {
 				throw new RuntimeException(String.format("无法将java.sql.Clob类型转换为java.sql.Time类型:%s", e.getMessage()));
@@ -980,6 +982,79 @@ public class GreenplumCopyWriterImpl extends AbstractDatabaseWriter implements I
 		return null;
 	}
 
+
+	/**
+	 * 将任意类型转换为java.time.LocalTime类型
+	 * 
+	 * @param in 任意类型的对象实例
+	 * @return java.time.LocalDate类型
+	 */
+	private LocalTime castToLocalTime(final Object in) {
+		if (in instanceof java.sql.Time) {
+			java.sql.Time date = (java.sql.Time) in;
+			LocalTime localTime = Instant.ofEpochMilli(date.getTime()).atZone(ZoneId.systemDefault()).toLocalTime();
+			return localTime;
+		} else if (in instanceof java.sql.Timestamp) {
+			java.sql.Timestamp t = (java.sql.Timestamp) in;
+			LocalDateTime localDateTime = LocalDateTime.ofInstant(t.toInstant(), ZoneId.systemDefault());
+			return localDateTime.toLocalTime();
+		} else if (in instanceof java.util.Date) {
+			return LocalTime.of(0, 0, 0);
+		} else if (in instanceof java.util.Calendar) {
+			java.sql.Date date = new java.sql.Date(((java.util.Calendar) in).getTime().getTime());
+			LocalDateTime localDateTime = Instant.ofEpochMilli(date.getTime()).atZone(ZoneId.systemDefault()).toLocalDateTime();
+			return localDateTime.toLocalTime();
+		} else if (in instanceof java.time.LocalDate) {
+			return LocalTime.of(0, 0, 0);
+		} else if (in instanceof java.time.LocalTime) {
+			return (java.time.LocalTime)in;
+		} else if (in instanceof java.time.LocalDateTime) {
+			return ((java.time.LocalDateTime) in).toLocalTime();
+		} else if (in instanceof java.time.OffsetDateTime) {
+			return ((java.time.OffsetDateTime) in).toLocalTime();
+		} else if (in.getClass().getName().equals("oracle.sql.TIMESTAMP")) {
+			Class<?> clz = in.getClass();
+			try {
+				Method m = clz.getMethod("timestampValue");
+				java.sql.Timestamp date = (java.sql.Timestamp) m.invoke(in);
+				LocalDateTime localDateTime = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+				return localDateTime.toLocalTime();
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		} else if (in.getClass().getName().equals("microsoft.sql.DateTimeOffset")) {
+			Class<?> clz = in.getClass();
+			try {
+				Method m = clz.getMethod("getTimestamp");
+				java.sql.Timestamp t = (java.sql.Timestamp) m.invoke(in);
+				LocalDateTime localDateTime = LocalDateTime.ofInstant(t.toInstant(), ZoneId.systemDefault());
+				return localDateTime.toLocalTime();
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		} else if (in instanceof java.lang.String || in instanceof java.lang.Character) {
+			try {
+				java.sql.Time date = java.sql.Time.valueOf(in.toString());
+				return LocalTime.ofSecondOfDay(date.getTime());
+			} catch (IllegalArgumentException e) {
+				throw new RuntimeException(String.format("无法将java.lang.String类型转换为java.sql.Time类型:%s", e.getMessage()));
+			}
+		} else if (in instanceof java.sql.Clob) {
+			try {
+				java.sql.Time date = java.sql.Time.valueOf(clob2Str((java.sql.Clob) in));
+				return LocalTime.ofSecondOfDay(date.getTime());
+			} catch (NumberFormatException e) {
+				throw new RuntimeException(String.format("无法将java.sql.Clob类型转换为java.sql.Time类型:%s", e.getMessage()));
+			}
+		} else if (in instanceof java.lang.Number) {
+			java.sql.Timestamp t = new java.sql.Timestamp(((java.lang.Number) in).longValue());
+			LocalDateTime localDateTime = LocalDateTime.ofInstant(t.toInstant(), ZoneId.systemDefault());
+			return localDateTime.toLocalTime();
+		}
+
+		return null;
+	}
+	
 	/**
 	 * 将任意类型转换为java.time.LocalDateTime类型
 	 * 

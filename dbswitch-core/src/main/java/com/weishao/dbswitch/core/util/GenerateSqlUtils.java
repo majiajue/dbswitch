@@ -36,7 +36,7 @@ public class GenerateSqlUtils {
 			}
 
 			ColumnMetaData v = fieldNames.get(i).getMetaData();
-			retval.append(db.getFieldDefinition(v, pks, true));
+			retval.append(db.getFieldDefinition(v, pks, false, true));
 		}
 
 		if (pks.size() > 0) {

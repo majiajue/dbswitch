@@ -68,11 +68,21 @@ public class StructureController {
 		String passwd=object.getString("passwd");
 		String dbname=object.getString("dbname");
 		String charset=object.getString("charset");
-		
-		if (Strings.isNullOrEmpty(type) || Strings.isNullOrEmpty(host) || Strings.isNullOrEmpty(user)
-				|| Strings.isNullOrEmpty(passwd) || Strings.isNullOrEmpty(dbname) || Strings.isNullOrEmpty(charset)
-				|| Objects.isNull(port)) {
-			throw new RuntimeException("Invalid input parameter");
+
+		if (null != type && null != mode && type.equalsIgnoreCase("oracle") && mode.equalsIgnoreCase("TNSNAME")) {
+			if (Strings.isNullOrEmpty(user) || Strings.isNullOrEmpty(passwd) || Strings.isNullOrEmpty(dbname)) {
+				throw new RuntimeException("Invalid input parameter");
+			}
+
+			if (Strings.isNullOrEmpty(charset)) {
+				throw new RuntimeException("Invalid input parameter");
+			}
+		} else {
+			if (Strings.isNullOrEmpty(type) || Strings.isNullOrEmpty(host) || Strings.isNullOrEmpty(user)
+					|| Strings.isNullOrEmpty(passwd) || Strings.isNullOrEmpty(dbname) || Strings.isNullOrEmpty(charset)
+					|| Objects.isNull(port)) {
+				throw new RuntimeException("Invalid input parameter");
+			}
 		}
 
 		DatabaseDescription databaseDesc = new DatabaseDescription(type, host, port, mode, dbname, charset, user,passwd);
@@ -119,10 +129,21 @@ public class StructureController {
 		String charset=object.getString("charset");
 		String model=object.getString("model");
 		
-		if (Strings.isNullOrEmpty(type) || Strings.isNullOrEmpty(host) || Strings.isNullOrEmpty(user)
-				|| Strings.isNullOrEmpty(passwd) || Strings.isNullOrEmpty(dbname) || Strings.isNullOrEmpty(charset)
-				|| Strings.isNullOrEmpty(model) || Objects.isNull(port)) {
-			throw new RuntimeException("Invalid input parameter");
+		if (null != type && null != mode && type.equalsIgnoreCase("oracle") && mode.equalsIgnoreCase("TNSNAME")) {
+			if (Strings.isNullOrEmpty(user) || Strings.isNullOrEmpty(passwd) || Strings.isNullOrEmpty(dbname)) {
+				throw new RuntimeException("Invalid input parameter");
+			}
+			
+			if (Strings.isNullOrEmpty(charset) || Strings.isNullOrEmpty(model)) {
+				throw new RuntimeException("Invalid input parameter");
+			}
+			
+		} else {
+			if (Strings.isNullOrEmpty(type) || Strings.isNullOrEmpty(host) || Strings.isNullOrEmpty(user)
+					|| Strings.isNullOrEmpty(passwd) || Strings.isNullOrEmpty(dbname) || Strings.isNullOrEmpty(charset)
+					|| Strings.isNullOrEmpty(model) || Objects.isNull(port)) {
+				throw new RuntimeException("Invalid input parameter");
+			}
 		}
 		
 		DatabaseDescription databaseDesc=new DatabaseDescription(type, host, port, mode, dbname, charset, user, passwd);
@@ -182,10 +203,21 @@ public class StructureController {
 		String model = object.getString("model");
 		String src_table = object.getString("src_table");
 
-		if (Strings.isNullOrEmpty(type) || Strings.isNullOrEmpty(host) || Strings.isNullOrEmpty(user)
-				|| Strings.isNullOrEmpty(passwd) || Strings.isNullOrEmpty(dbname) || Strings.isNullOrEmpty(charset)
-				|| Strings.isNullOrEmpty(model) || Strings.isNullOrEmpty(src_table) || Objects.isNull(port)) {
-			throw new RuntimeException("Invalid input parameter");
+		if (null != type && null != mode && type.equalsIgnoreCase("oracle") && mode.equalsIgnoreCase("TNSNAME")) {
+			if (Strings.isNullOrEmpty(user) || Strings.isNullOrEmpty(passwd) || Strings.isNullOrEmpty(dbname)
+					|| Strings.isNullOrEmpty(model) || Strings.isNullOrEmpty(src_table)) {
+				throw new RuntimeException("Invalid input parameter");
+			}
+			
+			if (Strings.isNullOrEmpty(charset) || Strings.isNullOrEmpty(model) || Strings.isNullOrEmpty(src_table)) {
+				throw new RuntimeException("Invalid input parameter");
+			}
+		} else {
+			if (Strings.isNullOrEmpty(type) || Strings.isNullOrEmpty(host) || Strings.isNullOrEmpty(user)
+					|| Strings.isNullOrEmpty(passwd) || Strings.isNullOrEmpty(dbname) || Strings.isNullOrEmpty(charset)
+					|| Strings.isNullOrEmpty(model) || Strings.isNullOrEmpty(src_table) || Objects.isNull(port)) {
+				throw new RuntimeException("Invalid input parameter");
+			}
 		}
 
 		Map<String, Object> ret = new HashMap<String, Object>();
@@ -266,10 +298,21 @@ public class StructureController {
 		String charset=object.getString("charset");
 		String querysql=object.getString("querysql");
 		
-		if (Strings.isNullOrEmpty(type) || Strings.isNullOrEmpty(host) || Strings.isNullOrEmpty(user)
-				|| Strings.isNullOrEmpty(passwd) || Strings.isNullOrEmpty(dbname) || Strings.isNullOrEmpty(charset)
-				||  Strings.isNullOrEmpty(querysql) || Objects.isNull(port)) {
-			throw new RuntimeException("Invalid input parameter");
+		if (null != type && null != mode && type.equalsIgnoreCase("oracle") && mode.equalsIgnoreCase("TNSNAME")) {
+			if (Strings.isNullOrEmpty(user) || Strings.isNullOrEmpty(passwd) || Strings.isNullOrEmpty(dbname)
+					|| Strings.isNullOrEmpty(querysql)) {
+				throw new RuntimeException("Invalid input parameter");
+			}
+			
+			if (Strings.isNullOrEmpty(charset) || Strings.isNullOrEmpty(querysql)) {
+				throw new RuntimeException("Invalid input parameter");
+			}
+		} else {
+			if (Strings.isNullOrEmpty(type) || Strings.isNullOrEmpty(host) || Strings.isNullOrEmpty(user)
+					|| Strings.isNullOrEmpty(passwd) || Strings.isNullOrEmpty(dbname) || Strings.isNullOrEmpty(charset)
+					|| Strings.isNullOrEmpty(querysql) || Objects.isNull(port)) {
+				throw new RuntimeException("Invalid input parameter");
+			}
 		}
 		
 		DatabaseDescription databaseDesc=new DatabaseDescription(type, host, port, mode, dbname, charset, user, passwd);
@@ -347,11 +390,24 @@ public class StructureController {
 		String dest_model=object.getString("dest_model");
 		String dest_table=object.getString("dest_table");
 		
-		if (Strings.isNullOrEmpty(type) || Strings.isNullOrEmpty(host) || Strings.isNullOrEmpty(user)
-				|| Strings.isNullOrEmpty(passwd) || Strings.isNullOrEmpty(dbname) || Strings.isNullOrEmpty(charset)
-				|| Strings.isNullOrEmpty(src_model) || Strings.isNullOrEmpty(src_table) || Objects.isNull(port)
-				|| Strings.isNullOrEmpty(dest_model) || Strings.isNullOrEmpty(dest_table) ||Strings.isNullOrEmpty(target)) {
-			throw new RuntimeException("Invalid input parameter");
+		if (null != type && null != mode && type.equalsIgnoreCase("oracle") && mode.equalsIgnoreCase("TNSNAME")) {
+			if (Strings.isNullOrEmpty(user) || Strings.isNullOrEmpty(passwd) || Strings.isNullOrEmpty(dbname)) {
+				throw new RuntimeException("Invalid input parameter");
+			}
+			
+			if (Strings.isNullOrEmpty(charset) || Strings.isNullOrEmpty(src_model) || Strings.isNullOrEmpty(src_table)
+					|| Objects.isNull(port) || Strings.isNullOrEmpty(dest_model) || Strings.isNullOrEmpty(dest_table)
+					|| Strings.isNullOrEmpty(target)) {
+				throw new RuntimeException("Invalid input parameter");
+			}
+		} else {
+			if (Strings.isNullOrEmpty(type) || Strings.isNullOrEmpty(host) || Strings.isNullOrEmpty(user)
+					|| Strings.isNullOrEmpty(passwd) || Strings.isNullOrEmpty(dbname) || Strings.isNullOrEmpty(charset)
+					|| Strings.isNullOrEmpty(src_model) || Strings.isNullOrEmpty(src_table) || Objects.isNull(port)
+					|| Strings.isNullOrEmpty(dest_model) || Strings.isNullOrEmpty(dest_table)
+					|| Strings.isNullOrEmpty(target)) {
+				throw new RuntimeException("Invalid input parameter");
+			}
 		}
 		
 		DatabaseDescription databaseDesc=new DatabaseDescription(type, host, port, mode, dbname, charset, user, passwd);
@@ -437,10 +493,20 @@ public class StructureController {
 		String charset=object.getString("charset");
 		String querysql=object.getString("querysql");
 		
-		if (Strings.isNullOrEmpty(type) || Strings.isNullOrEmpty(host) || Strings.isNullOrEmpty(user)
-				|| Strings.isNullOrEmpty(passwd) || Strings.isNullOrEmpty(dbname) || Strings.isNullOrEmpty(charset)
-				|| Strings.isNullOrEmpty(querysql) || Objects.isNull(port)) {
-			throw new RuntimeException("Invalid input parameter");
+		if (null != type && null != mode && type.equalsIgnoreCase("oracle") && mode.equalsIgnoreCase("TNSNAME")) {
+			if (Strings.isNullOrEmpty(user) || Strings.isNullOrEmpty(passwd) || Strings.isNullOrEmpty(dbname)) {
+				throw new RuntimeException("Invalid input parameter");
+			}
+			
+			if (Strings.isNullOrEmpty(charset) || Strings.isNullOrEmpty(querysql)) {
+				throw new RuntimeException("Invalid input parameter");
+			}
+		} else {
+			if (Strings.isNullOrEmpty(type) || Strings.isNullOrEmpty(host) || Strings.isNullOrEmpty(user)
+					|| Strings.isNullOrEmpty(passwd) || Strings.isNullOrEmpty(dbname) || Strings.isNullOrEmpty(charset)
+					|| Strings.isNullOrEmpty(querysql) || Objects.isNull(port)) {
+				throw new RuntimeException("Invalid input parameter");
+			}
 		}
 		
 		DatabaseDescription databaseDesc=new DatabaseDescription(type, host, port, mode, dbname, charset, user, passwd);

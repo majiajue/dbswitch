@@ -151,18 +151,23 @@ public class DatabaseSqlserverImpl extends AbstractDatabase implements IDatabase
 	}
 
 	@Override
-	public String getFieldDefinition(ColumnMetaData v, List<String> pks, boolean add_cr) {
+	public String getFieldDefinition(ColumnMetaData v, List<String> pks, boolean use_autoinc, boolean add_cr) {
 		String fieldname = v.getName();
 		int length = v.getLength();
 		int precision = v.getPrecision();
 		int type = v.getType();
 
-		String retval = " ["+fieldname + "]  ";
+		String retval = " [" + fieldname + "]  ";
 
 		switch (type) {
 		case ColumnMetaData.TYPE_TIMESTAMP:
-		case ColumnMetaData.TYPE_DATE:
 			retval += "DATETIME";
+			break;
+		case ColumnMetaData.TYPE_TIME:
+			retval += "TIME";
+			break;
+		case ColumnMetaData.TYPE_DATE:
+			retval += "DATE";
 			break;
 		case ColumnMetaData.TYPE_BOOLEAN:
 			retval += "CHAR(32)";
@@ -170,8 +175,12 @@ public class DatabaseSqlserverImpl extends AbstractDatabase implements IDatabase
 		case ColumnMetaData.TYPE_NUMBER:
 		case ColumnMetaData.TYPE_INTEGER:
 		case ColumnMetaData.TYPE_BIGNUMBER:
-			if (null!=pks && pks.contains(fieldname)) {
-				retval += "BIGINT";
+			if (null != pks && pks.contains(fieldname)) {
+				if (use_autoinc) {
+					retval += "BIGINT IDENTITY(0,1)";
+				} else {
+					retval += "BIGINT";
+				}
 			} else {
 				if (precision == 0) {
 					if (length > 18) {
@@ -196,10 +205,10 @@ public class DatabaseSqlserverImpl extends AbstractDatabase implements IDatabase
 			if (length < 8000) {
 				// Maybe use some default DB String length in case length<=0
 				if (length > 0) {
-					//VARCHAR(n)最多能存n个字节，一个中文是两个字节。
-					length=2*length;
-					if(length>8000) {
-						length=8000;
+					// VARCHAR(n)最多能存n个字节，一个中文是两个字节。
+					length = 2 * length;
+					if (length > 8000) {
+						length = 8000;
 					}
 					retval += "VARCHAR(" + length + ")";
 				} else {
@@ -213,7 +222,7 @@ public class DatabaseSqlserverImpl extends AbstractDatabase implements IDatabase
 			retval += "VARBINARY(MAX)";
 			break;
 		default:
-			retval += " TEXT";
+			retval += "TEXT";
 			break;
 		}
 

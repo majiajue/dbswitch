@@ -2,7 +2,7 @@ package com.weishao.dbswitch.webapi;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import com.alibaba.fastjson.JSONObject;
 import com.jayway.jsonpath.JsonPath;
@@ -49,7 +49,7 @@ import org.springframework.web.context.WebApplicationContext;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest
-class SwitchApplicationTests{
+public class SwitchApplicationTests{
 	private static final Logger logger = LoggerFactory.getLogger(SwitchApplicationTests.class);
 	
 	@Autowired
@@ -59,7 +59,7 @@ class SwitchApplicationTests{
 	 * JSON path的使用测试
 	 */
 	@Test
-	void test_json_path_usage_01() {
+	public void test_json_path_usage_01() {
 		logger.info("#### Run test json path ");
 		String json1 = "{\"author\":\"tangyibo\"}";
 		String result = JsonPath.read(json1, "$.author");
@@ -73,7 +73,7 @@ class SwitchApplicationTests{
 	 * @throws Exception
 	 */
 	@Test
-	void standard_dml_select_1_all() throws Exception {
+	public void standard_dml_select_1_all() throws Exception {
 		String sql = "SELECT * FROM dbo.Persons";
 		logger.info("#### Run test 1 : {}", sql);
 		JSONObject json = new JSONObject();
@@ -82,12 +82,12 @@ class SwitchApplicationTests{
 		MockHttpSession session = new MockHttpSession();
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
 		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/debug/standard/dml")
-				.accept(MediaType.APPLICATION_JSON_VALUE)
+				.accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
 				.content(json.toJSONString().getBytes())
 				.session(session));
 
 		action.andExpect(MockMvcResultMatchers.status().isOk());
-		action.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
+		action.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8));
 		//action.andDo(MockMvcResultHandlers.print());
 		//String content=action.andReturn().getResponse().getContentAsString();
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.errmsg").value("success"));
@@ -104,7 +104,7 @@ class SwitchApplicationTests{
 	 * @throws Exception
 	 */
 	@Test
-	void standard_dml_select_2_with_fields() throws Exception {
+	public void standard_dml_select_2_with_fields() throws Exception {
 		String sql = "SELECT LastName,FirstName FROM dbo.Persons";
 		logger.info("#### Run test 2 : {}", sql);
 		JSONObject json = new JSONObject();
@@ -113,12 +113,12 @@ class SwitchApplicationTests{
 		MockHttpSession session = new MockHttpSession();
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
 		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/debug/standard/dml")
-				.accept(MediaType.APPLICATION_JSON_VALUE)
+				.accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
 				.content(json.toJSONString().getBytes())
 				.session(session));
 
 		action.andExpect(MockMvcResultMatchers.status().isOk());
-		action.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
+		action.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.errmsg").value("success"));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.oracle").value("SELECT \"LASTNAME\", \"FIRSTNAME\" FROM \"DBO\".\"PERSONS\""));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.postgresql").value("SELECT \"LASTNAME\", \"FIRSTNAME\" FROM \"DBO\".\"PERSONS\""));
@@ -133,7 +133,7 @@ class SwitchApplicationTests{
 	 * @throws Exception
 	 */
 	@Test
-	void standard_dml_select_3_all_with_where() throws Exception {
+	public void standard_dml_select_3_all_with_where() throws Exception {
 		String sql = "SELECT * FROM dbo.Persons where LastName='tang'";
 		logger.info("#### Run test 3 : {}", sql);
 		JSONObject json = new JSONObject();
@@ -142,12 +142,12 @@ class SwitchApplicationTests{
 		MockHttpSession session = new MockHttpSession();
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
 		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/debug/standard/dml")
-				.accept(MediaType.APPLICATION_JSON_VALUE)
+				.accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
 				.content(json.toJSONString().getBytes())
 				.session(session));
 
 		action.andExpect(MockMvcResultMatchers.status().isOk());
-		action.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
+		action.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.errmsg").value("success"));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.oracle").value("SELECT * FROM \"DBO\".\"PERSONS\" WHERE \"LASTNAME\" = 'tang'"));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.postgresql").value("SELECT * FROM \"DBO\".\"PERSONS\" WHERE \"LASTNAME\" = 'tang'"));
@@ -162,7 +162,7 @@ class SwitchApplicationTests{
 	 * @throws Exception
 	 */
 	@Test
-	void standard_dml_select_4_all_with_where_placeholder() throws Exception {
+	public void standard_dml_select_4_all_with_where_placeholder() throws Exception {
 		String sql = "SELECT * FROM dbo.Persons where Sex=?";
 		logger.info("#### Run test 4 : {}", sql);
 		JSONObject json = new JSONObject();
@@ -171,12 +171,12 @@ class SwitchApplicationTests{
 		MockHttpSession session = new MockHttpSession();
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
 		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/debug/standard/dml")
-				.accept(MediaType.APPLICATION_JSON_VALUE)
+				.accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
 				.content(json.toJSONString().getBytes())
 				.session(session));
 
 		action.andExpect(MockMvcResultMatchers.status().isOk());
-		action.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
+		action.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.errmsg").value("success"));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.oracle").value("SELECT * FROM \"DBO\".\"PERSONS\" WHERE \"SEX\" = ?"));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.postgresql").value("SELECT * FROM \"DBO\".\"PERSONS\" WHERE \"SEX\" = ?"));
@@ -191,7 +191,7 @@ class SwitchApplicationTests{
 	 * @throws Exception
 	 */
 	@Test
-	void standard_dml_select_5_all_with_case_sensitive() throws Exception {
+	public void standard_dml_select_5_all_with_case_sensitive() throws Exception {
 		String sql = "SELECT \"LastName\", \"FirstName\" FROM \"dbo\".\"Persons\" WHERE \"Sex\" = '0'";
 		logger.info("#### Run test 5 : {}", sql);
 		JSONObject json = new JSONObject();
@@ -200,12 +200,12 @@ class SwitchApplicationTests{
 		MockHttpSession session = new MockHttpSession();
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
 		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/debug/standard/dml")
-				.accept(MediaType.APPLICATION_JSON_VALUE)
+				.accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
 				.content(json.toJSONString().getBytes())
 				.session(session));
 
 		action.andExpect(MockMvcResultMatchers.status().isOk());
-		action.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
+		action.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.errmsg").value("success"));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.oracle").value("SELECT \"LastName\", \"FirstName\" FROM \"dbo\".\"Persons\" WHERE \"Sex\" = '0'"));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.postgresql").value("SELECT \"LastName\", \"FirstName\" FROM \"dbo\".\"Persons\" WHERE \"Sex\" = '0'"));
@@ -220,7 +220,7 @@ class SwitchApplicationTests{
 	 * @throws Exception
 	 */
 	@Test
-	void standard_dml_select_6_all_with_where_keyword_like() throws Exception {
+	public void standard_dml_select_6_all_with_where_keyword_like() throws Exception {
 		String sql = "SELECT * FROM DBO.PERSONS WHERE SEX LIKE '%f'";
 		logger.info("#### Run test 6 : {}", sql);
 		JSONObject json = new JSONObject();
@@ -229,12 +229,12 @@ class SwitchApplicationTests{
 		MockHttpSession session = new MockHttpSession();
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
 		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/debug/standard/dml")
-				.accept(MediaType.APPLICATION_JSON_VALUE)
+				.accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
 				.content(json.toJSONString().getBytes())
 				.session(session));
 
 		action.andExpect(MockMvcResultMatchers.status().isOk());
-		action.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
+		action.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.errmsg").value("success"));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.oracle").value("SELECT * FROM \"DBO\".\"PERSONS\" WHERE \"SEX\" LIKE '%f'"));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.postgresql").value("SELECT * FROM \"DBO\".\"PERSONS\" WHERE \"SEX\" LIKE '%f'"));
@@ -249,7 +249,7 @@ class SwitchApplicationTests{
 	 * @throws Exception
 	 */
 	@Test
-	void standard_dml_select_7_all_use_count() throws Exception {
+	public void standard_dml_select_7_all_use_count() throws Exception {
 		String sql = "SELECT COUNT(*) FROM DBO.PERSONS";
 		logger.info("#### Run test 7 : {}", sql);
 		JSONObject json = new JSONObject();
@@ -258,12 +258,12 @@ class SwitchApplicationTests{
 		MockHttpSession session = new MockHttpSession();
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
 		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/debug/standard/dml")
-				.accept(MediaType.APPLICATION_JSON_VALUE)
+				.accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
 				.content(json.toJSONString().getBytes())
 				.session(session));
 
 		action.andExpect(MockMvcResultMatchers.status().isOk());
-		action.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
+		action.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.errmsg").value("success"));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.oracle").value("SELECT COUNT(*) FROM \"DBO\".\"PERSONS\""));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.postgresql").value("SELECT COUNT(*) FROM \"DBO\".\"PERSONS\""));
@@ -278,7 +278,7 @@ class SwitchApplicationTests{
 	 * @throws Exception
 	 */
 	@Test
-	void standard_dml_select_8_all_use_count() throws Exception {
+	public void standard_dml_select_8_all_use_count() throws Exception {
 		String sql = "SELECT COUNT(FirstName) FROM DBO.PERSONS";
 		logger.info("#### Run test 8 : {}", sql);
 		JSONObject json = new JSONObject();
@@ -287,12 +287,12 @@ class SwitchApplicationTests{
 		MockHttpSession session = new MockHttpSession();
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
 		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/debug/standard/dml")
-				.accept(MediaType.APPLICATION_JSON_VALUE)
+				.accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
 				.content(json.toJSONString().getBytes())
 				.session(session));
 
 		action.andExpect(MockMvcResultMatchers.status().isOk());
-		action.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
+		action.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.errmsg").value("success"));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.oracle").value("SELECT COUNT(\"FIRSTNAME\") FROM \"DBO\".\"PERSONS\""));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.postgresql").value("SELECT COUNT(\"FIRSTNAME\") FROM \"DBO\".\"PERSONS\""));
@@ -307,7 +307,7 @@ class SwitchApplicationTests{
 	 * @throws Exception
 	 */
 	@Test
-	void standard_dml_select_9_all_use_distinct() throws Exception {
+	public void standard_dml_select_9_all_use_distinct() throws Exception {
 		String sql = "SELECT DISTINCT  FirstName  FROM DBO.PERSONS";
 		logger.info("#### Run test 9 : {}", sql);
 		JSONObject json = new JSONObject();
@@ -316,12 +316,12 @@ class SwitchApplicationTests{
 		MockHttpSession session = new MockHttpSession();
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
 		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/debug/standard/dml")
-				.accept(MediaType.APPLICATION_JSON_VALUE)
+				.accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
 				.content(json.toJSONString().getBytes())
 				.session(session));
 
 		action.andExpect(MockMvcResultMatchers.status().isOk());
-		action.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
+		action.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.errmsg").value("success"));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.oracle").value("SELECT DISTINCT \"FIRSTNAME\" FROM \"DBO\".\"PERSONS\""));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.postgresql").value("SELECT DISTINCT \"FIRSTNAME\" FROM \"DBO\".\"PERSONS\""));
@@ -336,7 +336,7 @@ class SwitchApplicationTests{
 	 * @throws Exception
 	 */
 	@Test
-	void standard_dml_select_10_all_use_count() throws Exception {
+	public void standard_dml_select_10_all_use_count() throws Exception {
 		String sql = "SELECT * FROM Persons WHERE RQ>1965";
 		logger.info("#### Run test 10 : {}", sql);
 		JSONObject json = new JSONObject();
@@ -345,12 +345,12 @@ class SwitchApplicationTests{
 		MockHttpSession session = new MockHttpSession();
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
 		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/debug/standard/dml")
-				.accept(MediaType.APPLICATION_JSON_VALUE)
+				.accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
 				.content(json.toJSONString().getBytes())
 				.session(session));
 
 		action.andExpect(MockMvcResultMatchers.status().isOk());
-		action.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
+		action.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.errmsg").value("success"));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.oracle").value("SELECT * FROM \"PERSONS\" WHERE \"RQ\" > 1965"));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.postgresql").value("SELECT * FROM \"PERSONS\" WHERE \"RQ\" > 1965"));
@@ -365,7 +365,7 @@ class SwitchApplicationTests{
 	 * @throws Exception
 	 */
 	@Test
-	void standard_dml_select_11_where_and() throws Exception {
+	public void standard_dml_select_11_where_and() throws Exception {
 		String sql = "SELECT * FROM Persons WHERE FirstName='Thomas' AND LastName='Carter'";
 		logger.info("#### Run test 11 : {}", sql);
 		JSONObject json = new JSONObject();
@@ -374,12 +374,12 @@ class SwitchApplicationTests{
 		MockHttpSession session = new MockHttpSession();
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
 		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/debug/standard/dml")
-				.accept(MediaType.APPLICATION_JSON_VALUE)
+				.accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
 				.content(json.toJSONString().getBytes())
 				.session(session));
 
 		action.andExpect(MockMvcResultMatchers.status().isOk());
-		action.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
+		action.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.errmsg").value("success"));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.oracle").value("SELECT * FROM \"PERSONS\" WHERE \"FIRSTNAME\" = 'Thomas' AND \"LASTNAME\" = 'Carter'"));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.postgresql").value("SELECT * FROM \"PERSONS\" WHERE \"FIRSTNAME\" = 'Thomas' AND \"LASTNAME\" = 'Carter'"));
@@ -394,7 +394,7 @@ class SwitchApplicationTests{
 	 * @throws Exception
 	 */
 	@Test
-	void standard_dml_select_12_where_and_or() throws Exception {
+	public void standard_dml_select_12_where_and_or() throws Exception {
 		String sql = "SELECT * FROM Persons WHERE  (FirstName='Thomas' OR FirstName='William') AND LastName='Carter'";
 		logger.info("#### Run test 12 : {}", sql);
 		JSONObject json = new JSONObject();
@@ -403,12 +403,12 @@ class SwitchApplicationTests{
 		MockHttpSession session = new MockHttpSession();
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
 		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/debug/standard/dml")
-				.accept(MediaType.APPLICATION_JSON_VALUE)
+				.accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
 				.content(json.toJSONString().getBytes())
 				.session(session));
 
 		action.andExpect(MockMvcResultMatchers.status().isOk());
-		action.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
+		action.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.errmsg").value("success"));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.oracle").value("SELECT * FROM \"PERSONS\" WHERE (\"FIRSTNAME\" = 'Thomas' OR \"FIRSTNAME\" = 'William') AND \"LASTNAME\" = 'Carter'"));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.postgresql").value("SELECT * FROM \"PERSONS\" WHERE (\"FIRSTNAME\" = 'Thomas' OR \"FIRSTNAME\" = 'William') AND \"LASTNAME\" = 'Carter'"));
@@ -423,7 +423,7 @@ class SwitchApplicationTests{
 	 * @throws Exception
 	 */
 	@Test
-	void standard_dml_select_13_order_by() throws Exception {
+	public void standard_dml_select_13_order_by() throws Exception {
 		String sql = "SELECT Company, OrderNumber FROM Orders ORDER BY Company, OrderNumber";
 		logger.info("#### Run test 13 : {}", sql);
 		JSONObject json = new JSONObject();
@@ -432,12 +432,12 @@ class SwitchApplicationTests{
 		MockHttpSession session = new MockHttpSession();
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
 		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/debug/standard/dml")
-				.accept(MediaType.APPLICATION_JSON_VALUE)
+				.accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
 				.content(json.toJSONString().getBytes())
 				.session(session));
 
 		action.andExpect(MockMvcResultMatchers.status().isOk());
-		action.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
+		action.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.errmsg").value("success"));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.oracle").value("SELECT \"COMPANY\", \"ORDERNUMBER\" FROM \"ORDERS\" ORDER BY \"COMPANY\", \"ORDERNUMBER\""));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.postgresql").value("SELECT \"COMPANY\", \"ORDERNUMBER\" FROM \"ORDERS\" ORDER BY \"COMPANY\", \"ORDERNUMBER\""));
@@ -452,7 +452,7 @@ class SwitchApplicationTests{
 	 * @throws Exception
 	 */
 	@Test
-	void standard_dml_select_14_use_in() throws Exception {
+	public void standard_dml_select_14_use_in() throws Exception {
 		String sql = "SELECT * FROM Persons WHERE LastName IN ('Adams','Carter')";
 		logger.info("#### Run test 14 : {}", sql);
 		JSONObject json = new JSONObject();
@@ -461,12 +461,12 @@ class SwitchApplicationTests{
 		MockHttpSession session = new MockHttpSession();
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
 		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/debug/standard/dml")
-				.accept(MediaType.APPLICATION_JSON_VALUE)
+				.accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
 				.content(json.toJSONString().getBytes())
 				.session(session));
 
 		action.andExpect(MockMvcResultMatchers.status().isOk());
-		action.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
+		action.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.errmsg").value("success"));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.oracle").value("SELECT * FROM \"PERSONS\" WHERE \"LASTNAME\" IN ('Adams', 'Carter')"));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.postgresql").value("SELECT * FROM \"PERSONS\" WHERE \"LASTNAME\" IN ('Adams', 'Carter')"));
@@ -481,7 +481,7 @@ class SwitchApplicationTests{
 	 * @throws Exception
 	 */
 	@Test
-	void standard_dml_select_15_alias_name() throws Exception {
+	public void standard_dml_select_15_alias_name() throws Exception {
 		String sql = "SELECT po.OrderID, p.LastName, p.FirstName FROM Persons AS p, Product_Orders AS po WHERE p.LastName='Adams' AND p.FirstName='John'";
 		logger.info("#### Run test 15 : {}", sql);
 		JSONObject json = new JSONObject();
@@ -490,12 +490,12 @@ class SwitchApplicationTests{
 		MockHttpSession session = new MockHttpSession();
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
 		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/debug/standard/dml")
-				.accept(MediaType.APPLICATION_JSON_VALUE)
+				.accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
 				.content(json.toJSONString().getBytes())
 				.session(session));
 
 		action.andExpect(MockMvcResultMatchers.status().isOk());
-		action.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
+		action.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.errmsg").value("success"));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.oracle").value("SELECT \"PO\".\"ORDERID\", \"P\".\"LASTNAME\", \"P\".\"FIRSTNAME\" FROM \"PERSONS\" \"P\", \"PRODUCT_ORDERS\" \"PO\" WHERE \"P\".\"LASTNAME\" = 'Adams' AND \"P\".\"FIRSTNAME\" = 'John'"));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.postgresql").value("SELECT \"PO\".\"ORDERID\", \"P\".\"LASTNAME\", \"P\".\"FIRSTNAME\" FROM \"PERSONS\" AS \"P\", \"PRODUCT_ORDERS\" AS \"PO\" WHERE \"P\".\"LASTNAME\" = 'Adams' AND \"P\".\"FIRSTNAME\" = 'John'"));
@@ -510,7 +510,7 @@ class SwitchApplicationTests{
 	 * @throws Exception
 	 */
 	@Test
-	void standard_dml_select_16_inner_join() throws Exception {
+	public void standard_dml_select_16_inner_join() throws Exception {
 		String sql = "SELECT Persons.LastName, Persons.FirstName, Orders.OrderNo FROM Persons INNER JOIN Orders ON Persons.Id_P = Orders.Id_P ORDER BY Persons.LastName";
 		logger.info("#### Run test 16 : {}", sql);
 		JSONObject json = new JSONObject();
@@ -519,12 +519,12 @@ class SwitchApplicationTests{
 		MockHttpSession session = new MockHttpSession();
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
 		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/debug/standard/dml")
-				.accept(MediaType.APPLICATION_JSON_VALUE)
+				.accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
 				.content(json.toJSONString().getBytes())
 				.session(session));
 
 		action.andExpect(MockMvcResultMatchers.status().isOk());
-		action.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
+		action.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.errmsg").value("success"));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.oracle").value("SELECT \"PERSONS\".\"LASTNAME\", \"PERSONS\".\"FIRSTNAME\", \"ORDERS\".\"ORDERNO\" FROM \"PERSONS\" INNER JOIN \"ORDERS\" ON \"PERSONS\".\"ID_P\" = \"ORDERS\".\"ID_P\" ORDER BY \"PERSONS\".\"LASTNAME\""));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.postgresql").value("SELECT \"PERSONS\".\"LASTNAME\", \"PERSONS\".\"FIRSTNAME\", \"ORDERS\".\"ORDERNO\" FROM \"PERSONS\" INNER JOIN \"ORDERS\" ON \"PERSONS\".\"ID_P\" = \"ORDERS\".\"ID_P\" ORDER BY \"PERSONS\".\"LASTNAME\""));
@@ -539,7 +539,7 @@ class SwitchApplicationTests{
 	 * @throws Exception
 	 */
 	@Test
-	void standard_dml_select_17_left_join() throws Exception {
+	public void standard_dml_select_17_left_join() throws Exception {
 		String sql = "SELECT Persons.LastName, Persons.FirstName, Orders.OrderNo FROM Persons LEFT JOIN Orders ON Persons.Id_P=Orders.Id_P ORDER BY Persons.LastName";
 		logger.info("#### Run test 17 : {}", sql);
 		JSONObject json = new JSONObject();
@@ -548,12 +548,12 @@ class SwitchApplicationTests{
 		MockHttpSession session = new MockHttpSession();
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
 		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/debug/standard/dml")
-				.accept(MediaType.APPLICATION_JSON_VALUE)
+				.accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
 				.content(json.toJSONString().getBytes())
 				.session(session));
 
 		action.andExpect(MockMvcResultMatchers.status().isOk());
-		action.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
+		action.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.errmsg").value("success"));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.oracle").value("SELECT \"PERSONS\".\"LASTNAME\", \"PERSONS\".\"FIRSTNAME\", \"ORDERS\".\"ORDERNO\" FROM \"PERSONS\" LEFT JOIN \"ORDERS\" ON \"PERSONS\".\"ID_P\" = \"ORDERS\".\"ID_P\" ORDER BY \"PERSONS\".\"LASTNAME\""));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.postgresql").value("SELECT \"PERSONS\".\"LASTNAME\", \"PERSONS\".\"FIRSTNAME\", \"ORDERS\".\"ORDERNO\" FROM \"PERSONS\" LEFT JOIN \"ORDERS\" ON \"PERSONS\".\"ID_P\" = \"ORDERS\".\"ID_P\" ORDER BY \"PERSONS\".\"LASTNAME\""));
@@ -568,7 +568,7 @@ class SwitchApplicationTests{
 	 * @throws Exception
 	 */
 	@Test
-	void standard_dml_select_18_right_join() throws Exception {
+	public void standard_dml_select_18_right_join() throws Exception {
 		String sql = "SELECT Persons.LastName, Persons.FirstName, Orders.OrderNo FROM Persons RIGHT JOIN Orders ON Persons.Id_P=Orders.Id_P ORDER BY Persons.LastName";
 		logger.info("#### Run test 18 : {}", sql);
 		JSONObject json = new JSONObject();
@@ -577,12 +577,12 @@ class SwitchApplicationTests{
 		MockHttpSession session = new MockHttpSession();
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
 		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/debug/standard/dml")
-				.accept(MediaType.APPLICATION_JSON_VALUE)
+				.accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
 				.content(json.toJSONString().getBytes())
 				.session(session));
 
 		action.andExpect(MockMvcResultMatchers.status().isOk());
-		action.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
+		action.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.errmsg").value("success"));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.oracle").value("SELECT \"PERSONS\".\"LASTNAME\", \"PERSONS\".\"FIRSTNAME\", \"ORDERS\".\"ORDERNO\" FROM \"PERSONS\" RIGHT JOIN \"ORDERS\" ON \"PERSONS\".\"ID_P\" = \"ORDERS\".\"ID_P\" ORDER BY \"PERSONS\".\"LASTNAME\""));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.postgresql").value("SELECT \"PERSONS\".\"LASTNAME\", \"PERSONS\".\"FIRSTNAME\", \"ORDERS\".\"ORDERNO\" FROM \"PERSONS\" RIGHT JOIN \"ORDERS\" ON \"PERSONS\".\"ID_P\" = \"ORDERS\".\"ID_P\" ORDER BY \"PERSONS\".\"LASTNAME\""));
@@ -597,7 +597,7 @@ class SwitchApplicationTests{
 	 * @throws Exception
 	 */
 	@Test
-	void standard_dml_select_19_full_join() throws Exception {
+	public void standard_dml_select_19_full_join() throws Exception {
 		String sql = "SELECT Persons.LastName, Persons.FirstName, Orders.OrderNo FROM Persons FULL JOIN Orders ON Persons.Id_P=Orders.Id_P ORDER BY Persons.LastName";
 		logger.info("#### Run test 19 : {}", sql);
 		JSONObject json = new JSONObject();
@@ -606,12 +606,12 @@ class SwitchApplicationTests{
 		MockHttpSession session = new MockHttpSession();
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
 		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/debug/standard/dml")
-				.accept(MediaType.APPLICATION_JSON_VALUE)
+				.accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
 				.content(json.toJSONString().getBytes())
 				.session(session));
 
 		action.andExpect(MockMvcResultMatchers.status().isOk());
-		action.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
+		action.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.errmsg").value("success"));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.oracle").value("SELECT \"PERSONS\".\"LASTNAME\", \"PERSONS\".\"FIRSTNAME\", \"ORDERS\".\"ORDERNO\" FROM \"PERSONS\" FULL JOIN \"ORDERS\" ON \"PERSONS\".\"ID_P\" = \"ORDERS\".\"ID_P\" ORDER BY \"PERSONS\".\"LASTNAME\""));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.postgresql").value("SELECT \"PERSONS\".\"LASTNAME\", \"PERSONS\".\"FIRSTNAME\", \"ORDERS\".\"ORDERNO\" FROM \"PERSONS\" FULL JOIN \"ORDERS\" ON \"PERSONS\".\"ID_P\" = \"ORDERS\".\"ID_P\" ORDER BY \"PERSONS\".\"LASTNAME\""));
@@ -626,7 +626,7 @@ class SwitchApplicationTests{
 	 * @throws Exception
 	 */
 	@Test
-	void standard_dml_select_20_union_all() throws Exception {
+	public void standard_dml_select_20_union_all() throws Exception {
 		String sql = "SELECT E_Name FROM Employees_China UNION ALL SELECT E_Name FROM Employees_USA";
 		logger.info("#### Run test 20 : {}", sql);
 		JSONObject json = new JSONObject();
@@ -635,12 +635,12 @@ class SwitchApplicationTests{
 		MockHttpSession session = new MockHttpSession();
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
 		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/debug/standard/dml")
-				.accept(MediaType.APPLICATION_JSON_VALUE)
+				.accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
 				.content(json.toJSONString().getBytes())
 				.session(session));
 
 		action.andExpect(MockMvcResultMatchers.status().isOk());
-		action.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
+		action.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.errmsg").value("success"));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.oracle").value("SELECT \"E_NAME\" FROM \"EMPLOYEES_CHINA\" UNION ALL SELECT \"E_NAME\" FROM \"EMPLOYEES_USA\""));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.postgresql").value("SELECT \"E_NAME\" FROM \"EMPLOYEES_CHINA\" UNION ALL SELECT \"E_NAME\" FROM \"EMPLOYEES_USA\""));
@@ -655,7 +655,7 @@ class SwitchApplicationTests{
 	 * @throws Exception
 	 */
 	@Test
-	void standard_dml_select_21_select_into() throws Exception {
+	public void standard_dml_select_21_select_into() throws Exception {
 		String sql = "INSERT INTO private.Persons_backup SELECT LastName,FirstName FROM public.Persons";
 		logger.info("#### Run test 21 : {}", sql);
 		JSONObject json = new JSONObject();
@@ -664,12 +664,12 @@ class SwitchApplicationTests{
 		MockHttpSession session = new MockHttpSession();
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
 		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/debug/standard/dml")
-				.accept(MediaType.APPLICATION_JSON_VALUE)
+				.accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
 				.content(json.toJSONString().getBytes())
 				.session(session));
 
 		action.andExpect(MockMvcResultMatchers.status().isOk());
-		action.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
+		action.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.errmsg").value("success"));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.oracle").value("INSERT INTO \"PRIVATE\".\"PERSONS_BACKUP\" (SELECT \"LASTNAME\", \"FIRSTNAME\" FROM \"PUBLIC\".\"PERSONS\")"));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.postgresql").value("INSERT INTO \"PRIVATE\".\"PERSONS_BACKUP\" (SELECT \"LASTNAME\", \"FIRSTNAME\" FROM \"PUBLIC\".\"PERSONS\")"));
@@ -684,7 +684,7 @@ class SwitchApplicationTests{
 	 * @throws Exception
 	 */
 	@Test
-	void standard_dml_insert_1_22() throws Exception {
+	public void standard_dml_insert_1_22() throws Exception {
 		String sql = "INSERT INTO Persons VALUES ('Gates', 'Bill', 'Xuanwumen 10', 'Beijing')";
 		logger.info("#### Run test 22 : {}", sql);
 		JSONObject json = new JSONObject();
@@ -693,12 +693,12 @@ class SwitchApplicationTests{
 		MockHttpSession session = new MockHttpSession();
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
 		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/debug/standard/dml")
-				.accept(MediaType.APPLICATION_JSON_VALUE)
+				.accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
 				.content(json.toJSONString().getBytes())
 				.session(session));
 
 		action.andExpect(MockMvcResultMatchers.status().isOk());
-		action.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
+		action.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.errmsg").value("success"));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.oracle").value("INSERT INTO \"PERSONS\" VALUES('Gates', 'Bill', 'Xuanwumen 10', 'Beijing')"));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.postgresql").value("INSERT INTO \"PERSONS\" VALUES('Gates', 'Bill', 'Xuanwumen 10', 'Beijing')"));
@@ -714,7 +714,7 @@ class SwitchApplicationTests{
 	 * @throws Exception
 	 */
 	@Test
-	void standard_dml_insert_2_23() throws Exception {
+	public void standard_dml_insert_2_23() throws Exception {
 		String sql = "INSERT INTO Persons (LastName, Address) VALUES ('Wilson', 'Champs-Elysees')";
 		logger.info("#### Run test 23 : {}", sql);
 		JSONObject json = new JSONObject();
@@ -723,12 +723,12 @@ class SwitchApplicationTests{
 		MockHttpSession session = new MockHttpSession();
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
 		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/debug/standard/dml")
-				.accept(MediaType.APPLICATION_JSON_VALUE)
+				.accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
 				.content(json.toJSONString().getBytes())
 				.session(session));
 
 		action.andExpect(MockMvcResultMatchers.status().isOk());
-		action.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
+		action.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.errmsg").value("success"));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.oracle").value("INSERT INTO \"PERSONS\" (\"LASTNAME\", \"ADDRESS\") VALUES('Wilson', 'Champs-Elysees')"));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.postgresql").value("INSERT INTO \"PERSONS\" (\"LASTNAME\", \"ADDRESS\") VALUES('Wilson', 'Champs-Elysees')"));
@@ -743,7 +743,7 @@ class SwitchApplicationTests{
 	 * @throws Exception
 	 */
 	@Test
-	void standard_dml_insert_3_24() throws Exception {
+	public void standard_dml_insert_3_24() throws Exception {
 		String sql = "INSERT INTO Persons (LastName, Address) VALUES (?, ?)";
 		logger.info("#### Run test 24 : {}", sql);
 		JSONObject json = new JSONObject();
@@ -752,12 +752,12 @@ class SwitchApplicationTests{
 		MockHttpSession session = new MockHttpSession();
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
 		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/debug/standard/dml")
-				.accept(MediaType.APPLICATION_JSON_VALUE)
+				.accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
 				.content(json.toJSONString().getBytes())
 				.session(session));
 
 		action.andExpect(MockMvcResultMatchers.status().isOk());
-		action.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
+		action.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.errmsg").value("success"));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.oracle").value("INSERT INTO \"PERSONS\" (\"LASTNAME\", \"ADDRESS\") VALUES(?, ?)"));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.postgresql").value("INSERT INTO \"PERSONS\" (\"LASTNAME\", \"ADDRESS\") VALUES(?, ?)"));
@@ -772,7 +772,7 @@ class SwitchApplicationTests{
 	 * @throws Exception
 	 */
 	@Test
-	void standard_dml_update_25() throws Exception {
+	public void standard_dml_update_25() throws Exception {
 		String sql = "UPDATE Person SET Address = ?, City = ? WHERE LastName = ?";
 		logger.info("#### Run test 25 : {}", sql);
 		JSONObject json = new JSONObject();
@@ -781,12 +781,12 @@ class SwitchApplicationTests{
 		MockHttpSession session = new MockHttpSession();
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
 		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/debug/standard/dml")
-				.accept(MediaType.APPLICATION_JSON_VALUE)
+				.accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
 				.content(json.toJSONString().getBytes())
 				.session(session));
 
 		action.andExpect(MockMvcResultMatchers.status().isOk());
-		action.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
+		action.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.errmsg").value("success"));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.oracle").value("UPDATE \"PERSON\" SET \"ADDRESS\" = ? , \"CITY\" = ? WHERE \"LASTNAME\" = ?"));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.postgresql").value("UPDATE \"PERSON\" SET \"ADDRESS\" = ? , \"CITY\" = ? WHERE \"LASTNAME\" = ?"));
@@ -801,7 +801,7 @@ class SwitchApplicationTests{
 	 * @throws Exception
 	 */
 	@Test
-	void standard_dml_delete_26() throws Exception {
+	public void standard_dml_delete_26() throws Exception {
 		String sql = "DELETE FROM Person WHERE LastName = 'Wilson'";
 		logger.info("#### Run test 26 : {}", sql);
 		JSONObject json = new JSONObject();
@@ -810,12 +810,12 @@ class SwitchApplicationTests{
 		MockHttpSession session = new MockHttpSession();
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
 		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/debug/standard/dml")
-				.accept(MediaType.APPLICATION_JSON_VALUE)
+				.accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
 				.content(json.toJSONString().getBytes())
 				.session(session));
 
 		action.andExpect(MockMvcResultMatchers.status().isOk());
-		action.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
+		action.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.errmsg").value("success"));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.oracle").value("DELETE FROM \"PERSON\" WHERE \"LASTNAME\" = 'Wilson'"));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.postgresql").value("DELETE FROM \"PERSON\" WHERE \"LASTNAME\" = 'Wilson'"));
@@ -830,7 +830,7 @@ class SwitchApplicationTests{
 	 * @throws Exception
 	 */
 	@Test
-	void standard_dml_delete_27() throws Exception {
+	public void standard_dml_delete_27() throws Exception {
 		String sql = "DELETE FROM Person WHERE LastName = ?";
 		logger.info("#### Run test 27 : {}", sql);
 		JSONObject json = new JSONObject();
@@ -839,12 +839,12 @@ class SwitchApplicationTests{
 		MockHttpSession session = new MockHttpSession();
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
 		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/debug/standard/dml")
-				.accept(MediaType.APPLICATION_JSON_VALUE)
+				.accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
 				.content(json.toJSONString().getBytes())
 				.session(session));
 
 		action.andExpect(MockMvcResultMatchers.status().isOk());
-		action.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
+		action.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.errmsg").value("success"));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.oracle").value("DELETE FROM \"PERSON\" WHERE \"LASTNAME\" = ?"));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.postgresql").value("DELETE FROM \"PERSON\" WHERE \"LASTNAME\" = ?"));
@@ -860,7 +860,7 @@ class SwitchApplicationTests{
 	 * @throws Exception
 	 */
 	@Test
-	void standard_dml_select_limit_28() throws Exception {
+	public void standard_dml_select_limit_28() throws Exception {
 		String sql = "select * from Persons limit 2 offset 5";
 		logger.info("#### Run test 28 : {}", sql);
 		JSONObject json = new JSONObject();
@@ -869,12 +869,12 @@ class SwitchApplicationTests{
 		MockHttpSession session = new MockHttpSession();
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
 		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/debug/standard/dml")
-				.accept(MediaType.APPLICATION_JSON_VALUE)
+				.accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
 				.content(json.toJSONString().getBytes())
 				.session(session));
 
 		action.andExpect(MockMvcResultMatchers.status().isOk());
-		action.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
+		action.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.errmsg").value("success"));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.oracle").value("SELECT * FROM \"PERSONS\" OFFSET 5 ROWS FETCH NEXT 2 ROWS ONLY"));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.postgresql").value("SELECT * FROM \"PERSONS\" OFFSET 5 ROWS FETCH NEXT 2 ROWS ONLY"));
@@ -899,7 +899,7 @@ class SwitchApplicationTests{
 	 * @throws Exception
 	 */
 	@Test
-	void standard_ddl_create_table_29() throws Exception {
+	public void standard_ddl_create_table_29() throws Exception {
 		String sql = "CREATE TABLE Persons( P_Id int NOT NULL,LastName varchar(255) NOT NULL,FirstName varchar(255),Address varchar(255),City varchar(255),PRIMARY KEY (P_Id))";
 		logger.info("#### Run test 29 : {}", sql);
 		JSONObject json = new JSONObject();
@@ -908,12 +908,12 @@ class SwitchApplicationTests{
 		MockHttpSession session = new MockHttpSession();
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
 		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/debug/standard/ddl")
-				.accept(MediaType.APPLICATION_JSON_VALUE)
+				.accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
 				.content(json.toJSONString().getBytes())
 				.session(session));
 
 		action.andExpect(MockMvcResultMatchers.status().isOk());
-		action.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
+		action.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.errmsg").value("success"));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.oracle").value("CREATE TABLE \"PERSONS\" (\"P_ID\" INTEGER NOT NULL, \"LASTNAME\" VARCHAR(255) NOT NULL, \"FIRSTNAME\" VARCHAR(255), \"ADDRESS\" VARCHAR(255), \"CITY\" VARCHAR(255), PRIMARY KEY (\"P_ID\"))"));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.postgresql").value("CREATE TABLE \"PERSONS\" (\"P_ID\" INTEGER NOT NULL, \"LASTNAME\" VARCHAR(255) NOT NULL, \"FIRSTNAME\" VARCHAR(255), \"ADDRESS\" VARCHAR(255), \"CITY\" VARCHAR(255), PRIMARY KEY (\"P_ID\"))"));
@@ -931,7 +931,7 @@ class SwitchApplicationTests{
 	 * @throws Exception
 	 */
 	@Test
-	void standard_dml_select_table_30() throws Exception {
+	public void standard_dml_select_table_30() throws Exception {
 		String sql = "select s.s_id , s.s_name , avg(score) from t_student s join t_grade g on s.s_id = g.s_id group by s.s_id , s.s_name "
 				+ "having avg(score) > (select avg(score) from t_student s join t_grade g on s.s_id = g.s_id where s.s_name = 'zhang' group by s.s_id)";
 		logger.info("#### Run test 30 : {}", sql);
@@ -941,12 +941,12 @@ class SwitchApplicationTests{
 		MockHttpSession session = new MockHttpSession();
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
 		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/debug/standard/ddl")
-				.accept(MediaType.APPLICATION_JSON_VALUE)
+				.accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
 				.content(json.toJSONString().getBytes())
 				.session(session));
 
 		action.andExpect(MockMvcResultMatchers.status().isOk());
-		action.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
+		action.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.errmsg").value("success"));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.oracle").value("SELECT \"S\".\"S_ID\", \"S\".\"S_NAME\", AVG(\"SCORE\") FROM \"T_STUDENT\" \"S\" INNER JOIN \"T_GRADE\" \"G\" ON \"S\".\"S_ID\" = \"G\".\"S_ID\" GROUP BY \"S\".\"S_ID\", \"S\".\"S_NAME\" HAVING AVG(\"SCORE\") > (SELECT AVG(\"SCORE\") FROM \"T_STUDENT\" \"S\" INNER JOIN \"T_GRADE\" \"G\" ON \"S\".\"S_ID\" = \"G\".\"S_ID\" WHERE \"S\".\"S_NAME\" = 'zhang' GROUP BY \"S\".\"S_ID\")"));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.postgresql").value("SELECT \"S\".\"S_ID\", \"S\".\"S_NAME\", AVG(\"SCORE\") FROM \"T_STUDENT\" AS \"S\" INNER JOIN \"T_GRADE\" AS \"G\" ON \"S\".\"S_ID\" = \"G\".\"S_ID\" GROUP BY \"S\".\"S_ID\", \"S\".\"S_NAME\" HAVING AVG(\"SCORE\") > (SELECT AVG(\"SCORE\") FROM \"T_STUDENT\" AS \"S\" INNER JOIN \"T_GRADE\" AS \"G\" ON \"S\".\"S_ID\" = \"G\".\"S_ID\" WHERE \"S\".\"S_NAME\" = 'zhang' GROUP BY \"S\".\"S_ID\")"));
@@ -961,7 +961,7 @@ class SwitchApplicationTests{
 	 * @throws Exception
 	 */
 	@Test
-	void standard_dml_select_table_31() throws Exception {
+	public void standard_dml_select_table_31() throws Exception {
 		String sql = "select * from test_table where name = '王五'";
 		logger.info("#### Run test 31 : {}", sql);
 		JSONObject json = new JSONObject();
@@ -970,12 +970,12 @@ class SwitchApplicationTests{
 		MockHttpSession session = new MockHttpSession();
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
 		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/debug/standard/dml")
-				.accept(MediaType.APPLICATION_JSON_VALUE)
+				.accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
 				.content(json.toJSONString().getBytes())
 				.session(session));
 
 		action.andExpect(MockMvcResultMatchers.status().isOk());
-		action.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
+		action.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.errmsg").value("success"));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.oracle").value("SELECT * FROM \"TEST_TABLE\" WHERE \"NAME\" = '王五'"));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.postgresql").value("SELECT * FROM \"TEST_TABLE\" WHERE \"NAME\" = '王五'"));
@@ -989,7 +989,7 @@ class SwitchApplicationTests{
 	 * @throws Exception
 	 */
 	@Test
-	void standard_ddl_create_or_replace_view_32() throws Exception {
+	public void standard_ddl_create_or_replace_view_32() throws Exception {
 		String sql = "create or replace view public.v_xxxx as select xgh,name,sex from test_table where shenfen='student'";
 		logger.info("#### Run test 32 : {}", sql);
 		JSONObject json = new JSONObject();
@@ -998,12 +998,12 @@ class SwitchApplicationTests{
 		MockHttpSession session = new MockHttpSession();
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
 		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/debug/standard/ddl")
-				.accept(MediaType.APPLICATION_JSON_VALUE)
+				.accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
 				.content(json.toJSONString().getBytes())
 				.session(session));
 
 		action.andExpect(MockMvcResultMatchers.status().isOk());
-		action.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
+		action.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.errmsg").value("success"));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.oracle").value("CREATE OR REPLACE VIEW \"PUBLIC\".\"V_XXXX\" AS SELECT \"XGH\", \"NAME\", \"SEX\" FROM \"TEST_TABLE\" WHERE \"SHENFEN\" = 'student'"));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.postgresql").value("CREATE OR REPLACE VIEW \"PUBLIC\".\"V_XXXX\" AS SELECT \"XGH\", \"NAME\", \"SEX\" FROM \"TEST_TABLE\" WHERE \"SHENFEN\" = 'student'"));
@@ -1016,7 +1016,7 @@ class SwitchApplicationTests{
 	 * @throws Exception
 	 */
 	@Test
-	void standard_dml_drop_table_33() throws Exception {
+	public void standard_dml_drop_table_33() throws Exception {
 		String sql = "drop table public.t_test";
 		logger.info("#### Run test 33 : {}", sql);
 		JSONObject json = new JSONObject();
@@ -1025,12 +1025,12 @@ class SwitchApplicationTests{
 		MockHttpSession session = new MockHttpSession();
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
 		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/debug/standard/ddl")
-				.accept(MediaType.APPLICATION_JSON_VALUE)
+				.accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
 				.content(json.toJSONString().getBytes())
 				.session(session));
 
 		action.andExpect(MockMvcResultMatchers.status().isOk());
-		action.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
+		action.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.errmsg").value("success"));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.oracle").value("DROP TABLE \"PUBLIC\".\"T_TEST\""));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.postgresql").value("DROP TABLE \"PUBLIC\".\"T_TEST\""));
@@ -1043,7 +1043,7 @@ class SwitchApplicationTests{
 	 * @throws Exception
 	 */
 	@Test
-	void standard_ddl_drop_view_34() throws Exception {
+	public void standard_ddl_drop_view_34() throws Exception {
 		String sql = "drop view public.v_test";
 		logger.info("#### Run test 34 : {}", sql);
 		JSONObject json = new JSONObject();
@@ -1052,12 +1052,12 @@ class SwitchApplicationTests{
 		MockHttpSession session = new MockHttpSession();
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
 		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/debug/standard/ddl")
-				.accept(MediaType.APPLICATION_JSON_VALUE)
+				.accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
 				.content(json.toJSONString().getBytes())
 				.session(session));
 
 		action.andExpect(MockMvcResultMatchers.status().isOk());
-		action.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
+		action.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.errmsg").value("success"));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.oracle").value("DROP VIEW \"PUBLIC\".\"V_TEST\""));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.postgresql").value("DROP VIEW \"PUBLIC\".\"V_TEST\""));
@@ -1071,7 +1071,7 @@ class SwitchApplicationTests{
 	 * @throws Exception
 	 */
 	@Test
-	void standard_ddl_create_table_as_select_35() throws Exception {
+	public void standard_ddl_create_table_as_select_35() throws Exception {
 		String sql = "create table private.t_table_test as select * from public.t_other_table";
 		logger.info("#### Run test 35 : {}", sql);
 		JSONObject json = new JSONObject();
@@ -1080,12 +1080,12 @@ class SwitchApplicationTests{
 		MockHttpSession session = new MockHttpSession();
 		MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
 		ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post("/sql/debug/standard/ddl")
-				.accept(MediaType.APPLICATION_JSON_VALUE)
+				.accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
 				.content(json.toJSONString().getBytes())
 				.session(session));
 
 		action.andExpect(MockMvcResultMatchers.status().isOk());
-		action.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
+		action.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.errmsg").value("success"));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.oracle").value("CREATE TABLE \"PRIVATE\".\"T_TABLE_TEST\" AS SELECT * FROM \"PUBLIC\".\"T_OTHER_TABLE\""));
 		action.andExpect(MockMvcResultMatchers.jsonPath("$.data.sql.postgresql").value("CREATE TABLE \"PRIVATE\".\"T_TABLE_TEST\" AS SELECT * FROM \"PUBLIC\".\"T_OTHER_TABLE\""));

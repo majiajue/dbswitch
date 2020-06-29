@@ -119,71 +119,72 @@ public class DatabaseOracleImpl extends AbstractDatabase implements IDatabaseInt
 	public String formatSQL(String sql) {
 		return SQLUtils.formatOracle(sql);
 	}
-	
+
 	@Override
-	public String getFieldDefinition(ColumnMetaData v, List<String> pks, boolean add_cr) {
-	    String fieldname = v.getName();
-	    int length = v.getLength();
-	    int precision = v.getPrecision();
-	    
-	    StringBuilder retval = new StringBuilder( 128 );
-	    retval.append(" \"").append( fieldname ).append("\"    " );
+	public String getFieldDefinition(ColumnMetaData v, List<String> pks, boolean use_autoinc, boolean add_cr) {
+		String fieldname = v.getName();
+		int length = v.getLength();
+		int precision = v.getPrecision();
 
-	    int type = v.getType();
-	    switch ( type ) {
-	      case ColumnMetaData.TYPE_TIMESTAMP:
-	          retval.append( "TIMESTAMP" );
-	        break;
-	      case ColumnMetaData.TYPE_DATE:
-	        retval.append( "DATE" );
-	        break;
-	      case ColumnMetaData.TYPE_BOOLEAN:
-	        retval.append( "CHAR(32)" );
-	        break;
-	      case ColumnMetaData.TYPE_NUMBER:
-	      case ColumnMetaData.TYPE_BIGNUMBER:
-	        retval.append( "NUMBER" );
-	        if ( length > 0 ) {
-	        	if(length>38) {
-	        		length=38;
-	        	}
-	        	
-	          retval.append( '(' ).append( length );
-	          if ( precision > 0 ) {
-	            retval.append( ", " ).append( precision );
-	          }
-	          retval.append( ')' );
-	        }
-	        break;
-	      case ColumnMetaData.TYPE_INTEGER:
-	        retval.append( "INTEGER" );
-	        break;
-	      case ColumnMetaData.TYPE_STRING:
-	        if ( length >= AbstractDatabase.CLOB_LENGTH ) {
-	          retval.append( "CLOB" );
-	        } else {
-	          if ( length == 1 ) {
-	            retval.append( "CHAR(1)" );
-	          } else if ( length > 0 ) {
-	            retval.append( "VARCHAR2(" ).append( length ).append( ')' );
-	          } else {
-	            retval.append( "CLOB" );// We don't know, so we just use the maximum...
-	          }
-	        }
-	        break;
-	      case ColumnMetaData.TYPE_BINARY: // the BLOB can contain binary data.
-	        retval.append( "BLOB" );
-	        break;
-	      default:
-	        retval.append( "CLOB" );
-	        break;
-	    }
+		StringBuilder retval = new StringBuilder(128);
+		retval.append(" \"").append(fieldname).append("\"    ");
 
-	    if ( add_cr ) {
-	      retval.append( Const.CR );
-	    }
+		int type = v.getType();
+		switch (type) {
+		case ColumnMetaData.TYPE_TIMESTAMP:
+		case ColumnMetaData.TYPE_TIME:
+			retval.append("TIMESTAMP");
+			break;
+		case ColumnMetaData.TYPE_DATE:
+			retval.append("DATE");
+			break;
+		case ColumnMetaData.TYPE_BOOLEAN:
+			retval.append("CHAR(32)");
+			break;
+		case ColumnMetaData.TYPE_NUMBER:
+		case ColumnMetaData.TYPE_BIGNUMBER:
+			retval.append("NUMBER");
+			if (length > 0) {
+				if (length > 38) {
+					length = 38;
+				}
 
-	    return retval.toString();
+				retval.append('(').append(length);
+				if (precision > 0) {
+					retval.append(", ").append(precision);
+				}
+				retval.append(')');
+			}
+			break;
+		case ColumnMetaData.TYPE_INTEGER:
+			retval.append("INTEGER");
+			break;
+		case ColumnMetaData.TYPE_STRING:
+			if (length >= AbstractDatabase.CLOB_LENGTH) {
+				retval.append("CLOB");
+			} else {
+				if (length == 1) {
+					retval.append("CHAR(1)");
+				} else if (length > 0) {
+					retval.append("VARCHAR2(").append(length).append(')');
+				} else {
+					retval.append("CLOB");// We don't know, so we just use the maximum...
+				}
+			}
+			break;
+		case ColumnMetaData.TYPE_BINARY: // the BLOB can contain binary data.
+			retval.append("BLOB");
+			break;
+		default:
+			retval.append("CLOB");
+			break;
+		}
+
+		if (add_cr) {
+			retval.append(Const.CR);
+		}
+
+		return retval.toString();
 	}
 	
 }

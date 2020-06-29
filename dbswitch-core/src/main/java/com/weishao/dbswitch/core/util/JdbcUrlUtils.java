@@ -76,10 +76,18 @@ public class JdbcUrlUtils {
 			} else if (OracleJdbcConnectionMode.SERVICENAME == type) {
 				return String.format("jdbc:oracle:thin:@//%s:%d/%s", db.getHost(), db.getPort(), db.getDbname());
 			} else if (OracleJdbcConnectionMode.TNSNAME == type) {
-				return String.format(
-						"jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=%s)(PORT=%d))) "
-						+ "(CONNECT_DATA=(SERVICE_NAME=%s)))",
-						db.getHost(), db.getPort(), db.getDbname());
+				//
+				//return String.format(
+				//		"jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=%s)(PORT=%d))) "
+				//		+ "(CONNECT_DATA=(SERVICE_NAME=%s)))",
+				///		db.getHost(), db.getPort(), db.getDbname());
+				//
+				// (DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=172.17.207.158)(PORT=1521)))(CONNECT_DATA=(SID=orcl)))
+				//
+				// or
+				//
+				// (DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=172.17.207.158)(PORT=1521)))(CONNECT_DATA=(SERVICE_NAME=orcl.ruijie.com.cn)))
+				return String.format("jdbc:oracle:thin:@%s",db.getDbname());
 			}else {
 				return String.format("jdbc:oracle:thin:@%s:%d:%s", db.getHost(), db.getPort(), db.getDbname());
 			}

@@ -50,13 +50,16 @@ public class ColumnMetaData {
 	 * precision
 	 */
 	public static final int TYPE_TIMESTAMP = 9;
+	
+	/** Value type indicating that the value contains a time */
+	public static final int TYPE_TIME=10;
 
 	/** Value type indicating that the value contains a Internet address */
-	public static final int TYPE_INET = 10;
+	public static final int TYPE_INET = 11;
 
 	/** The Constant typeCodes. */
 	public static final String[] typeCodes = new String[] { "-", "Number", "String", "Date", "Boolean", "Integer",
-			"BigNumber", "Serializable", "Binary", "Timestamp", "Internet Address", };
+			"BigNumber", "Serializable", "Binary", "Timestamp", "Time", "Internet Address", };
 
 	//////////////////////////////////////////////////////////////////////
 
@@ -125,7 +128,25 @@ public class ColumnMetaData {
 	 * @return true if the value is a Date
 	 */
 	public boolean isDate() {
-		return type == TYPE_DATE || type == TYPE_TIMESTAMP;
+		return type == TYPE_DATE;
+	}
+	
+	/**
+	 * Checks whether or not this value is a Time
+	 *
+	 * @return true if the value is a Time
+	 */
+	public boolean isTime() {
+		return type == TYPE_TIME;
+	}
+	
+	/**
+	 * Checks whether or not this value is a DateTime
+	 *
+	 * @return true if the value is a DateTime
+	 */
+	public boolean isDateTime() {
+		return type == TYPE_TIMESTAMP;
 	}
 
 	/**
@@ -359,8 +380,11 @@ public class ColumnMetaData {
 			break;
 
 		case java.sql.Types.DATE:
-		case java.sql.Types.TIME:
 			valtype = ColumnMetaData.TYPE_DATE;
+			break;
+			
+		case java.sql.Types.TIME:
+			valtype = ColumnMetaData.TYPE_TIME;
 			break;
 
 		case java.sql.Types.BOOLEAN:

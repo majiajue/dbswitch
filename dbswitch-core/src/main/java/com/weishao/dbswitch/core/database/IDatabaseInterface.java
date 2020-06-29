@@ -91,9 +91,10 @@ public interface IDatabaseInterface extends AutoCloseable {
 	 * @param v      值元数据定义
 	 * @param pks    主键字段名称列表
 	 * @param add_cr 是否结尾换行
+	 * @param use_autoinc 是否自增
 	 * @return 字段定义字符串
 	 */
-	public String getFieldDefinition(ColumnMetaData v, List<String> pks, boolean add_cr);
+	public String getFieldDefinition(ColumnMetaData v, List<String> pks, boolean use_autoinc, boolean add_cr);
 
 	/**
 	 * 主键列转换为逗号分隔的字符串

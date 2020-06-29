@@ -213,7 +213,7 @@ public abstract class AbstractDatabase implements IDatabaseInterface {
 	}
 
 	@Override
-	public String getFieldDefinition(ColumnMetaData v, List<String> pks, boolean add_cr) {
+	public String getFieldDefinition(ColumnMetaData v, List<String> pks, boolean use_autoinc, boolean add_cr) {
 		throw new RuntimeException("AbstractDatabase Unempliment!");
 	}
 

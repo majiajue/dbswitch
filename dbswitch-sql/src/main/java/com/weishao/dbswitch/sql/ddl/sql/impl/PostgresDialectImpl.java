@@ -7,12 +7,16 @@ import com.weishao.dbswitch.sql.ddl.DatabaseDialect;
 import com.weishao.dbswitch.sql.ddl.pojo.ColumnDefinition;
 import com.weishao.dbswitch.sql.ddl.type.PostgresDataType;
 
-public class PostgresDialectImpl  extends DatabaseDialect {
+public class PostgresDialectImpl extends DatabaseDialect {
 
 	private static List<PostgresDataType> integerTypes;
-	
-	static{
-		integerTypes= new ArrayList<PostgresDataType>();
+
+	static {
+		integerTypes = new ArrayList<PostgresDataType>();
+		integerTypes.add(PostgresDataType.SERIAL2);
+		integerTypes.add(PostgresDataType.SERIAL4);
+		integerTypes.add(PostgresDataType.SERIAL8);
+		integerTypes.add(PostgresDataType.SMALLSERIAL);
 		integerTypes.add(PostgresDataType.SERIAL);
 		integerTypes.add(PostgresDataType.BIGSERIAL);
 	}
@@ -38,15 +42,16 @@ public class PostgresDialectImpl  extends DatabaseDialect {
 
 		sb.append(type.name());
 		switch (type) {
+		case NUMERIC:
 		case DECIMAL:
 			if (Objects.isNull(length) || length < 0) {
 				throw new RuntimeException(
-						String.format("Invalid Greenplum data type length: %s(%d)", column.getColumnType(), length));
+						String.format("Invalid PostgreSQL data type length: %s(%d)", column.getColumnType(), length));
 			}
 			
 			if (Objects.isNull(scale) || scale < 0) {
 				throw new RuntimeException(
-						String.format("Invalid Greenplum data type scale: %s(%d,%d)", column.getColumnType(), length, scale));
+						String.format("Invalid PostgreSQL data type scale: %s(%d,%d)", column.getColumnType(), length, scale));
 			}
 			
 			sb.append(String.format("(%d,%d)", length,scale));
@@ -55,9 +60,23 @@ public class PostgresDialectImpl  extends DatabaseDialect {
 		case VARCHAR:
 			if (Objects.isNull(length) || length < 0) {
 				throw new RuntimeException(
-						String.format("Invalid Greenplum data type length: %s(%d)", column.getColumnType(), length));
+						String.format("Invalid PostgreSQL data type length: %s(%d)", column.getColumnType(), length));
 			}
 			sb.append(String.format(" (%d) ", length));
+			break;
+		case TIMESTAMP:
+			if (Objects.isNull(length) || length < 0) {
+				sb.append(String.format(" (0) "));
+			} else if (0 == length || 6 == length) {
+				sb.append(String.format(" (%d) ", length));
+			} else {
+				throw new RuntimeException(
+						String.format("Invalid PostgreSQL data type length: %s(%d)", column.getColumnType(), length));
+			}
+			break;
+		case DOUBLE:
+			sb.append(" PRECISION ");
+			break;
 		default:
 			break;
 		}

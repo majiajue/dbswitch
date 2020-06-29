@@ -108,7 +108,7 @@ public class DatabaseMysqlImpl extends AbstractDatabase implements IDatabaseInte
 	}
 	
 	@Override
-	public String getFieldDefinition(ColumnMetaData v, List<String> pks, boolean add_cr) {
+	public String getFieldDefinition(ColumnMetaData v, List<String> pks, boolean use_autoinc, boolean add_cr) {
 		String fieldname = v.getName();
 		int length = v.getLength();
 		int precision = v.getPrecision();
@@ -118,8 +118,11 @@ public class DatabaseMysqlImpl extends AbstractDatabase implements IDatabaseInte
 
 		switch (type) {
 		case ColumnMetaData.TYPE_TIMESTAMP:
-		case ColumnMetaData.TYPE_DATE:
 			retval += "DATETIME";
+		case ColumnMetaData.TYPE_TIME:
+			retval += "TIME";
+		case ColumnMetaData.TYPE_DATE:
+			retval += "DATE";
 			break;
 		case ColumnMetaData.TYPE_BOOLEAN:
 			retval += "CHAR(32)";
@@ -128,7 +131,11 @@ public class DatabaseMysqlImpl extends AbstractDatabase implements IDatabaseInte
 		case ColumnMetaData.TYPE_INTEGER:
 		case ColumnMetaData.TYPE_BIGNUMBER:
 			if (null!=pks && pks.contains(fieldname)) {
-				retval += "BIGINT NOT NULL";
+				if (use_autoinc) {
+					retval += "BIGINT AUTO_INCREMENT NOT NULL";
+				} else {
+					retval += "BIGINT NOT NULL";
+				}
 			} else {
 				// Integer values...
 				if (precision == 0) {

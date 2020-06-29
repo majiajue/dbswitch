@@ -7,11 +7,15 @@ import com.weishao.dbswitch.sql.ddl.pojo.ColumnDefinition;
 import com.weishao.dbswitch.sql.ddl.type.GreenplumDataType;
 
 public class GreenplumDialectImpl extends PostgresDialectImpl {
-	
-protected static List<GreenplumDataType> integerTypes;
-	
-	static{
-		integerTypes= new ArrayList<GreenplumDataType>();
+
+	protected static List<GreenplumDataType> integerTypes;
+
+	static {
+		integerTypes = new ArrayList<GreenplumDataType>();
+		integerTypes.add(GreenplumDataType.SERIAL2);
+		integerTypes.add(GreenplumDataType.SERIAL4);
+		integerTypes.add(GreenplumDataType.SERIAL8);
+		integerTypes.add(GreenplumDataType.SMALLSERIAL);
 		integerTypes.add(GreenplumDataType.SERIAL);
 		integerTypes.add(GreenplumDataType.BIGSERIAL);
 	}
@@ -37,6 +41,7 @@ protected static List<GreenplumDataType> integerTypes;
 
 		sb.append(type.name());
 		switch (type) {
+		case NUMERIC:
 		case DECIMAL:
 			if (Objects.isNull(length) || length < 0) {
 				throw new RuntimeException(
@@ -57,6 +62,20 @@ protected static List<GreenplumDataType> integerTypes;
 						String.format("Invalid Greenplum data type length: %s(%d)", column.getColumnType(), length));
 			}
 			sb.append(String.format(" (%d) ", length));
+			break;
+		case TIMESTAMP:
+			if (Objects.isNull(length) || length < 0) {
+				sb.append(String.format(" (0) "));
+			} else if (0 == length || 6 == length) {
+				sb.append(String.format(" (%d) ", length));
+			} else {
+				throw new RuntimeException(
+						String.format("Invalid Greenplum data type length: %s(%d)", column.getColumnType(), length));
+			}
+			break;
+		case DOUBLE:
+			sb.append(" PRECISION ");
+			break;
 		default:
 			break;
 		}

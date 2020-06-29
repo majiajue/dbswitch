@@ -12,7 +12,7 @@
 
 - **数据迁移**。
 
-基于JDBC的fetchSize批次读取源端数据库数据，并基于insert/copy方式将数据分批次写入目的数据库。
+基于JDBC的fetch-size参数分批次读取源端数据库数据，并基于insert/copy方式将数据分批次写入目的数据库。
 
 ### 2、功能设计
 
@@ -55,6 +55,14 @@
   **maven**:>=3.6
  
 - 编译命令:
+
+**(1) windows下：**
+
+```
+ 双击build.cmd脚本文件即可编译打包
+```
+
+**(2) Linux下：**
 
 ```
 git clone https://gitee.com/inrgihc/dbswitch.git
@@ -123,9 +131,18 @@ jdbc驱动名称：org.postgresql.Driver
 ```
 
 启动执行命令如下：
+
+linux系统下：
+
 ```
 cd dbswitch-release-X.X.X/
 bin/datasync.sh
+```
+
+windows系统下：
+
+```
+切换到dbswitch-release-X.X.X/bin/目录下，双击datasync.cmd脚本文件即可启动
 ```
 
 ## 三、特别说明
