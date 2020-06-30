@@ -1,3 +1,6 @@
+项目来源于:https://gitee.com/inrgihc/dbswitch.git
+在这里我修改了下作者的小bug和遇到的时间戳的问题
+
 # 异构数据库数据与结构同步工具
 
 ## 一、工具介绍
@@ -99,9 +102,8 @@ sh ./build.sh
  **注意:**
  
 - *（1）如果source.datasource-source.includes不为空，则按照包含表的方式来执行；*
-
 - *（2）如果source.datasource-source.includes为空，则按照source.datasource-source.excludes排除表的方式来执行。*
-
+- *（3）如果数据库为oracle时，在启动项增加-Doracle.jdbc.J2EE13Compliant=true 如:java -Doracle.jdbc.J2EE13Compliant=true YourApplication 避免转换时间报错*
 - mysql的驱动配置样例
 
 ```
