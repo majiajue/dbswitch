@@ -119,8 +119,10 @@ public class DatabaseMysqlImpl extends AbstractDatabase implements IDatabaseInte
 		switch (type) {
 		case ColumnMetaData.TYPE_TIMESTAMP:
 			retval += "DATETIME";
+			break;
 		case ColumnMetaData.TYPE_TIME:
 			retval += "TIME";
+			break;
 		case ColumnMetaData.TYPE_DATE:
 			retval += "DATE";
 			break;

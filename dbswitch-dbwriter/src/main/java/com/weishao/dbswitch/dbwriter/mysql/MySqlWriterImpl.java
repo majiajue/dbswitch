@@ -104,6 +104,9 @@ public class MySqlWriterImpl extends AbstractDatabaseWriter implements IDatabase
 		for (int i = 0; i < fieldNames.size(); ++i) {
 			String col = fieldNames.get(i);
 			argTypes[i] = this.columnType.get(col);
+			if(argTypes[i]==93){
+				argTypes[i] = java.sql.Types.TIMESTAMP;
+			}
 		}
 
 		PlatformTransactionManager transactionManager = new DataSourceTransactionManager(this.dataSource);
@@ -113,7 +116,7 @@ public class MySqlWriterImpl extends AbstractDatabaseWriter implements IDatabase
 			@Override
 			public Integer doInTransaction(TransactionStatus transactionStatus) {
 				try {
-					int[] affects = jdbcTemplate.batchUpdate(sqlInsert, recordValues, argTypes);
+					int[] affects = jdbcTemplate.batchUpdate(sqlInsert, recordValues,argTypes);
 					int affect_count = 0;
 					for (int i : affects) {
 						affect_count += i;

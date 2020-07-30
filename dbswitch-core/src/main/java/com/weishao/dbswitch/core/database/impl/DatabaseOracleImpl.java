@@ -77,11 +77,11 @@ public class DatabaseOracleImpl extends AbstractDatabase implements IDatabaseInt
 		// 使主键失效：alter table tableName disable primary key;
 		// 使主键恢复：alter table tableName enable primary key;
 		Set<String> ret = new HashSet<String>();
-		String sql = String.format("SELECT COLUMN_NAME FROM user_cons_columns WHERE owner='%s' and constraint_name = "
-				+ "(SELECT constraint_name FROM user_constraints WHERE table_name = '%s' AND constraint_type = 'P' and STATUS='ENABLED') ",
-				schemaName, tableName);
+		String sql = String.format("select a.constraint_name,a.column_name,b.index_name from all_cons_columns a, all_constraints b where a.constraint_name = b.constraint_name and b.constraint_type = 'P' and a.owner = b.owner and a.table_name = '%s' and a.owner='%s'",
+				tableName,schemaName);
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
+
 
 		try {
 			pstmt = this.connection.prepareStatement(sql);

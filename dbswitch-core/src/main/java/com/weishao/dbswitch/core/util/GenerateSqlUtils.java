@@ -19,7 +19,6 @@ public class GenerateSqlUtils {
 				.map((cd) -> cd.getFieldName()).collect(Collectors.toList());
 
 		AbstractDatabase db = DatabaseFactory.getDatabaseInstance(type);
-
 		retval.append(Const.CREATE_TABLE);
 		ifNotExist = false;
 		// if(ifNotExist && type!=DatabaseType.ORACLE) {
@@ -36,9 +35,13 @@ public class GenerateSqlUtils {
 			}
 
 			ColumnMetaData v = fieldNames.get(i).getMetaData();
-			retval.append(db.getFieldDefinition(v, pks, false, true));
-		}
+			boolean autoinc = false;
+			if(1==DatabaseType.MYSQL.getIndex()){
+				autoinc = true;
+			}
 
+			retval.append(db.getFieldDefinition(v, pks, autoinc, true));
+		}
 		if (pks.size() > 0) {
 			String pk = db.getPrimaryKeyAsString(pks);
 			retval.append(", PRIMARY KEY (").append(pk).append(")").append(Const.CR);

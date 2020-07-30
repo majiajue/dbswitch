@@ -6,9 +6,13 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
+import com.weishao.dbswitch.data.util.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -170,11 +174,14 @@ public class MainService {
 						Object args[] = new Object[metaData.getColumnCount()];
 						for (int j = 0; j < metaData.getColumnCount(); ++j) {
 							args[j] = rs.getObject(j + 1);
+							if(isValidDate(String.valueOf(args[j]))){
+								java.sql.Date sqlDate = new java.sql.Date(DateUtils.parseDate(args[j]).getTime());
+								args[j] = sqlDate;
+							}
 							if (args[j] instanceof Boolean) {
 								args[j] = String.valueOf((boolean) args[j] ? 1 : 0);
 							}
 						}
-
 						recordValues.add(args);
 						++totalCount;
 
@@ -208,5 +215,27 @@ public class MainService {
 		});
 
 	}
-	
+	public static boolean isValidDate(String str) {
+		boolean convertSuccess = true;
+		// 指定日期格式为四位年/两位月份/两位日期，注意yyyy/MM/dd区分大小写；
+		//DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-M月 -yy hh.mm.ss.SSSSSS a");
+		try {
+			// 设置lenient为false. 否则SimpleDateFormat会比较宽松地验证日期，比如2007/02/29会被接受，并转换成2007/03/01
+			//LocalDateTime dateTime = LocalDateTime.parse(str, format);
+			Date date = DateUtils.parseLocalDate(str);
+			if(date == null){
+				convertSuccess = false;
+			}
+		} catch (Exception e) {
+
+			// e.printStackTrace();
+			// 如果throw java.text.ParseException或者NullPointerException，就说明格式不对
+			convertSuccess = false;
+		}
+		return convertSuccess;
+		//日期正则表达式
+//        String pattern ="\\d{4}(\\-|\\/|.)\\d{1,2}\\1\\d{1,2}";
+//        return Pattern.matches(pattern,str);
+	}
+
 }

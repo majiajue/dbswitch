@@ -56,6 +56,7 @@ public abstract class AbstractDatabaseWriter implements IDatabaseWriter {
 					rs = stmt.executeQuery(sql);
 					ResultSetMetaData rsMetaData = rs.getMetaData();
 					for (int i = 0, len = rsMetaData.getColumnCount(); i < len; i++) {
+
 						columnMetaData.put(rsMetaData.getColumnName(i + 1), rsMetaData.getColumnType(i + 1));
 					}
 
