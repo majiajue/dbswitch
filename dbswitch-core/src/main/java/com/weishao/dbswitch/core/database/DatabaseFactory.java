@@ -34,7 +34,7 @@ public final class DatabaseFactory {
 		if(DATABASE_MAPPER.containsKey(type)) {
 			String className= DATABASE_MAPPER.get(type);
 			try {
-				return (AbstractDatabase) Class.forName(className).newInstance();
+				return (AbstractDatabase) Class.forName(className).getDeclaredConstructor().newInstance();
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
